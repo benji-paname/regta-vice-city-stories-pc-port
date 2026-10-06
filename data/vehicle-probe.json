@@ -1,0 +1,155 @@
+{
+  "name": "BANSHEE",
+  "model_id": 175,
+  "decoded_atomics": 20,
+  "initial_visible_atomics": 13,
+  "drawable_triangles": 1582,
+  "bounds": [
+    [
+      -1.2070584195096932,
+      -2.6965204683332065,
+      0.17973204971296597
+    ],
+    [
+      1.2071013367275192,
+      2.8782835845953816,
+      1.3264475452497022
+    ]
+  ],
+  "wheel_dummy_frames": [
+    {
+      "name": "wheel_rf_dummy",
+      "parent": "0x4380",
+      "world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.9390000104904175,
+        1.5369999408721924,
+        0.3499999940395355,
+        1.0
+      ],
+      "offset": "0x110"
+    },
+    {
+      "name": "wheel_rb_dummy",
+      "parent": "0x4380",
+      "world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.9390000104904175,
+        -1.5410000085830688,
+        0.34999990463256836,
+        1.0
+      ],
+      "offset": "0x310"
+    },
+    {
+      "name": "wheel_lf_dummy",
+      "parent": "0x4380",
+      "world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.9390000104904175,
+        1.5369999408721924,
+        0.3499999940395355,
+        1.0
+      ],
+      "offset": "0x4170"
+    },
+    {
+      "name": "wheel_lb_dummy",
+      "parent": "0x4380",
+      "world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.9390000104904175,
+        -1.5410000085830688,
+        0.3499999940395355,
+        1.0
+      ],
+      "offset": "0x650"
+    }
+  ],
+  "shared_wheel_model": {
+    "id": 323,
+    "p": "0x4cc900",
+    "type": 1,
+    "hash": "0xe8683471",
+    "name": "",
+    "txd": 2,
+    "group": 1116471296,
+    "element": "0x4c5188"
+  },
+  "shared_wheel_verified": {
+    "source_vertices": 450,
+    "drawable_triangles": 164,
+    "bounds": [
+      [
+        -0.20239310274887587,
+        -0.4997177080949111,
+        -0.4997177080949111
+      ],
+      [
+        0.2177945832204535,
+        0.4997177080949111,
+        0.4997177080949111
+      ]
+    ],
+    "material_names": [
+      "tyres",
+      "tyres"
+    ]
+  },
+  "material_texture_names": [
+    "banshee868bit_sl",
+    "xv_vcs_licenseplates_cs",
+    "xv_vehiclegeneric_sl",
+    "xv_vehiclegrunge_sl"
+  ],
+  "finite_positions_and_uv": true,
+  "verified_strip_vertex_counts": true,
+  "limitations": [
+    "No driving or integrated vehicle rendering yet",
+    "Shared wheels and material alpha still need integration"
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "version": "0.3.0",
+  "unit_tests_passed": 42,
+  "native_gpu_captures": 7,
+  "native_gpu_frames": 56,
+  "software_frames": 8,
+  "walking_distance_m": {
+    "walk-motion": 3.599017056741915,
+    "run-motion": 9.00282350596095
+  },
+  "cases": {
+    "military": {
+      "animation": "idle",
+      "animation_time": 0.12984679639339447,
+      "average_draw_ms": 4.403325,
+      "camera": [
+        -1460.0,
+        -440.0,
+        95.0
+      ],
+      "draw_distance": 5000.0,
+      "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+      "feet": null,
+      "frames": 8,
+      "grounded": null,
+      "renderer": "OpenGL",
+      "scene": "VICE CITY",
+      "scene_levels": [
+        0,
+        1
+      ],
+      "simulation_seconds": 0.0,
+      "submitted_triangles": 44079,
+      "third_person": true,
+      "walking": false,
+      "zone": "BEACH"
+    },
+    "vic-beach": {
+      "animation": "idle",
+      "animation_time": 0.5,
+      "average_draw_ms": 15.617400000000002,
+      "camera": [
+        503.563232421875,
+        -501.8135681152344,
+        11.108226776123047
+      ],
+      "draw_distance": 5000.0,
+      "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+      "feet": [
+        500.0,
+        -500.0,
+        9.88824462890625
+      ],
+      "frames": 8,
+      "grounded": true,
+      "renderer": "OpenGL",
+      "scene": "VICE CITY",
+      "scene_levels": [
+        0,
+        1
+      ],
+      "simulation_seconds": 0.0,
+      "submitted_triangles": 691224,
+      "third_person": true,
+      "walking": true,
+      "zone": "BEACH"
+    },
+    "vic-mainla": {
+      "animation": "walk",
+      "animation_time": 0.5,
+      "average_draw_ms": 8.620825000000002,
+      "camera": [
+        -1000.9891967773438,
+        -503.8739013671875,
+        10.983232498168945
+      ],
+      "draw_distance": 5000.0,
+      "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+      "feet": [
+        -1000.0,
+        -500.0,
+        9.763250350952148
+      ],
+      "frames": 8,
+      "grounded": true,
+      "renderer": "OpenGL",
+      "scene": "VICE CITY",
+      "scene_levels": [
+        0,
+        1
+      ],
+      "simulation_seconds": 0.0,
+      "submitted_triangles": 408714,
+      "third_person": true,
+      "walking": true,
+      "zone": "MAINLA"
+    },
+    "vic-mall": {
+      "animation": "run",
+      "animation_time": 0.30000001192092896,
+      "average_draw_ms": 3.2019749999999996,
+      "camera": [
+        390.0,
+        1126.0018310546875,
+        -193.39801025390625
+      ],
+      "draw_distance": 5000.0,
+      "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+      "feet": [
+        390.0,
+        1130.0,
+        -194.6179962158203
+      ],
+      "frames": 8,
+      "grounded": true,
+      "renderer": "OpenGL",
+      "scene": "MALL",
+      "scene_levels": [
+        2
+      ],
+      "simulation_seconds": 0.0,
+      "submitted_triangles": 101358,
+      "third_person": true,
+      "walking": true,
+      "zone": "MALL"
+    },
+    "walk-motion": {
+      "animation": "walk",
+      "animation_time": 0.5,
+      "average_draw_ms": 8.668262499999999,
+      "camera": [
+        -1000.0956420898438,
+        -500.3875732421875,
+        10.983232498168945
+      ],
+      "draw_distance": 5000.0,
+      "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+      "feet": [
+        -999.1064453125,
+        -496.513671875,
+        9.763250350952148
+      ],
+      "frames": 8,
+      "grounded": true,
+      "renderer": "OpenGL",
+      "scene": "VICE CITY",
+      "scene_levels": [
+        0,
+        1
+      ],
+      "simulation_seconds": 2.0,
+      "submitted_triangles": 406990,
+      "third_person": true,
+      "walking": true,
+      "zone": "MAINLA"
+    },
+    "run-motion": {
+      "animation": "run",
+      "animation_time": 0.30000001192092896,
+      "average_draw_ms": 8.3544125,
+      "camera": [
+        -998.7626342773438,
+        -495.1507568359375,
+        10.983232498168945
+      ],
+      "draw_distance": 5000.0,
+      "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+      "feet": [
+        -997.7734375,
+        -491.27685546875,
+        9.763250350952148
+      ],
+      "frames": 8,
+      "grounded": true,
+      "renderer": "OpenGL",
+      "scene": "VICE CITY",
+      "scene_levels": [
+        0,
+        1
+      ],
+      "simulation_seconds": 2.0,
+      "submitted_triangles": 406447,
+      "third_person": true,
+      "walking": true,
+      "zone": "MAINLA"
+    },
+    "military-ground": {
+      "animation": "idle",
+      "animation_time": 0.1230078935623169,
+      "average_draw_ms": 3.5946249999999997,
+      "camera": [
+        -1457.4520263671875,
+        -443.0250244140625,
+        15.545393943786621
+      ],
+      "draw_distance": 5000.0,
+      "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+      "feet": [
+        -1460.0,
+        -440.0,
+        13.847640991210938
+      ],
+      "frames": 8,
+      "grounded": true,
+      "renderer": "OpenGL",
+      "scene": "VICE CITY",
+      "scene_levels": [
+        0,
+        1
+      ],
+      "simulation_seconds": 0.0,
+      "submitted_triangles": 45250,
+      "third_person": true,
+      "walking": true,
+      "zone": "MAINLA"
+    },
+    "vic-software": {
+      "animation": "idle",
+      "animation_time": 0.5,
+      "average_draw_ms": 277.45365,
+      "camera": [
+        503.563232421875,
+        -501.8135681152344,
+        11.108226776123047
+      ],
+      "draw_distance": 5000.0,
+      "driver": null,
+      "feet": [
+        500.0,
+        -500.0,
+        9.88824462890625
+      ],
+      "frames": 8,
+      "grounded": true,
+      "renderer": "software",
+      "scene": "VICE CITY",
+      "scene_levels": [
+        0,
+        1
+      ],
+      "simulation_seconds": 0.0,
+      "submitted_triangles": 286590,
+      "third_person": true,
+      "walking": true,
+      "zone": "BEACH"
+    }
+  },
+  "interactive_viewer_opened_for_testing": false
+}

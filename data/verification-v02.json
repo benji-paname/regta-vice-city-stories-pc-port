@@ -1,0 +1,2346 @@
+{
+  "collision": {
+    "allocated_entities": 10265,
+    "collidable_entities": 7887,
+    "decoded_models": 4605,
+    "embedded_models": 4605,
+    "empty_entities": 2378,
+    "level_entities": {
+      "0": 89,
+      "1": 5907,
+      "2": 3856,
+      "250": 3,
+      "3": 410
+    },
+    "missing_models": 0,
+    "original_boxes": 13940,
+    "original_spheres": 8537,
+    "streamed_chunks": 16,
+    "streamed_models": 4370,
+    "triangles": 412298
+  },
+  "elf_sha256": "1039bd48fbe57f3961c72507bfce526ef524dbe9b374d844a00b9a2db435439d",
+  "executable": "SLES_546.22",
+  "game_dat_bytes": 6591952,
+  "ground_checks": [
+    {
+      "feet": [
+        500.0,
+        -500.0,
+        9.88824462890625
+      ],
+      "grounded": true,
+      "native_model_id": 5109,
+      "stationary_physics_steps": 120,
+      "surface": 1,
+      "zone": "BEACH"
+    },
+    {
+      "feet": [
+        -1000.0,
+        -500.0,
+        9.763250350952148
+      ],
+      "grounded": true,
+      "native_model_id": 1711,
+      "stationary_physics_steps": 120,
+      "surface": 1,
+      "zone": "MAINLA"
+    },
+    {
+      "feet": [
+        390.0,
+        1130.0,
+        -194.6179962158203
+      ],
+      "grounded": true,
+      "native_model_id": 7883,
+      "stationary_physics_steps": 120,
+      "surface": 0,
+      "zone": "MALL"
+    }
+  ],
+  "iso": "F:\\JEUX EMULATION\\PS2 GAMES\\Grand Theft Auto - Vice City Stories.iso",
+  "iso_entries": {
+    "AUDIO": {
+      "directory": true,
+      "lba": 262,
+      "path": "AUDIO",
+      "size": 736
+    },
+    "AUDIO/CUTSCENE": {
+      "directory": true,
+      "lba": 269,
+      "path": "AUDIO/CUTSCENE",
+      "size": 1550
+    },
+    "AUDIO/CUTSCENE/BRYB1.VB": {
+      "directory": false,
+      "lba": 1000000,
+      "path": "AUDIO/CUTSCENE/BRYB1.VB",
+      "size": 1900544
+    },
+    "AUDIO/CUTSCENE/DIAC1.VB": {
+      "directory": false,
+      "lba": 1000928,
+      "path": "AUDIO/CUTSCENE/DIAC1.VB",
+      "size": 3473408
+    },
+    "AUDIO/CUTSCENE/DIAC2.VB": {
+      "directory": false,
+      "lba": 1002624,
+      "path": "AUDIO/CUTSCENE/DIAC2.VB",
+      "size": 2654208
+    },
+    "AUDIO/CUTSCENE/DIAC3.VB": {
+      "directory": false,
+      "lba": 1003920,
+      "path": "AUDIO/CUTSCENE/DIAC3.VB",
+      "size": 3375104
+    },
+    "AUDIO/CUTSCENE/DIAC4.VB": {
+      "directory": false,
+      "lba": 1005568,
+      "path": "AUDIO/CUTSCENE/DIAC4.VB",
+      "size": 3244032
+    },
+    "AUDIO/CUTSCENE/DIAC5B.VB": {
+      "directory": false,
+      "lba": 1007152,
+      "path": "AUDIO/CUTSCENE/DIAC5B.VB",
+      "size": 3538944
+    },
+    "AUDIO/CUTSCENE/JERA1.VB": {
+      "directory": false,
+      "lba": 1008880,
+      "path": "AUDIO/CUTSCENE/JERA1.VB",
+      "size": 5128192
+    },
+    "AUDIO/CUTSCENE/JERA2.VB": {
+      "directory": false,
+      "lba": 1011384,
+      "path": "AUDIO/CUTSCENE/JERA2.VB",
+      "size": 3506176
+    },
+    "AUDIO/CUTSCENE/JERA3.VB": {
+      "directory": false,
+      "lba": 1013096,
+      "path": "AUDIO/CUTSCENE/JERA3.VB",
+      "size": 4210688
+    },
+    "AUDIO/CUTSCENE/LANB1.VB": {
+      "directory": false,
+      "lba": 1015152,
+      "path": "AUDIO/CUTSCENE/LANB1.VB",
+      "size": 3080192
+    },
+    "AUDIO/CUTSCENE/LANB2.VB": {
+      "directory": false,
+      "lba": 1016656,
+      "path": "AUDIO/CUTSCENE/LANB2.VB",
+      "size": 2424832
+    },
+    "AUDIO/CUTSCENE/LANB4.VB": {
+      "directory": false,
+      "lba": 1017840,
+      "path": "AUDIO/CUTSCENE/LANB4.VB",
+      "size": 2097152
+    },
+    "AUDIO/CUTSCENE/LANB5.VB": {
+      "directory": false,
+      "lba": 1018864,
+      "path": "AUDIO/CUTSCENE/LANB5.VB",
+      "size": 3031040
+    },
+    "AUDIO/CUTSCENE/LANB6.VB": {
+      "directory": false,
+      "lba": 1020344,
+      "path": "AUDIO/CUTSCENE/LANB6.VB",
+      "size": 2473984
+    },
+    "AUDIO/CUTSCENE/LANC1.VB": {
+      "directory": false,
+      "lba": 1021552,
+      "path": "AUDIO/CUTSCENE/LANC1.VB",
+      "size": 2228224
+    },
+    "AUDIO/CUTSCENE/LANC11A.VB": {
+      "directory": false,
+      "lba": 1022640,
+      "path": "AUDIO/CUTSCENE/LANC11A.VB",
+      "size": 2506752
+    },
+    "AUDIO/CUTSCENE/LANC11B.VB": {
+      "directory": false,
+      "lba": 1023864,
+      "path": "AUDIO/CUTSCENE/LANC11B.VB",
+      "size": 3686400
+    },
+    "AUDIO/CUTSCENE/LANC3.VB": {
+      "directory": false,
+      "lba": 1025664,
+      "path": "AUDIO/CUTSCENE/LANC3.VB",
+      "size": 3260416
+    },
+    "AUDIO/CUTSCENE/LANC4.VB": {
+      "directory": false,
+      "lba": 1027256,
+      "path": "AUDIO/CUTSCENE/LANC4.VB",
+      "size": 1048576
+    },
+    "AUDIO/CUTSCENE/LANC5.VB": {
+      "directory": false,
+      "lba": 1027768,
+      "path": "AUDIO/CUTSCENE/LANC5.VB",
+      "size": 3047424
+    },
+    "AUDIO/CUTSCENE/LANC6.VB": {
+      "directory": false,
+      "lba": 1029256,
+      "path": "AUDIO/CUTSCENE/LANC6.VB",
+      "size": 3932160
+    },
+    "AUDIO/CUTSCENE/LANC8.VB": {
+      "directory": false,
+      "lba": 1031176,
+      "path": "AUDIO/CUTSCENE/LANC8.VB",
+      "size": 2228224
+    },
+    "AUDIO/CUTSCENE/LOUA1.VB": {
+      "directory": false,
+      "lba": 1032264,
+      "path": "AUDIO/CUTSCENE/LOUA1.VB",
+      "size": 4423680
+    },
+    "AUDIO/CUTSCENE/LOUA2.VB": {
+      "directory": false,
+      "lba": 1034424,
+      "path": "AUDIO/CUTSCENE/LOUA2.VB",
+      "size": 1490944
+    },
+    "AUDIO/CUTSCENE/LOUA3.VB": {
+      "directory": false,
+      "lba": 1035152,
+      "path": "AUDIO/CUTSCENE/LOUA3.VB",
+      "size": 1507328
+    },
+    "AUDIO/CUTSCN2": {
+      "directory": true,
+      "lba": 270,
+      "path": "AUDIO/CUTSCN2",
+      "size": 1430
+    },
+    "AUDIO/CUTSCN2/MARA1.VB": {
+      "directory": false,
+      "lba": 1035888,
+      "path": "AUDIO/CUTSCN2/MARA1.VB",
+      "size": 3260416
+    },
+    "AUDIO/CUTSCN2/MARA2.VB": {
+      "directory": false,
+      "lba": 1037480,
+      "path": "AUDIO/CUTSCN2/MARA2.VB",
+      "size": 3293184
+    },
+    "AUDIO/CUTSCN2/MARA5.VB": {
+      "directory": false,
+      "lba": 1039088,
+      "path": "AUDIO/CUTSCN2/MARA5.VB",
+      "size": 1966080
+    },
+    "AUDIO/CUTSCN2/MENC1.VB": {
+      "directory": false,
+      "lba": 1040048,
+      "path": "AUDIO/CUTSCN2/MENC1.VB",
+      "size": 2162688
+    },
+    "AUDIO/CUTSCN2/MENC2.VB": {
+      "directory": false,
+      "lba": 1041104,
+      "path": "AUDIO/CUTSCN2/MENC2.VB",
+      "size": 2588672
+    },
+    "AUDIO/CUTSCN2/MENC3.VB": {
+      "directory": false,
+      "lba": 1042368,
+      "path": "AUDIO/CUTSCN2/MENC3.VB",
+      "size": 3473408
+    },
+    "AUDIO/CUTSCN2/MENC5.VB": {
+      "directory": false,
+      "lba": 1044064,
+      "path": "AUDIO/CUTSCN2/MENC5.VB",
+      "size": 2539520
+    },
+    "AUDIO/CUTSCN2/MENC6.VB": {
+      "directory": false,
+      "lba": 1045304,
+      "path": "AUDIO/CUTSCN2/MENC6.VB",
+      "size": 2965504
+    },
+    "AUDIO/CUTSCN2/PHIA1.VB": {
+      "directory": false,
+      "lba": 1046752,
+      "path": "AUDIO/CUTSCN2/PHIA1.VB",
+      "size": 2867200
+    },
+    "AUDIO/CUTSCN2/PHIA2.VB": {
+      "directory": false,
+      "lba": 1048152,
+      "path": "AUDIO/CUTSCN2/PHIA2.VB",
+      "size": 3702784
+    },
+    "AUDIO/CUTSCN2/PHIA3.VB": {
+      "directory": false,
+      "lba": 1049960,
+      "path": "AUDIO/CUTSCN2/PHIA3.VB",
+      "size": 2965504
+    },
+    "AUDIO/CUTSCN2/PHIA4.VB": {
+      "directory": false,
+      "lba": 1051408,
+      "path": "AUDIO/CUTSCN2/PHIA4.VB",
+      "size": 2539520
+    },
+    "AUDIO/CUTSCN2/RENC1.VB": {
+      "directory": false,
+      "lba": 1052648,
+      "path": "AUDIO/CUTSCN2/RENC1.VB",
+      "size": 4243456
+    },
+    "AUDIO/CUTSCN2/RENC2.VB": {
+      "directory": false,
+      "lba": 1054720,
+      "path": "AUDIO/CUTSCN2/RENC2.VB",
+      "size": 2670592
+    },
+    "AUDIO/CUTSCN2/RENC3.VB": {
+      "directory": false,
+      "lba": 1056024,
+      "path": "AUDIO/CUTSCN2/RENC3.VB",
+      "size": 2490368
+    },
+    "AUDIO/CUTSCN2/RENC4.VB": {
+      "directory": false,
+      "lba": 1057240,
+      "path": "AUDIO/CUTSCN2/RENC4.VB",
+      "size": 2867200
+    },
+    "AUDIO/CUTSCN2/RENC5.VB": {
+      "directory": false,
+      "lba": 1058640,
+      "path": "AUDIO/CUTSCN2/RENC5.VB",
+      "size": 3178496
+    },
+    "AUDIO/CUTSCN2/RENC6.VB": {
+      "directory": false,
+      "lba": 1060192,
+      "path": "AUDIO/CUTSCN2/RENC6.VB",
+      "size": 2080768
+    },
+    "AUDIO/CUTSCN2/RENC7.VB": {
+      "directory": false,
+      "lba": 1061208,
+      "path": "AUDIO/CUTSCN2/RENC7.VB",
+      "size": 2146304
+    },
+    "AUDIO/CUTSCN2/UMBB1.VB": {
+      "directory": false,
+      "lba": 1062256,
+      "path": "AUDIO/CUTSCN2/UMBB1.VB",
+      "size": 2310144
+    },
+    "AUDIO/CUTSCN2/UMBB2.VB": {
+      "directory": false,
+      "lba": 1063384,
+      "path": "AUDIO/CUTSCN2/UMBB2.VB",
+      "size": 2834432
+    },
+    "AUDIO/CUTSCN2/UMBB3.VB": {
+      "directory": false,
+      "lba": 1064768,
+      "path": "AUDIO/CUTSCN2/UMBB3.VB",
+      "size": 2736128
+    },
+    "AUDIO/CUTSCN2/UMBB4.VB": {
+      "directory": false,
+      "lba": 1066104,
+      "path": "AUDIO/CUTSCN2/UMBB4.VB",
+      "size": 2752512
+    },
+    "AUDIO/MUSIC": {
+      "directory": true,
+      "lba": 271,
+      "path": "AUDIO/MUSIC",
+      "size": 1554
+    },
+    "AUDIO/MUSIC/AMB_BIKR.VB": {
+      "directory": false,
+      "lba": 1875781,
+      "path": "AUDIO/MUSIC/AMB_BIKR.VB",
+      "size": 2916352
+    },
+    "AUDIO/MUSIC/CITY.VB": {
+      "directory": false,
+      "lba": 1878469,
+      "path": "AUDIO/MUSIC/CITY.VB",
+      "size": 21954560
+    },
+    "AUDIO/MUSIC/CONSTRCT.VB": {
+      "directory": false,
+      "lba": 1866109,
+      "path": "AUDIO/MUSIC/CONSTRCT.VB",
+      "size": 2539520
+    },
+    "AUDIO/MUSIC/CROWD.VB": {
+      "directory": false,
+      "lba": 1877205,
+      "path": "AUDIO/MUSIC/CROWD.VB",
+      "size": 2588672
+    },
+    "AUDIO/MUSIC/EMOTION.VB": {
+      "directory": false,
+      "lba": 1470029,
+      "path": "AUDIO/MUSIC/EMOTION.VB",
+      "size": 151650304
+    },
+    "AUDIO/MUSIC/ESPANT.VB": {
+      "directory": false,
+      "lba": 1437317,
+      "path": "AUDIO/MUSIC/ESPANT.VB",
+      "size": 66994176
+    },
+    "AUDIO/MUSIC/FLASH.VB": {
+      "directory": false,
+      "lba": 1544077,
+      "path": "AUDIO/MUSIC/FLASH.VB",
+      "size": 142262272
+    },
+    "AUDIO/MUSIC/FRESH.VB": {
+      "directory": false,
+      "lba": 1979533,
+      "path": "AUDIO/MUSIC/FRESH.VB",
+      "size": 65257472
+    },
+    "AUDIO/MUSIC/MALL_1.VB": {
+      "directory": false,
+      "lba": 1851725,
+      "path": "AUDIO/MUSIC/MALL_1.VB",
+      "size": 5767168
+    },
+    "AUDIO/MUSIC/MALL_2.VB": {
+      "directory": false,
+      "lba": 1854541,
+      "path": "AUDIO/MUSIC/MALL_2.VB",
+      "size": 7634944
+    },
+    "AUDIO/MUSIC/MALL_3.VB": {
+      "directory": false,
+      "lba": 1858269,
+      "path": "AUDIO/MUSIC/MALL_3.VB",
+      "size": 4538368
+    },
+    "AUDIO/MUSIC/MALL_4.VB": {
+      "directory": false,
+      "lba": 1860485,
+      "path": "AUDIO/MUSIC/MALL_4.VB",
+      "size": 4784128
+    },
+    "AUDIO/MUSIC/MALL_5.VB": {
+      "directory": false,
+      "lba": 1862821,
+      "path": "AUDIO/MUSIC/MALL_5.VB",
+      "size": 6733824
+    },
+    "AUDIO/MUSIC/MISCOM2.VB": {
+      "directory": false,
+      "lba": 1867349,
+      "path": "AUDIO/MUSIC/MISCOM2.VB",
+      "size": 147456
+    },
+    "AUDIO/MUSIC/PARADISE.VB": {
+      "directory": false,
+      "lba": 1677477,
+      "path": "AUDIO/MUSIC/PARADISE.VB",
+      "size": 90603520
+    },
+    "AUDIO/MUSIC/PHILCOL.VB": {
+      "directory": false,
+      "lba": 1867421,
+      "path": "AUDIO/MUSIC/PHILCOL.VB",
+      "size": 14073856
+    },
+    "AUDIO/MUSIC/POLICE.VB": {
+      "directory": false,
+      "lba": 1889189,
+      "path": "AUDIO/MUSIC/POLICE.VB",
+      "size": 36192256
+    },
+    "AUDIO/MUSIC/SAWMILL.VB": {
+      "directory": false,
+      "lba": 1906861,
+      "path": "AUDIO/MUSIC/SAWMILL.VB",
+      "size": 4145152
+    },
+    "AUDIO/MUSIC/TAXI.VB": {
+      "directory": false,
+      "lba": 1908885,
+      "path": "AUDIO/MUSIC/TAXI.VB",
+      "size": 36192256
+    },
+    "AUDIO/MUSIC/THEME.VB": {
+      "directory": false,
+      "lba": 1874293,
+      "path": "AUDIO/MUSIC/THEME.VB",
+      "size": 3047424
+    },
+    "AUDIO/MUSIC/VCFL.VB": {
+      "directory": false,
+      "lba": 1937845,
+      "path": "AUDIO/MUSIC/VCFL.VB",
+      "size": 85377024
+    },
+    "AUDIO/MUSIC/VCPR.VB": {
+      "directory": false,
+      "lba": 1782093,
+      "path": "AUDIO/MUSIC/VCPR.VB",
+      "size": 142606336
+    },
+    "AUDIO/MUSIC/VROCK.VB": {
+      "directory": false,
+      "lba": 1613541,
+      "path": "AUDIO/MUSIC/VROCK.VB",
+      "size": 130940928
+    },
+    "AUDIO/MUSIC/WATER.VB": {
+      "directory": false,
+      "lba": 1926557,
+      "path": "AUDIO/MUSIC/WATER.VB",
+      "size": 23117824
+    },
+    "AUDIO/MUSIC/WAVE_EU.VB": {
+      "directory": false,
+      "lba": 1721717,
+      "path": "AUDIO/MUSIC/WAVE_EU.VB",
+      "size": 123650048
+    },
+    "AUDIO/M_LOOKUP.BIN": {
+      "directory": false,
+      "lba": 1067448,
+      "path": "AUDIO/M_LOOKUP.BIN",
+      "size": 7008
+    },
+    "AUDIO/NEWS": {
+      "directory": true,
+      "lba": 272,
+      "path": "AUDIO/NEWS",
+      "size": 1278
+    },
+    "AUDIO/NEWS/NEWS_1.VB": {
+      "directory": false,
+      "lba": 1067452,
+      "path": "AUDIO/NEWS/NEWS_1.VB",
+      "size": 1114112
+    },
+    "AUDIO/NEWS/NEWS_10.VB": {
+      "directory": false,
+      "lba": 1067996,
+      "path": "AUDIO/NEWS/NEWS_10.VB",
+      "size": 1081344
+    },
+    "AUDIO/NEWS/NEWS_11.VB": {
+      "directory": false,
+      "lba": 1068524,
+      "path": "AUDIO/NEWS/NEWS_11.VB",
+      "size": 1130496
+    },
+    "AUDIO/NEWS/NEWS_12.VB": {
+      "directory": false,
+      "lba": 1069076,
+      "path": "AUDIO/NEWS/NEWS_12.VB",
+      "size": 1097728
+    },
+    "AUDIO/NEWS/NEWS_13.VB": {
+      "directory": false,
+      "lba": 1069612,
+      "path": "AUDIO/NEWS/NEWS_13.VB",
+      "size": 1032192
+    },
+    "AUDIO/NEWS/NEWS_14.VB": {
+      "directory": false,
+      "lba": 1070116,
+      "path": "AUDIO/NEWS/NEWS_14.VB",
+      "size": 1048576
+    },
+    "AUDIO/NEWS/NEWS_15.VB": {
+      "directory": false,
+      "lba": 1070628,
+      "path": "AUDIO/NEWS/NEWS_15.VB",
+      "size": 1146880
+    },
+    "AUDIO/NEWS/NEWS_16.VB": {
+      "directory": false,
+      "lba": 1071188,
+      "path": "AUDIO/NEWS/NEWS_16.VB",
+      "size": 983040
+    },
+    "AUDIO/NEWS/NEWS_17.VB": {
+      "directory": false,
+      "lba": 1071668,
+      "path": "AUDIO/NEWS/NEWS_17.VB",
+      "size": 1064960
+    },
+    "AUDIO/NEWS/NEWS_18.VB": {
+      "directory": false,
+      "lba": 1072188,
+      "path": "AUDIO/NEWS/NEWS_18.VB",
+      "size": 1015808
+    },
+    "AUDIO/NEWS/NEWS_19.VB": {
+      "directory": false,
+      "lba": 1072684,
+      "path": "AUDIO/NEWS/NEWS_19.VB",
+      "size": 1245184
+    },
+    "AUDIO/NEWS/NEWS_2.VB": {
+      "directory": false,
+      "lba": 1073292,
+      "path": "AUDIO/NEWS/NEWS_2.VB",
+      "size": 1114112
+    },
+    "AUDIO/NEWS/NEWS_20.VB": {
+      "directory": false,
+      "lba": 1073836,
+      "path": "AUDIO/NEWS/NEWS_20.VB",
+      "size": 1015808
+    },
+    "AUDIO/NEWS/NEWS_3.VB": {
+      "directory": false,
+      "lba": 1074332,
+      "path": "AUDIO/NEWS/NEWS_3.VB",
+      "size": 933888
+    },
+    "AUDIO/NEWS/NEWS_4.VB": {
+      "directory": false,
+      "lba": 1074788,
+      "path": "AUDIO/NEWS/NEWS_4.VB",
+      "size": 1048576
+    },
+    "AUDIO/NEWS/NEWS_5.VB": {
+      "directory": false,
+      "lba": 1075300,
+      "path": "AUDIO/NEWS/NEWS_5.VB",
+      "size": 1097728
+    },
+    "AUDIO/NEWS/NEWS_6.VB": {
+      "directory": false,
+      "lba": 1075836,
+      "path": "AUDIO/NEWS/NEWS_6.VB",
+      "size": 1130496
+    },
+    "AUDIO/NEWS/NEWS_7.VB": {
+      "directory": false,
+      "lba": 1076388,
+      "path": "AUDIO/NEWS/NEWS_7.VB",
+      "size": 1015808
+    },
+    "AUDIO/NEWS/NEWS_8.VB": {
+      "directory": false,
+      "lba": 1076884,
+      "path": "AUDIO/NEWS/NEWS_8.VB",
+      "size": 1081344
+    },
+    "AUDIO/NEWS/NEWS_9.VB": {
+      "directory": false,
+      "lba": 1077412,
+      "path": "AUDIO/NEWS/NEWS_9.VB",
+      "size": 1081344
+    },
+    "AUDIO/SET0": {
+      "directory": true,
+      "lba": 273,
+      "path": "AUDIO/SET0",
+      "size": 1296
+    },
+    "AUDIO/SET0/SFX0_PS.RAW": {
+      "directory": false,
+      "lba": 1077940,
+      "path": "AUDIO/SET0/SFX0_PS.RAW",
+      "size": 1594432
+    },
+    "AUDIO/SET0/SFX0_PS.SDT": {
+      "directory": false,
+      "lba": 1078719,
+      "path": "AUDIO/SET0/SFX0_PS.SDT",
+      "size": 3504
+    },
+    "AUDIO/SET0/SFX1_PS.RAW": {
+      "directory": false,
+      "lba": 1078721,
+      "path": "AUDIO/SET0/SFX1_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET0/SFX1_PS.SDT": {
+      "directory": false,
+      "lba": 1078722,
+      "path": "AUDIO/SET0/SFX1_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET0/SFX2_PS.RAW": {
+      "directory": false,
+      "lba": 1078723,
+      "path": "AUDIO/SET0/SFX2_PS.RAW",
+      "size": 54285792
+    },
+    "AUDIO/SET0/SFX2_PS.SDT": {
+      "directory": false,
+      "lba": 1105230,
+      "path": "AUDIO/SET0/SFX2_PS.SDT",
+      "size": 66312
+    },
+    "AUDIO/SET0/SFX3_PS.RAW": {
+      "directory": false,
+      "lba": 1105263,
+      "path": "AUDIO/SET0/SFX3_PS.RAW",
+      "size": 59856
+    },
+    "AUDIO/SET0/SFX3_PS.SDT": {
+      "directory": false,
+      "lba": 1105293,
+      "path": "AUDIO/SET0/SFX3_PS.SDT",
+      "size": 96
+    },
+    "AUDIO/SET0/SFX4_PS.RAW": {
+      "directory": false,
+      "lba": 1105294,
+      "path": "AUDIO/SET0/SFX4_PS.RAW",
+      "size": 49472
+    },
+    "AUDIO/SET0/SFX4_PS.SDT": {
+      "directory": false,
+      "lba": 1105319,
+      "path": "AUDIO/SET0/SFX4_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET0/SFX5_PS.RAW": {
+      "directory": false,
+      "lba": 1105320,
+      "path": "AUDIO/SET0/SFX5_PS.RAW",
+      "size": 73648
+    },
+    "AUDIO/SET0/SFX5_PS.SDT": {
+      "directory": false,
+      "lba": 1105356,
+      "path": "AUDIO/SET0/SFX5_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET0/SFX6_PS.RAW": {
+      "directory": false,
+      "lba": 1105357,
+      "path": "AUDIO/SET0/SFX6_PS.RAW",
+      "size": 82432
+    },
+    "AUDIO/SET0/SFX6_PS.SDT": {
+      "directory": false,
+      "lba": 1105398,
+      "path": "AUDIO/SET0/SFX6_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET0/SFX7_PS.RAW": {
+      "directory": false,
+      "lba": 1105399,
+      "path": "AUDIO/SET0/SFX7_PS.RAW",
+      "size": 79872
+    },
+    "AUDIO/SET0/SFX7_PS.SDT": {
+      "directory": false,
+      "lba": 1105438,
+      "path": "AUDIO/SET0/SFX7_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET0/SFX8_PS.RAW": {
+      "directory": false,
+      "lba": 1105439,
+      "path": "AUDIO/SET0/SFX8_PS.RAW",
+      "size": 80320
+    },
+    "AUDIO/SET0/SFX8_PS.SDT": {
+      "directory": false,
+      "lba": 1105479,
+      "path": "AUDIO/SET0/SFX8_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET0/SFX9_PS.RAW": {
+      "directory": false,
+      "lba": 1105480,
+      "path": "AUDIO/SET0/SFX9_PS.RAW",
+      "size": 55616
+    },
+    "AUDIO/SET0/SFX9_PS.SDT": {
+      "directory": false,
+      "lba": 1105508,
+      "path": "AUDIO/SET0/SFX9_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET1": {
+      "directory": true,
+      "lba": 274,
+      "path": "AUDIO/SET1",
+      "size": 1336
+    },
+    "AUDIO/SET1/SFX10_PS.RAW": {
+      "directory": false,
+      "lba": 1105509,
+      "path": "AUDIO/SET1/SFX10_PS.RAW",
+      "size": 64816
+    },
+    "AUDIO/SET1/SFX10_PS.SDT": {
+      "directory": false,
+      "lba": 1105541,
+      "path": "AUDIO/SET1/SFX10_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET1/SFX11_PS.RAW": {
+      "directory": false,
+      "lba": 1105542,
+      "path": "AUDIO/SET1/SFX11_PS.RAW",
+      "size": 67328
+    },
+    "AUDIO/SET1/SFX11_PS.SDT": {
+      "directory": false,
+      "lba": 1105575,
+      "path": "AUDIO/SET1/SFX11_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET1/SFX12_PS.RAW": {
+      "directory": false,
+      "lba": 1105576,
+      "path": "AUDIO/SET1/SFX12_PS.RAW",
+      "size": 74800
+    },
+    "AUDIO/SET1/SFX12_PS.SDT": {
+      "directory": false,
+      "lba": 1105613,
+      "path": "AUDIO/SET1/SFX12_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET1/SFX13_PS.RAW": {
+      "directory": false,
+      "lba": 1105614,
+      "path": "AUDIO/SET1/SFX13_PS.RAW",
+      "size": 80720
+    },
+    "AUDIO/SET1/SFX13_PS.SDT": {
+      "directory": false,
+      "lba": 1105654,
+      "path": "AUDIO/SET1/SFX13_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET1/SFX14_PS.RAW": {
+      "directory": false,
+      "lba": 1105655,
+      "path": "AUDIO/SET1/SFX14_PS.RAW",
+      "size": 78864
+    },
+    "AUDIO/SET1/SFX14_PS.SDT": {
+      "directory": false,
+      "lba": 1105694,
+      "path": "AUDIO/SET1/SFX14_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET1/SFX15_PS.RAW": {
+      "directory": false,
+      "lba": 1105695,
+      "path": "AUDIO/SET1/SFX15_PS.RAW",
+      "size": 13280
+    },
+    "AUDIO/SET1/SFX15_PS.SDT": {
+      "directory": false,
+      "lba": 1105702,
+      "path": "AUDIO/SET1/SFX15_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET1/SFX16_PS.RAW": {
+      "directory": false,
+      "lba": 1105703,
+      "path": "AUDIO/SET1/SFX16_PS.RAW",
+      "size": 80624
+    },
+    "AUDIO/SET1/SFX16_PS.SDT": {
+      "directory": false,
+      "lba": 1105743,
+      "path": "AUDIO/SET1/SFX16_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET1/SFX17_PS.RAW": {
+      "directory": false,
+      "lba": 1105744,
+      "path": "AUDIO/SET1/SFX17_PS.RAW",
+      "size": 71328
+    },
+    "AUDIO/SET1/SFX17_PS.SDT": {
+      "directory": false,
+      "lba": 1105779,
+      "path": "AUDIO/SET1/SFX17_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET1/SFX18_PS.RAW": {
+      "directory": false,
+      "lba": 1105780,
+      "path": "AUDIO/SET1/SFX18_PS.RAW",
+      "size": 41744
+    },
+    "AUDIO/SET1/SFX18_PS.SDT": {
+      "directory": false,
+      "lba": 1105801,
+      "path": "AUDIO/SET1/SFX18_PS.SDT",
+      "size": 24
+    },
+    "AUDIO/SET1/SFX19_PS.RAW": {
+      "directory": false,
+      "lba": 1105802,
+      "path": "AUDIO/SET1/SFX19_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET1/SFX19_PS.SDT": {
+      "directory": false,
+      "lba": 1105803,
+      "path": "AUDIO/SET1/SFX19_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET2": {
+      "directory": true,
+      "lba": 275,
+      "path": "AUDIO/SET2",
+      "size": 1336
+    },
+    "AUDIO/SET2/SFX20_PS.RAW": {
+      "directory": false,
+      "lba": 1105804,
+      "path": "AUDIO/SET2/SFX20_PS.RAW",
+      "size": 79872
+    },
+    "AUDIO/SET2/SFX20_PS.SDT": {
+      "directory": false,
+      "lba": 1105843,
+      "path": "AUDIO/SET2/SFX20_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET2/SFX21_PS.RAW": {
+      "directory": false,
+      "lba": 1105844,
+      "path": "AUDIO/SET2/SFX21_PS.RAW",
+      "size": 70576
+    },
+    "AUDIO/SET2/SFX21_PS.SDT": {
+      "directory": false,
+      "lba": 1105879,
+      "path": "AUDIO/SET2/SFX21_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET2/SFX22_PS.RAW": {
+      "directory": false,
+      "lba": 1105880,
+      "path": "AUDIO/SET2/SFX22_PS.RAW",
+      "size": 83280
+    },
+    "AUDIO/SET2/SFX22_PS.SDT": {
+      "directory": false,
+      "lba": 1105921,
+      "path": "AUDIO/SET2/SFX22_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET2/SFX23_PS.RAW": {
+      "directory": false,
+      "lba": 1105922,
+      "path": "AUDIO/SET2/SFX23_PS.RAW",
+      "size": 77968
+    },
+    "AUDIO/SET2/SFX23_PS.SDT": {
+      "directory": false,
+      "lba": 1105961,
+      "path": "AUDIO/SET2/SFX23_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET2/SFX24_PS.RAW": {
+      "directory": false,
+      "lba": 1105962,
+      "path": "AUDIO/SET2/SFX24_PS.RAW",
+      "size": 38704
+    },
+    "AUDIO/SET2/SFX24_PS.SDT": {
+      "directory": false,
+      "lba": 1105981,
+      "path": "AUDIO/SET2/SFX24_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET2/SFX25_PS.RAW": {
+      "directory": false,
+      "lba": 1105982,
+      "path": "AUDIO/SET2/SFX25_PS.RAW",
+      "size": 66624
+    },
+    "AUDIO/SET2/SFX25_PS.SDT": {
+      "directory": false,
+      "lba": 1106015,
+      "path": "AUDIO/SET2/SFX25_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET2/SFX26_PS.RAW": {
+      "directory": false,
+      "lba": 1106016,
+      "path": "AUDIO/SET2/SFX26_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET2/SFX26_PS.SDT": {
+      "directory": false,
+      "lba": 1106017,
+      "path": "AUDIO/SET2/SFX26_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET2/SFX27_PS.RAW": {
+      "directory": false,
+      "lba": 1106018,
+      "path": "AUDIO/SET2/SFX27_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET2/SFX27_PS.SDT": {
+      "directory": false,
+      "lba": 1106019,
+      "path": "AUDIO/SET2/SFX27_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET2/SFX28_PS.RAW": {
+      "directory": false,
+      "lba": 1106020,
+      "path": "AUDIO/SET2/SFX28_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET2/SFX28_PS.SDT": {
+      "directory": false,
+      "lba": 1106021,
+      "path": "AUDIO/SET2/SFX28_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET2/SFX29_PS.RAW": {
+      "directory": false,
+      "lba": 1106022,
+      "path": "AUDIO/SET2/SFX29_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET2/SFX29_PS.SDT": {
+      "directory": false,
+      "lba": 1106023,
+      "path": "AUDIO/SET2/SFX29_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET3": {
+      "directory": true,
+      "lba": 276,
+      "path": "AUDIO/SET3",
+      "size": 1336
+    },
+    "AUDIO/SET3/SFX30_PS.RAW": {
+      "directory": false,
+      "lba": 1106024,
+      "path": "AUDIO/SET3/SFX30_PS.RAW",
+      "size": 72304
+    },
+    "AUDIO/SET3/SFX30_PS.SDT": {
+      "directory": false,
+      "lba": 1106060,
+      "path": "AUDIO/SET3/SFX30_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET3/SFX31_PS.RAW": {
+      "directory": false,
+      "lba": 1106061,
+      "path": "AUDIO/SET3/SFX31_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET3/SFX31_PS.SDT": {
+      "directory": false,
+      "lba": 1106062,
+      "path": "AUDIO/SET3/SFX31_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET3/SFX32_PS.RAW": {
+      "directory": false,
+      "lba": 1106063,
+      "path": "AUDIO/SET3/SFX32_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET3/SFX32_PS.SDT": {
+      "directory": false,
+      "lba": 1106064,
+      "path": "AUDIO/SET3/SFX32_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET3/SFX33_PS.RAW": {
+      "directory": false,
+      "lba": 1106065,
+      "path": "AUDIO/SET3/SFX33_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET3/SFX33_PS.SDT": {
+      "directory": false,
+      "lba": 1106066,
+      "path": "AUDIO/SET3/SFX33_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET3/SFX34_PS.RAW": {
+      "directory": false,
+      "lba": 1106067,
+      "path": "AUDIO/SET3/SFX34_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET3/SFX34_PS.SDT": {
+      "directory": false,
+      "lba": 1106068,
+      "path": "AUDIO/SET3/SFX34_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET3/SFX35_PS.RAW": {
+      "directory": false,
+      "lba": 1106069,
+      "path": "AUDIO/SET3/SFX35_PS.RAW",
+      "size": 76560
+    },
+    "AUDIO/SET3/SFX35_PS.SDT": {
+      "directory": false,
+      "lba": 1106107,
+      "path": "AUDIO/SET3/SFX35_PS.SDT",
+      "size": 60
+    },
+    "AUDIO/SET3/SFX36_PS.RAW": {
+      "directory": false,
+      "lba": 1106108,
+      "path": "AUDIO/SET3/SFX36_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET3/SFX36_PS.SDT": {
+      "directory": false,
+      "lba": 1106109,
+      "path": "AUDIO/SET3/SFX36_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET3/SFX37_PS.RAW": {
+      "directory": false,
+      "lba": 1106110,
+      "path": "AUDIO/SET3/SFX37_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET3/SFX37_PS.SDT": {
+      "directory": false,
+      "lba": 1106111,
+      "path": "AUDIO/SET3/SFX37_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET3/SFX38_PS.RAW": {
+      "directory": false,
+      "lba": 1106112,
+      "path": "AUDIO/SET3/SFX38_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET3/SFX38_PS.SDT": {
+      "directory": false,
+      "lba": 1106113,
+      "path": "AUDIO/SET3/SFX38_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET3/SFX39_PS.RAW": {
+      "directory": false,
+      "lba": 1106114,
+      "path": "AUDIO/SET3/SFX39_PS.RAW",
+      "size": 128
+    },
+    "AUDIO/SET3/SFX39_PS.SDT": {
+      "directory": false,
+      "lba": 1106115,
+      "path": "AUDIO/SET3/SFX39_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4": {
+      "directory": true,
+      "lba": 277,
+      "path": "AUDIO/SET4",
+      "size": 1336
+    },
+    "AUDIO/SET4/SFX40_PS.RAW": {
+      "directory": false,
+      "lba": 1106116,
+      "path": "AUDIO/SET4/SFX40_PS.RAW",
+      "size": 4368
+    },
+    "AUDIO/SET4/SFX40_PS.SDT": {
+      "directory": false,
+      "lba": 1106119,
+      "path": "AUDIO/SET4/SFX40_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4/SFX41_PS.RAW": {
+      "directory": false,
+      "lba": 1106120,
+      "path": "AUDIO/SET4/SFX41_PS.RAW",
+      "size": 17456
+    },
+    "AUDIO/SET4/SFX41_PS.SDT": {
+      "directory": false,
+      "lba": 1106129,
+      "path": "AUDIO/SET4/SFX41_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4/SFX42_PS.RAW": {
+      "directory": false,
+      "lba": 1106130,
+      "path": "AUDIO/SET4/SFX42_PS.RAW",
+      "size": 4464
+    },
+    "AUDIO/SET4/SFX42_PS.SDT": {
+      "directory": false,
+      "lba": 1106133,
+      "path": "AUDIO/SET4/SFX42_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4/SFX43_PS.RAW": {
+      "directory": false,
+      "lba": 1106134,
+      "path": "AUDIO/SET4/SFX43_PS.RAW",
+      "size": 15056
+    },
+    "AUDIO/SET4/SFX43_PS.SDT": {
+      "directory": false,
+      "lba": 1106142,
+      "path": "AUDIO/SET4/SFX43_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4/SFX44_PS.RAW": {
+      "directory": false,
+      "lba": 1106143,
+      "path": "AUDIO/SET4/SFX44_PS.RAW",
+      "size": 8096
+    },
+    "AUDIO/SET4/SFX44_PS.SDT": {
+      "directory": false,
+      "lba": 1106147,
+      "path": "AUDIO/SET4/SFX44_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4/SFX45_PS.RAW": {
+      "directory": false,
+      "lba": 1106148,
+      "path": "AUDIO/SET4/SFX45_PS.RAW",
+      "size": 4464
+    },
+    "AUDIO/SET4/SFX45_PS.SDT": {
+      "directory": false,
+      "lba": 1106151,
+      "path": "AUDIO/SET4/SFX45_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4/SFX46_PS.RAW": {
+      "directory": false,
+      "lba": 1106152,
+      "path": "AUDIO/SET4/SFX46_PS.RAW",
+      "size": 5024
+    },
+    "AUDIO/SET4/SFX46_PS.SDT": {
+      "directory": false,
+      "lba": 1106155,
+      "path": "AUDIO/SET4/SFX46_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4/SFX47_PS.RAW": {
+      "directory": false,
+      "lba": 1106156,
+      "path": "AUDIO/SET4/SFX47_PS.RAW",
+      "size": 13536
+    },
+    "AUDIO/SET4/SFX47_PS.SDT": {
+      "directory": false,
+      "lba": 1106163,
+      "path": "AUDIO/SET4/SFX47_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4/SFX48_PS.RAW": {
+      "directory": false,
+      "lba": 1106164,
+      "path": "AUDIO/SET4/SFX48_PS.RAW",
+      "size": 5408
+    },
+    "AUDIO/SET4/SFX48_PS.SDT": {
+      "directory": false,
+      "lba": 1106167,
+      "path": "AUDIO/SET4/SFX48_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET4/SFX49_PS.RAW": {
+      "directory": false,
+      "lba": 1106168,
+      "path": "AUDIO/SET4/SFX49_PS.RAW",
+      "size": 9632
+    },
+    "AUDIO/SET4/SFX49_PS.SDT": {
+      "directory": false,
+      "lba": 1106173,
+      "path": "AUDIO/SET4/SFX49_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET5": {
+      "directory": true,
+      "lba": 278,
+      "path": "AUDIO/SET5",
+      "size": 1336
+    },
+    "AUDIO/SET5/SFX50_PS.RAW": {
+      "directory": false,
+      "lba": 1106174,
+      "path": "AUDIO/SET5/SFX50_PS.RAW",
+      "size": 11616
+    },
+    "AUDIO/SET5/SFX50_PS.SDT": {
+      "directory": false,
+      "lba": 1106180,
+      "path": "AUDIO/SET5/SFX50_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET5/SFX51_PS.RAW": {
+      "directory": false,
+      "lba": 1106181,
+      "path": "AUDIO/SET5/SFX51_PS.RAW",
+      "size": 4816
+    },
+    "AUDIO/SET5/SFX51_PS.SDT": {
+      "directory": false,
+      "lba": 1106184,
+      "path": "AUDIO/SET5/SFX51_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET5/SFX52_PS.RAW": {
+      "directory": false,
+      "lba": 1106185,
+      "path": "AUDIO/SET5/SFX52_PS.RAW",
+      "size": 12528
+    },
+    "AUDIO/SET5/SFX52_PS.SDT": {
+      "directory": false,
+      "lba": 1106192,
+      "path": "AUDIO/SET5/SFX52_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET5/SFX53_PS.RAW": {
+      "directory": false,
+      "lba": 1106193,
+      "path": "AUDIO/SET5/SFX53_PS.RAW",
+      "size": 14720
+    },
+    "AUDIO/SET5/SFX53_PS.SDT": {
+      "directory": false,
+      "lba": 1106201,
+      "path": "AUDIO/SET5/SFX53_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET5/SFX54_PS.RAW": {
+      "directory": false,
+      "lba": 1106202,
+      "path": "AUDIO/SET5/SFX54_PS.RAW",
+      "size": 12720
+    },
+    "AUDIO/SET5/SFX54_PS.SDT": {
+      "directory": false,
+      "lba": 1106209,
+      "path": "AUDIO/SET5/SFX54_PS.SDT",
+      "size": 36
+    },
+    "AUDIO/SET5/SFX55_PS.RAW": {
+      "directory": false,
+      "lba": 1106210,
+      "path": "AUDIO/SET5/SFX55_PS.RAW",
+      "size": 15200
+    },
+    "AUDIO/SET5/SFX55_PS.SDT": {
+      "directory": false,
+      "lba": 1106218,
+      "path": "AUDIO/SET5/SFX55_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET5/SFX56_PS.RAW": {
+      "directory": false,
+      "lba": 1106219,
+      "path": "AUDIO/SET5/SFX56_PS.RAW",
+      "size": 14832
+    },
+    "AUDIO/SET5/SFX56_PS.SDT": {
+      "directory": false,
+      "lba": 1106227,
+      "path": "AUDIO/SET5/SFX56_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET5/SFX57_PS.RAW": {
+      "directory": false,
+      "lba": 1106228,
+      "path": "AUDIO/SET5/SFX57_PS.RAW",
+      "size": 2864
+    },
+    "AUDIO/SET5/SFX57_PS.SDT": {
+      "directory": false,
+      "lba": 1106230,
+      "path": "AUDIO/SET5/SFX57_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET5/SFX58_PS.RAW": {
+      "directory": false,
+      "lba": 1106231,
+      "path": "AUDIO/SET5/SFX58_PS.RAW",
+      "size": 2864
+    },
+    "AUDIO/SET5/SFX58_PS.SDT": {
+      "directory": false,
+      "lba": 1106233,
+      "path": "AUDIO/SET5/SFX58_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET5/SFX59_PS.RAW": {
+      "directory": false,
+      "lba": 1106234,
+      "path": "AUDIO/SET5/SFX59_PS.RAW",
+      "size": 2864
+    },
+    "AUDIO/SET5/SFX59_PS.SDT": {
+      "directory": false,
+      "lba": 1106236,
+      "path": "AUDIO/SET5/SFX59_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET6": {
+      "directory": true,
+      "lba": 279,
+      "path": "AUDIO/SET6",
+      "size": 1088
+    },
+    "AUDIO/SET6/SFX60_PS.RAW": {
+      "directory": false,
+      "lba": 1106237,
+      "path": "AUDIO/SET6/SFX60_PS.RAW",
+      "size": 2864
+    },
+    "AUDIO/SET6/SFX60_PS.SDT": {
+      "directory": false,
+      "lba": 1106239,
+      "path": "AUDIO/SET6/SFX60_PS.SDT",
+      "size": 12
+    },
+    "AUDIO/SET6/SFX61_PS.RAW": {
+      "directory": false,
+      "lba": 1106240,
+      "path": "AUDIO/SET6/SFX61_PS.RAW",
+      "size": 19872
+    },
+    "AUDIO/SET6/SFX61_PS.SDT": {
+      "directory": false,
+      "lba": 1106250,
+      "path": "AUDIO/SET6/SFX61_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET6/SFX62_PS.RAW": {
+      "directory": false,
+      "lba": 1106251,
+      "path": "AUDIO/SET6/SFX62_PS.RAW",
+      "size": 14416
+    },
+    "AUDIO/SET6/SFX62_PS.SDT": {
+      "directory": false,
+      "lba": 1106259,
+      "path": "AUDIO/SET6/SFX62_PS.SDT",
+      "size": 60
+    },
+    "AUDIO/SET6/SFX63_PS.RAW": {
+      "directory": false,
+      "lba": 1106260,
+      "path": "AUDIO/SET6/SFX63_PS.RAW",
+      "size": 14336
+    },
+    "AUDIO/SET6/SFX63_PS.SDT": {
+      "directory": false,
+      "lba": 1106267,
+      "path": "AUDIO/SET6/SFX63_PS.SDT",
+      "size": 60
+    },
+    "AUDIO/SET6/SFX64_PS.RAW": {
+      "directory": false,
+      "lba": 1106268,
+      "path": "AUDIO/SET6/SFX64_PS.RAW",
+      "size": 5056
+    },
+    "AUDIO/SET6/SFX64_PS.SDT": {
+      "directory": false,
+      "lba": 1106271,
+      "path": "AUDIO/SET6/SFX64_PS.SDT",
+      "size": 60
+    },
+    "AUDIO/SET6/SFX65_PS.RAW": {
+      "directory": false,
+      "lba": 1106272,
+      "path": "AUDIO/SET6/SFX65_PS.RAW",
+      "size": 14144
+    },
+    "AUDIO/SET6/SFX65_PS.SDT": {
+      "directory": false,
+      "lba": 1106279,
+      "path": "AUDIO/SET6/SFX65_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET6/SFX66_PS.RAW": {
+      "directory": false,
+      "lba": 1106280,
+      "path": "AUDIO/SET6/SFX66_PS.RAW",
+      "size": 6592
+    },
+    "AUDIO/SET6/SFX66_PS.SDT": {
+      "directory": false,
+      "lba": 1106284,
+      "path": "AUDIO/SET6/SFX66_PS.SDT",
+      "size": 48
+    },
+    "AUDIO/SET6/SFX67_PS.RAW": {
+      "directory": false,
+      "lba": 1106285,
+      "path": "AUDIO/SET6/SFX67_PS.RAW",
+      "size": 27947264
+    },
+    "AUDIO/SET6/SFX67_PS.SDT": {
+      "directory": false,
+      "lba": 1119932,
+      "path": "AUDIO/SET6/SFX67_PS.SDT",
+      "size": 21024
+    },
+    "BEACH.IMG": {
+      "directory": false,
+      "lba": 1141011,
+      "path": "BEACH.IMG",
+      "size": 230629376
+    },
+    "BEACH.LVZ": {
+      "directory": false,
+      "lba": 1432594,
+      "path": "BEACH.LVZ",
+      "size": 2761585
+    },
+    "EMPHUD.XTX": {
+      "directory": false,
+      "lba": 1437304,
+      "path": "EMPHUD.XTX",
+      "size": 24952
+    },
+    "ENGLISH.GXT": {
+      "directory": false,
+      "lba": 1139490,
+      "path": "ENGLISH.GXT",
+      "size": 587924
+    },
+    "FRENCH.GXT": {
+      "directory": false,
+      "lba": 1139778,
+      "path": "FRENCH.GXT",
+      "size": 642932
+    },
+    "FRONTEND": {
+      "directory": true,
+      "lba": 268,
+      "path": "FRONTEND",
+      "size": 400
+    },
+    "FRONTEND/DEFAULT": {
+      "directory": true,
+      "lba": 280,
+      "path": "FRONTEND/DEFAULT",
+      "size": 1574
+    },
+    "FRONTEND/DEFAULT/ACBTNS.PSP": {
+      "directory": false,
+      "lba": 21015,
+      "path": "FRONTEND/DEFAULT/ACBTNS.PSP",
+      "size": 2891
+    },
+    "FRONTEND/DEFAULT/ACBTNSW.PSP": {
+      "directory": false,
+      "lba": 21017,
+      "path": "FRONTEND/DEFAULT/ACBTNSW.PSP",
+      "size": 2896
+    },
+    "FRONTEND/DEFAULT/AUDPG.PSP": {
+      "directory": false,
+      "lba": 21019,
+      "path": "FRONTEND/DEFAULT/AUDPG.PSP",
+      "size": 5737
+    },
+    "FRONTEND/DEFAULT/BRFBTNS.PSP": {
+      "directory": false,
+      "lba": 21022,
+      "path": "FRONTEND/DEFAULT/BRFBTNS.PSP",
+      "size": 2093
+    },
+    "FRONTEND/DEFAULT/BRFBTNSW.PSP": {
+      "directory": false,
+      "lba": 21024,
+      "path": "FRONTEND/DEFAULT/BRFBTNSW.PSP",
+      "size": 2094
+    },
+    "FRONTEND/DEFAULT/BRFPG.PSP": {
+      "directory": false,
+      "lba": 21026,
+      "path": "FRONTEND/DEFAULT/BRFPG.PSP",
+      "size": 1627
+    },
+    "FRONTEND/DEFAULT/CTRLPG.PSP": {
+      "directory": false,
+      "lba": 21027,
+      "path": "FRONTEND/DEFAULT/CTRLPG.PSP",
+      "size": 11732
+    },
+    "FRONTEND/DEFAULT/CTRLPGW.PSP": {
+      "directory": false,
+      "lba": 21033,
+      "path": "FRONTEND/DEFAULT/CTRLPGW.PSP",
+      "size": 11737
+    },
+    "FRONTEND/DEFAULT/DISPPG.PSP": {
+      "directory": false,
+      "lba": 21039,
+      "path": "FRONTEND/DEFAULT/DISPPG.PSP",
+      "size": 8458
+    },
+    "FRONTEND/DEFAULT/DSPPG_US.PSP": {
+      "directory": false,
+      "lba": 21044,
+      "path": "FRONTEND/DEFAULT/DSPPG_US.PSP",
+      "size": 7479
+    },
+    "FRONTEND/DEFAULT/LDPAGE.PSP": {
+      "directory": false,
+      "lba": 21048,
+      "path": "FRONTEND/DEFAULT/LDPAGE.PSP",
+      "size": 3162
+    },
+    "FRONTEND/DEFAULT/MAPBTNS.PSP": {
+      "directory": false,
+      "lba": 21050,
+      "path": "FRONTEND/DEFAULT/MAPBTNS.PSP",
+      "size": 5702
+    },
+    "FRONTEND/DEFAULT/MAPBTNSW.PSP": {
+      "directory": false,
+      "lba": 21053,
+      "path": "FRONTEND/DEFAULT/MAPBTNSW.PSP",
+      "size": 5701
+    },
+    "FRONTEND/DEFAULT/MAPPG.PSP": {
+      "directory": false,
+      "lba": 21056,
+      "path": "FRONTEND/DEFAULT/MAPPG.PSP",
+      "size": 1356
+    },
+    "FRONTEND/DEFAULT/MASTER.PSP": {
+      "directory": false,
+      "lba": 21057,
+      "path": "FRONTEND/DEFAULT/MASTER.PSP",
+      "size": 6632
+    },
+    "FRONTEND/DEFAULT/MBTNS.PSP": {
+      "directory": false,
+      "lba": 21061,
+      "path": "FRONTEND/DEFAULT/MBTNS.PSP",
+      "size": 3686
+    },
+    "FRONTEND/DEFAULT/MBTNSW.PSP": {
+      "directory": false,
+      "lba": 21063,
+      "path": "FRONTEND/DEFAULT/MBTNSW.PSP",
+      "size": 3686
+    },
+    "FRONTEND/DEFAULT/MC1": {
+      "directory": true,
+      "lba": 286,
+      "path": "FRONTEND/DEFAULT/MC1",
+      "size": 874
+    },
+    "FRONTEND/DEFAULT/MC1/MCDELF.PSP": {
+      "directory": false,
+      "lba": 21065,
+      "path": "FRONTEND/DEFAULT/MC1/MCDELF.PSP",
+      "size": 1794
+    },
+    "FRONTEND/DEFAULT/MC1/MCDELGS.PSP": {
+      "directory": false,
+      "lba": 21066,
+      "path": "FRONTEND/DEFAULT/MC1/MCDELGS.PSP",
+      "size": 8302
+    },
+    "FRONTEND/DEFAULT/MC1/MCDELOK.PSP": {
+      "directory": false,
+      "lba": 21071,
+      "path": "FRONTEND/DEFAULT/MC1/MCDELOK.PSP",
+      "size": 1794
+    },
+    "FRONTEND/DEFAULT/MC1/MCLDFAIL.PSP": {
+      "directory": false,
+      "lba": 21095,
+      "path": "FRONTEND/DEFAULT/MC1/MCLDFAIL.PSP",
+      "size": 1875
+    },
+    "FRONTEND/DEFAULT/MC1/MCLDGS.PSP": {
+      "directory": false,
+      "lba": 21072,
+      "path": "FRONTEND/DEFAULT/MC1/MCLDGS.PSP",
+      "size": 8284
+    },
+    "FRONTEND/DEFAULT/MC1/MCSAVR.PSP": {
+      "directory": false,
+      "lba": 21077,
+      "path": "FRONTEND/DEFAULT/MC1/MCSAVR.PSP",
+      "size": 2224
+    },
+    "FRONTEND/DEFAULT/MC1/MCSNG.PSP": {
+      "directory": false,
+      "lba": 21079,
+      "path": "FRONTEND/DEFAULT/MC1/MCSNG.PSP",
+      "size": 2767
+    },
+    "FRONTEND/DEFAULT/MC1/MCSRDG.PSP": {
+      "directory": false,
+      "lba": 21081,
+      "path": "FRONTEND/DEFAULT/MC1/MCSRDG.PSP",
+      "size": 3209
+    },
+    "FRONTEND/DEFAULT/MC1/MCSRFG.PSP": {
+      "directory": false,
+      "lba": 21083,
+      "path": "FRONTEND/DEFAULT/MC1/MCSRFG.PSP",
+      "size": 3230
+    },
+    "FRONTEND/DEFAULT/MC1/MCSRLG.PSP": {
+      "directory": false,
+      "lba": 21085,
+      "path": "FRONTEND/DEFAULT/MC1/MCSRLG.PSP",
+      "size": 3209
+    },
+    "FRONTEND/DEFAULT/MC1/MCSRSG.PSP": {
+      "directory": false,
+      "lba": 21087,
+      "path": "FRONTEND/DEFAULT/MC1/MCSRSG.PSP",
+      "size": 3228
+    },
+    "FRONTEND/DEFAULT/MC1/MCSSG.PSP": {
+      "directory": false,
+      "lba": 21089,
+      "path": "FRONTEND/DEFAULT/MC1/MCSSG.PSP",
+      "size": 2733
+    },
+    "FRONTEND/DEFAULT/MC1/MCSVGS.PSP": {
+      "directory": false,
+      "lba": 21091,
+      "path": "FRONTEND/DEFAULT/MC1/MCSVGS.PSP",
+      "size": 7976
+    },
+    "FRONTEND/DEFAULT/MC2": {
+      "directory": true,
+      "lba": 287,
+      "path": "FRONTEND/DEFAULT/MC2",
+      "size": 816
+    },
+    "FRONTEND/DEFAULT/MC2/BLANKSCR.PSP": {
+      "directory": false,
+      "lba": 21096,
+      "path": "FRONTEND/DEFAULT/MC2/BLANKSCR.PSP",
+      "size": 517
+    },
+    "FRONTEND/DEFAULT/MC2/MCCHECK.PSP": {
+      "directory": false,
+      "lba": 21097,
+      "path": "FRONTEND/DEFAULT/MC2/MCCHECK.PSP",
+      "size": 933
+    },
+    "FRONTEND/DEFAULT/MC2/MCCHTWRN.PSP": {
+      "directory": false,
+      "lba": 21098,
+      "path": "FRONTEND/DEFAULT/MC2/MCCHTWRN.PSP",
+      "size": 1768
+    },
+    "FRONTEND/DEFAULT/MC2/MCDNON.PSP": {
+      "directory": false,
+      "lba": 21099,
+      "path": "FRONTEND/DEFAULT/MC2/MCDNON.PSP",
+      "size": 2186
+    },
+    "FRONTEND/DEFAULT/MC2/MCDP.PSP": {
+      "directory": false,
+      "lba": 21101,
+      "path": "FRONTEND/DEFAULT/MC2/MCDP.PSP",
+      "size": 1716
+    },
+    "FRONTEND/DEFAULT/MC2/MCFP.PSP": {
+      "directory": false,
+      "lba": 21102,
+      "path": "FRONTEND/DEFAULT/MC2/MCFP.PSP",
+      "size": 1731
+    },
+    "FRONTEND/DEFAULT/MC2/MCLNON.PSP": {
+      "directory": false,
+      "lba": 21103,
+      "path": "FRONTEND/DEFAULT/MC2/MCLNON.PSP",
+      "size": 2265
+    },
+    "FRONTEND/DEFAULT/MC2/MCLP.PSP": {
+      "directory": false,
+      "lba": 21105,
+      "path": "FRONTEND/DEFAULT/MC2/MCLP.PSP",
+      "size": 920
+    },
+    "FRONTEND/DEFAULT/MC2/MCNOCARD.PSP": {
+      "directory": false,
+      "lba": 21106,
+      "path": "FRONTEND/DEFAULT/MC2/MCNOCARD.PSP",
+      "size": 4194
+    },
+    "FRONTEND/DEFAULT/MC2/MCNOCONT.PSP": {
+      "directory": false,
+      "lba": 21109,
+      "path": "FRONTEND/DEFAULT/MC2/MCNOCONT.PSP",
+      "size": 938
+    },
+    "FRONTEND/DEFAULT/MC2/MCSNON.PSP": {
+      "directory": false,
+      "lba": 21110,
+      "path": "FRONTEND/DEFAULT/MC2/MCSNON.PSP",
+      "size": 2180
+    },
+    "FRONTEND/DEFAULT/MC2/MCSP.PSP": {
+      "directory": false,
+      "lba": 21112,
+      "path": "FRONTEND/DEFAULT/MC2/MCSP.PSP",
+      "size": 1714
+    },
+    "FRONTEND/DEFAULT/SCRSPG.PSP": {
+      "directory": false,
+      "lba": 21113,
+      "path": "FRONTEND/DEFAULT/SCRSPG.PSP",
+      "size": 942
+    },
+    "FRONTEND/DEFAULT/SELBTNS.PSP": {
+      "directory": false,
+      "lba": 21114,
+      "path": "FRONTEND/DEFAULT/SELBTNS.PSP",
+      "size": 903
+    },
+    "FRONTEND/DEFAULT/SELBTNSW.PSP": {
+      "directory": false,
+      "lba": 21115,
+      "path": "FRONTEND/DEFAULT/SELBTNSW.PSP",
+      "size": 908
+    },
+    "FRONTEND/DEFAULT/STTPG.PSP": {
+      "directory": false,
+      "lba": 21116,
+      "path": "FRONTEND/DEFAULT/STTPG.PSP",
+      "size": 3266
+    },
+    "FRONTEND/DEFAULT/UDBTNS.PSP": {
+      "directory": false,
+      "lba": 21118,
+      "path": "FRONTEND/DEFAULT/UDBTNS.PSP",
+      "size": 2886
+    },
+    "FRONTEND/DEFAULT/UDBTNSW.PSP": {
+      "directory": false,
+      "lba": 21120,
+      "path": "FRONTEND/DEFAULT/UDBTNSW.PSP",
+      "size": 2892
+    },
+    "FRONTEND/EN": {
+      "directory": true,
+      "lba": 281,
+      "path": "FRONTEND/EN",
+      "size": 196
+    },
+    "FRONTEND/EN/MC1": {
+      "directory": true,
+      "lba": 288,
+      "path": "FRONTEND/EN/MC1",
+      "size": 96
+    },
+    "FRONTEND/EN/MC2": {
+      "directory": true,
+      "lba": 289,
+      "path": "FRONTEND/EN/MC2",
+      "size": 96
+    },
+    "FRONTEND/FR": {
+      "directory": true,
+      "lba": 282,
+      "path": "FRONTEND/FR",
+      "size": 156
+    },
+    "FRONTEND/FR/MASTER.PSP": {
+      "directory": false,
+      "lba": 21122,
+      "path": "FRONTEND/FR/MASTER.PSP",
+      "size": 6632
+    },
+    "FRONTEND/GE": {
+      "directory": true,
+      "lba": 283,
+      "path": "FRONTEND/GE",
+      "size": 156
+    },
+    "FRONTEND/GE/MASTER.PSP": {
+      "directory": false,
+      "lba": 21126,
+      "path": "FRONTEND/GE/MASTER.PSP",
+      "size": 6632
+    },
+    "FRONTEND/IT": {
+      "directory": true,
+      "lba": 284,
+      "path": "FRONTEND/IT",
+      "size": 156
+    },
+    "FRONTEND/IT/MASTER.PSP": {
+      "directory": false,
+      "lba": 21130,
+      "path": "FRONTEND/IT/MASTER.PSP",
+      "size": 6632
+    },
+    "FRONTEND/SP": {
+      "directory": true,
+      "lba": 285,
+      "path": "FRONTEND/SP",
+      "size": 156
+    },
+    "FRONTEND/SP/MASTER.PSP": {
+      "directory": false,
+      "lba": 21134,
+      "path": "FRONTEND/SP/MASTER.PSP",
+      "size": 6631
+    },
+    "GERMAN.GXT": {
+      "directory": false,
+      "lba": 1140092,
+      "path": "GERMAN.GXT",
+      "size": 621448
+    },
+    "GTA3PS2.IMG": {
+      "directory": false,
+      "lba": 1253623,
+      "path": "GTA3PS2.IMG",
+      "size": 54030336
+    },
+    "ICONS": {
+      "directory": true,
+      "lba": 263,
+      "path": "ICONS",
+      "size": 156
+    },
+    "ICONS/VCSICON.ICO": {
+      "directory": false,
+      "lba": 1119943,
+      "path": "ICONS/VCSICON.ICO",
+      "size": 49990
+    },
+    "ITALIAN.GXT": {
+      "directory": false,
+      "lba": 1140396,
+      "path": "ITALIAN.GXT",
+      "size": 628416
+    },
+    "MAIN.SCM": {
+      "directory": false,
+      "lba": 1436387,
+      "path": "MAIN.SCM",
+      "size": 1876548
+    },
+    "MAINLA.IMG": {
+      "directory": false,
+      "lba": 1280005,
+      "path": "MAINLA.IMG",
+      "size": 282554368
+    },
+    "MAINLA.LVZ": {
+      "directory": false,
+      "lba": 1433943,
+      "path": "MAINLA.LVZ",
+      "size": 3161205
+    },
+    "MALL.IMG": {
+      "directory": false,
+      "lba": 1417971,
+      "path": "MALL.IMG",
+      "size": 29947904
+    },
+    "MALL.LVZ": {
+      "directory": false,
+      "lba": 1435487,
+      "path": "MALL.LVZ",
+      "size": 1842615
+    },
+    "MODULES": {
+      "directory": true,
+      "lba": 264,
+      "path": "MODULES",
+      "size": 636
+    },
+    "MODULES/CDSTREAM.IRX": {
+      "directory": false,
+      "lba": 2643,
+      "path": "MODULES/CDSTREAM.IRX",
+      "size": 48540
+    },
+    "MODULES/CDVDSTM.IRX": {
+      "directory": false,
+      "lba": 2667,
+      "path": "MODULES/CDVDSTM.IRX",
+      "size": 33521
+    },
+    "MODULES/IOPRP300.IMG": {
+      "directory": false,
+      "lba": 2782,
+      "path": "MODULES/IOPRP300.IMG",
+      "size": 275345
+    },
+    "MODULES/LIBSD.IRX": {
+      "directory": false,
+      "lba": 2684,
+      "path": "MODULES/LIBSD.IRX",
+      "size": 30085
+    },
+    "MODULES/MCMAN.IRX": {
+      "directory": false,
+      "lba": 2699,
+      "path": "MODULES/MCMAN.IRX",
+      "size": 96181
+    },
+    "MODULES/MCSERV.IRX": {
+      "directory": false,
+      "lba": 2746,
+      "path": "MODULES/MCSERV.IRX",
+      "size": 7385
+    },
+    "MODULES/PADMAN.IRX": {
+      "directory": false,
+      "lba": 2750,
+      "path": "MODULES/PADMAN.IRX",
+      "size": 45925
+    },
+    "MODULES/SDRDRV.IRX": {
+      "directory": false,
+      "lba": 2773,
+      "path": "MODULES/SDRDRV.IRX",
+      "size": 9161
+    },
+    "MODULES/SIO2MAN.IRX": {
+      "directory": false,
+      "lba": 2778,
+      "path": "MODULES/SIO2MAN.IRX",
+      "size": 6641
+    },
+    "MOVIES": {
+      "directory": true,
+      "lba": 265,
+      "path": "MOVIES",
+      "size": 216
+    },
+    "MOVIES/INTROP.PSS": {
+      "directory": false,
+      "lba": 2917,
+      "path": "MOVIES/INTROP.PSS",
+      "size": 34258948
+    },
+    "MOVIES/STINGSP.PSS": {
+      "directory": false,
+      "lba": 19646,
+      "path": "MOVIES/STINGSP.PSS",
+      "size": 2801668
+    },
+    "PS2": {
+      "directory": true,
+      "lba": 266,
+      "path": "PS2",
+      "size": 278
+    },
+    "PS2/GAME.DTZ": {
+      "directory": false,
+      "lba": 1119968,
+      "path": "PS2/GAME.DTZ",
+      "size": 2195056
+    },
+    "PS2/MOCAPPS2.DIR": {
+      "directory": false,
+      "lba": 1121040,
+      "path": "PS2/MOCAPPS2.DIR",
+      "size": 4704
+    },
+    "PS2/MOCAPPS2.IMG": {
+      "directory": false,
+      "lba": 1121043,
+      "path": "PS2/MOCAPPS2.IMG",
+      "size": 32413696
+    },
+    "SLES_546.22": {
+      "directory": false,
+      "lba": 692,
+      "path": "SLES_546.22",
+      "size": 3994136
+    },
+    "SPANISH.GXT": {
+      "directory": false,
+      "lba": 1140703,
+      "path": "SPANISH.GXT",
+      "size": 630512
+    },
+    "SPLASH": {
+      "directory": true,
+      "lba": 267,
+      "path": "SPLASH",
+      "size": 1782
+    },
+    "SPLASH/LOADSC0.XTX": {
+      "directory": false,
+      "lba": 1136870,
+      "path": "SPLASH/LOADSC0.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC1.XTX": {
+      "directory": false,
+      "lba": 1136999,
+      "path": "SPLASH/LOADSC1.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC10.XTX": {
+      "directory": false,
+      "lba": 1137128,
+      "path": "SPLASH/LOADSC10.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC11.XTX": {
+      "directory": false,
+      "lba": 1137257,
+      "path": "SPLASH/LOADSC11.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC2.XTX": {
+      "directory": false,
+      "lba": 1137386,
+      "path": "SPLASH/LOADSC2.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC3.XTX": {
+      "directory": false,
+      "lba": 1137515,
+      "path": "SPLASH/LOADSC3.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC4.XTX": {
+      "directory": false,
+      "lba": 1137644,
+      "path": "SPLASH/LOADSC4.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC5.XTX": {
+      "directory": false,
+      "lba": 1137773,
+      "path": "SPLASH/LOADSC5.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC6.XTX": {
+      "directory": false,
+      "lba": 1137902,
+      "path": "SPLASH/LOADSC6.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC7.XTX": {
+      "directory": false,
+      "lba": 1138031,
+      "path": "SPLASH/LOADSC7.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC8.XTX": {
+      "directory": false,
+      "lba": 1138160,
+      "path": "SPLASH/LOADSC8.XTX",
+      "size": 263372
+    },
+    "SPLASH/LOADSC9.XTX": {
+      "directory": false,
+      "lba": 1138289,
+      "path": "SPLASH/LOADSC9.XTX",
+      "size": 263372
+    },
+    "SPLASH/MEMCARD.XTX": {
+      "directory": false,
+      "lba": 1138418,
+      "path": "SPLASH/MEMCARD.XTX",
+      "size": 132300
+    },
+    "SPLASH/SCEELEE.XTX": {
+      "directory": false,
+      "lba": 1138483,
+      "path": "SPLASH/SCEELEE.XTX",
+      "size": 263372
+    },
+    "SPLASH/SCEELEF.XTX": {
+      "directory": false,
+      "lba": 1138612,
+      "path": "SPLASH/SCEELEF.XTX",
+      "size": 263372
+    },
+    "SPLASH/SCEELEG.XTX": {
+      "directory": false,
+      "lba": 1138741,
+      "path": "SPLASH/SCEELEG.XTX",
+      "size": 263372
+    },
+    "SPLASH/SCEELEI.XTX": {
+      "directory": false,
+      "lba": 1138870,
+      "path": "SPLASH/SCEELEI.XTX",
+      "size": 263372
+    },
+    "SPLASH/SCEELES.XTX": {
+      "directory": false,
+      "lba": 1138999,
+      "path": "SPLASH/SCEELES.XTX",
+      "size": 263372
+    },
+    "SPLASH/SPLASH1.XTX": {
+      "directory": false,
+      "lba": 1139128,
+      "path": "SPLASH/SPLASH1.XTX",
+      "size": 132300
+    },
+    "SPLASH/SPLASH10.XTX": {
+      "directory": false,
+      "lba": 1139193,
+      "path": "SPLASH/SPLASH10.XTX",
+      "size": 66764
+    },
+    "SPLASH/SPLASH2.XTX": {
+      "directory": false,
+      "lba": 1139226,
+      "path": "SPLASH/SPLASH2.XTX",
+      "size": 66764
+    },
+    "SPLASH/SPLASH3.XTX": {
+      "directory": false,
+      "lba": 1139259,
+      "path": "SPLASH/SPLASH3.XTX",
+      "size": 66764
+    },
+    "SPLASH/SPLASH4.XTX": {
+      "directory": false,
+      "lba": 1139292,
+      "path": "SPLASH/SPLASH4.XTX",
+      "size": 66764
+    },
+    "SPLASH/SPLASH5.XTX": {
+      "directory": false,
+      "lba": 1139325,
+      "path": "SPLASH/SPLASH5.XTX",
+      "size": 66764
+    },
+    "SPLASH/SPLASH6.XTX": {
+      "directory": false,
+      "lba": 1139358,
+      "path": "SPLASH/SPLASH6.XTX",
+      "size": 66764
+    },
+    "SPLASH/SPLASH7.XTX": {
+      "directory": false,
+      "lba": 1139391,
+      "path": "SPLASH/SPLASH7.XTX",
+      "size": 66764
+    },
+    "SPLASH/SPLASH8.XTX": {
+      "directory": false,
+      "lba": 1139424,
+      "path": "SPLASH/SPLASH8.XTX",
+      "size": 66764
+    },
+    "SPLASH/SPLASH9.XTX": {
+      "directory": false,
+      "lba": 1139457,
+      "path": "SPLASH/SPLASH9.XTX",
+      "size": 66764
+    },
+    "SYSTEM.CNF": {
+      "directory": false,
+      "lba": 691,
+      "path": "SYSTEM.CNF",
+      "size": 56
+    }
+  },
+  "levels": [
+    {
+      "alpha_textures": 223,
+      "drawable_instances": 5103,
+      "indexed4_textures": 2643,
+      "indexed8_textures": 40,
+      "inflated_bytes": 5166240,
+      "instances": 5103,
+      "loaded_meshes": 2630,
+      "loaded_swap_geometries": 190,
+      "loaded_swap_textures": 1,
+      "loaded_textures": 2683,
+      "mesh_triangles": 521560,
+      "name": "BEACH",
+      "resources": 6018,
+      "sectors": 623,
+      "textured_mesh_triangles": 521560,
+      "unresolved_instances": 0,
+      "unsupported_meshes": 0
+    },
+    {
+      "alpha_textures": 245,
+      "drawable_instances": 4695,
+      "indexed4_textures": 2626,
+      "indexed8_textures": 90,
+      "inflated_bytes": 5567320,
+      "instances": 4695,
+      "loaded_meshes": 2590,
+      "loaded_swap_geometries": 195,
+      "loaded_swap_textures": 11,
+      "loaded_textures": 2716,
+      "mesh_triangles": 523416,
+      "name": "MAINLA",
+      "resources": 6215,
+      "sectors": 601,
+      "textured_mesh_triangles": 523416,
+      "unresolved_instances": 0,
+      "unsupported_meshes": 0
+    },
+    {
+      "alpha_textures": 63,
+      "drawable_instances": 478,
+      "indexed4_textures": 538,
+      "indexed8_textures": 8,
+      "inflated_bytes": 4372236,
+      "instances": 478,
+      "loaded_meshes": 221,
+      "loaded_swap_geometries": 0,
+      "loaded_swap_textures": 0,
+      "loaded_textures": 546,
+      "mesh_triangles": 187036,
+      "name": "MALL",
+      "resources": 769,
+      "sectors": 1152,
+      "textured_mesh_triangles": 187036,
+      "unresolved_instances": 0,
+      "unsupported_meshes": 0
+    }
+  ],
+  "limitations": [
+    "No original game logic, missions, vehicles, AI or original pedestrian physics",
+    "Experimental geometry; roads and opaque rendering passes only",
+    "Initial static colliders; scripted swaps and dynamic object activation are not implemented",
+    "Visual visibility uses noon and default script state; other interiors and blending passes remain incomplete"
+  ],
+  "status": "textured-map-and-static-collision-prototype"
+}

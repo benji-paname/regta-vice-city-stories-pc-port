@@ -1,0 +1,29 @@
+{
+  "animation": "run",
+  "animation_time": 0.30000001192092896,
+  "average_draw_ms": 3.2019749999999996,
+  "camera": [
+    390.0,
+    1126.0018310546875,
+    -193.39801025390625
+  ],
+  "draw_distance": 5000.0,
+  "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+  "feet": [
+    390.0,
+    1130.0,
+    -194.6179962158203
+  ],
+  "frames": 8,
+  "grounded": true,
+  "renderer": "OpenGL",
+  "scene": "MALL",
+  "scene_levels": [
+    2
+  ],
+  "simulation_seconds": 0.0,
+  "submitted_triangles": 101358,
+  "third_person": true,
+  "walking": true,
+  "zone": "MALL"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "BANSHEE",
+  "model_id": 175,
+  "txd_id": 171,
+  "wheel_model_id": 323,
+  "wheel_scale": 0.7,
+  "total_atomics": 20,
+  "visible_atomics": 13,
+  "body_triangles": 1582,
+  "wheel_triangles": 656,
+  "total_triangles": 2238,
+  "bounds": [
+    [
+      -1.2070584,
+      -2.6965206,
+      0.00019749999
+    ],
+    [
+      1.2071013,
+      2.8782835,
+      1.3264475
+    ]
+  ],
+  "texture_names": [
+    "xv_vehiclegrunge_sl",
+    "tyres",
+    "banshee868bit_sl",
+    "xv_vehiclegeneric_sl",
+    "xv_vcs_licenseplates_cs"
+  ]
+}

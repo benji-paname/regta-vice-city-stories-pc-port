@@ -1,0 +1,30 @@
+{
+  "animation": "idle",
+  "animation_time": 0.1230078935623169,
+  "average_draw_ms": 3.5946249999999997,
+  "camera": [
+    -1457.4520263671875,
+    -443.0250244140625,
+    15.545393943786621
+  ],
+  "draw_distance": 5000.0,
+  "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+  "feet": [
+    -1460.0,
+    -440.0,
+    13.847640991210938
+  ],
+  "frames": 8,
+  "grounded": true,
+  "renderer": "OpenGL",
+  "scene": "VICE CITY",
+  "scene_levels": [
+    0,
+    1
+  ],
+  "simulation_seconds": 0.0,
+  "submitted_triangles": 45250,
+  "third_person": true,
+  "walking": true,
+  "zone": "MAINLA"
+}

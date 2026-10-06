@@ -1,0 +1,14 @@
+{
+  "average_draw_ms": 3.826625,
+  "camera": [
+    390.0,
+    1130.0,
+    -192.96800231933594
+  ],
+  "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
+  "frames": 8,
+  "renderer": "OpenGL",
+  "submitted_triangles": 94654,
+  "walking": true,
+  "zone": "MALL"
+}

@@ -1,0 +1,14 @@
+{
+  "average_draw_ms": 182.8686625,
+  "camera": [
+    500.0,
+    -500.0,
+    11.538244247436523
+  ],
+  "driver": null,
+  "frames": 8,
+  "renderer": "software",
+  "submitted_triangles": 78372,
+  "walking": true,
+  "zone": "BEACH"
+}

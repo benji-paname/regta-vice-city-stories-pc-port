@@ -1,0 +1,37 @@
+﻿# Rust build files
+target/
+debug/
+release/
+
+# Backups / temporary files
+*.tmp
+*.bak
+*.old
+*.log
+*.pdb
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Original copyrighted game data / disc images
+*.iso
+*.cso
+*.chd
+
+# Large extracted game archives if added later
+original/
+game_data/
+extracted/
+
+# Local AI/tool files
+.qwen/
+.roo/
+
+# Runtime/error output
+*.err
+
+# Runtime/error output
+*.err

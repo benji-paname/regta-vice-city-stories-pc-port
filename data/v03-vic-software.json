@@ -1,0 +1,30 @@
+{
+  "animation": "idle",
+  "animation_time": 0.5,
+  "average_draw_ms": 277.45365,
+  "camera": [
+    503.563232421875,
+    -501.8135681152344,
+    11.108226776123047
+  ],
+  "draw_distance": 5000.0,
+  "driver": null,
+  "feet": [
+    500.0,
+    -500.0,
+    9.88824462890625
+  ],
+  "frames": 8,
+  "grounded": true,
+  "renderer": "software",
+  "scene": "VICE CITY",
+  "scene_levels": [
+    0,
+    1
+  ],
+  "simulation_seconds": 0.0,
+  "submitted_triangles": 286590,
+  "third_person": true,
+  "walking": true,
+  "zone": "BEACH"
+}

@@ -1,0 +1,2631 @@
+[
+  {
+    "id": 170,
+    "p": "0x511080",
+    "type": 6,
+    "hash": "0x267c0cf8",
+    "name": "",
+    "txd": 166,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "6WEELAT",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c52a0",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 171,
+    "p": "0x511320",
+    "type": 6,
+    "hash": "0xab691458",
+    "name": "",
+    "txd": 167,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "ADMIRAL",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c5380",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 172,
+    "p": "0x5115c0",
+    "type": 6,
+    "hash": "0x327289d8",
+    "name": "",
+    "txd": 168,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "CHEETAH",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c5460",
+    "wheel_model_id": 323
+  },
+  {
+    "id": 173,
+    "p": "0x511860",
+    "type": 6,
+    "hash": "0x48fbb7e0",
+    "name": "",
+    "txd": 169,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "AUTOGYR",
+    "vehicle_type": 4,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.6399999856948853,
+    "handling": "0x4c5540",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 174,
+    "p": "0x511b00",
+    "type": 6,
+    "hash": "0x51c5f2ef",
+    "name": "",
+    "txd": 170,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BAGGAGE",
+    "vehicle_type": 0,
+    "wheel_scale": 0.6000000238418579,
+    "wheel_scale_rear": 0.6000000238418579,
+    "handling": "0x4c5620",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 175,
+    "p": "0x511da0",
+    "type": 6,
+    "hash": "0xbe49095b",
+    "name": "",
+    "txd": 171,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BANSHEE",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c5700",
+    "wheel_model_id": 323,
+    "model_stream": {
+      "index": 175,
+      "sector": 7389,
+      "sectors": 36,
+      "magic": "b'ldm\\x00'",
+      "logical_bytes": 72471
+    },
+    "textures_stream": {
+      "index": 7705,
+      "sector": 7384,
+      "sectors": 5,
+      "magic": "b'xet\\x00'",
+      "logical_bytes": 8476
+    },
+    "shared_wheel_model": {
+      "id": 323,
+      "p": "0x4cc900",
+      "type": 1,
+      "hash": "0xe8683471",
+      "name": "",
+      "txd": 2,
+      "group": 1116471296,
+      "element": "0x4c5188"
+    },
+    "atomics": [
+      {
+        "offset": "0x10d48",
+        "frame": "0x3b40",
+        "frame_name": "bonnet_dummy",
+        "flags": "0x4aa01",
+        "geometry": "0x10d80",
+        "geometry_flags": "0x7",
+        "strips": 1,
+        "vertices": 58,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x108f0",
+        "frame": "0x3b40",
+        "frame_name": "bonnet_dummy",
+        "flags": "0xaa01",
+        "geometry": "0x10930",
+        "geometry_flags": "0x7",
+        "strips": 2,
+        "vertices": 49,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "xv_scratch_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0xf3d0",
+        "frame": "0x3d50",
+        "frame_name": "bump_front_dummy",
+        "flags": "0x4aa01",
+        "geometry": "0xf410",
+        "geometry_flags": "0x7",
+        "strips": 4,
+        "vertices": 367,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              50,
+              50,
+              50,
+              152
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0xe178",
+        "frame": "0x3d50",
+        "frame_name": "bump_front_dummy",
+        "flags": "0xaa01",
+        "geometry": "0xe1b0",
+        "geometry_flags": "0x7",
+        "strips": 4,
+        "vertices": 312,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_scratch_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              50,
+              50,
+              50,
+              152
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0xd7c0",
+        "frame": "0x5a0",
+        "frame_name": "door_lf_dummy",
+        "flags": "0x4aa01",
+        "geometry": "0xd800",
+        "geometry_flags": "0x7",
+        "strips": 6,
+        "vertices": 107,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              0,
+              0,
+              0,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              102,
+              182,
+              194,
+              76
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x380c",
+        "frame": "0x5a0",
+        "frame_name": "door_lf_dummy",
+        "flags": "0xaa01",
+        "geometry": "0xcdc0",
+        "geometry_flags": "0x7",
+        "strips": 7,
+        "vertices": 115,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              0,
+              0,
+              0,
+              255
+            ]
+          },
+          {
+            "name": "xv_scratch_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_vc_crackedglassa_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x3740",
+        "frame": "0x40c0",
+        "frame_name": "door_rf_dummy",
+        "flags": "0x4aa01",
+        "geometry": "0xc4c0",
+        "geometry_flags": "0x7",
+        "strips": 6,
+        "vertices": 111,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              0,
+              0,
+              0,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              102,
+              182,
+              194,
+              76
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x3a54",
+        "frame": "0x40c0",
+        "frame_name": "door_rf_dummy",
+        "flags": "0xaa01",
+        "geometry": "0xbb00",
+        "geometry_flags": "0x7",
+        "strips": 7,
+        "vertices": 112,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              0,
+              0,
+              0,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_scratch_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_vc_crackedglassa_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x111cc",
+        "frame": "0x4010",
+        "frame_name": "windscreen_dummy",
+        "flags": "0x4aa01",
+        "geometry": "0x890",
+        "geometry_flags": "0x7",
+        "strips": 1,
+        "vertices": 9,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": null,
+            "rgba": [
+              102,
+              182,
+              194,
+              76
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x11184",
+        "frame": "0x4010",
+        "frame_name": "windscreen_dummy",
+        "flags": "0xaa01",
+        "geometry": "0x720",
+        "geometry_flags": "0x7",
+        "strips": 1,
+        "vertices": 9,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vc_crackedglassa_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x530",
+        "frame": "0x4220",
+        "frame_name": "chassis_hi",
+        "flags": "0x4aa01",
+        "geometry": "0x6080",
+        "geometry_flags": "0x7",
+        "strips": 7,
+        "vertices": 1760,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_vcs_licenseplates_cs",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              0,
+              0,
+              0,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              50,
+              50,
+              50,
+              152
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              102,
+              182,
+              194,
+              76
+            ]
+          },
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x210",
+        "frame": "0x3680",
+        "frame_name": "backtop",
+        "flags": "0x4aa01",
+        "geometry": "0x3c0",
+        "geometry_flags": "0x7",
+        "strips": 1,
+        "vertices": 9,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x1c8",
+        "frame": "0x42d0",
+        "frame_name": "bottom",
+        "flags": "0x4aa01",
+        "geometry": "0x31f0",
+        "geometry_flags": "0x7",
+        "strips": 1,
+        "vertices": 36,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x39ec",
+        "frame": "0x3eb0",
+        "frame_name": "dash",
+        "flags": "0x4aa01",
+        "geometry": "0x5800",
+        "geometry_flags": "0x7",
+        "strips": 2,
+        "vertices": 149,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x39a4",
+        "frame": "0x260",
+        "frame_name": "engine",
+        "flags": "0x4aa01",
+        "geometry": "0x4a20",
+        "geometry_flags": "0x7",
+        "strips": 1,
+        "vertices": 267,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x3164",
+        "frame": "0xae0",
+        "frame_name": "innerarch",
+        "flags": "0x4aa01",
+        "geometry": "0x3490",
+        "geometry_flags": "0x7",
+        "strips": 1,
+        "vertices": 22,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0x3120",
+        "frame": "0x3bf0",
+        "frame_name": "seats",
+        "flags": "0x4aa01",
+        "geometry": "0x4430",
+        "geometry_flags": "0x7",
+        "strips": 1,
+        "vertices": 103,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0xa80",
+        "frame": "0x3ca0",
+        "frame_name": "chassis_vlo",
+        "flags": "0x4aa01",
+        "geometry": "0x2740",
+        "geometry_flags": "0x7",
+        "strips": 4,
+        "vertices": 156,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": null,
+            "rgba": [
+              35,
+              62,
+              66,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0xa00",
+        "frame": "0x3e00",
+        "frame_name": "bump_rear_dummy",
+        "flags": "0x4aa01",
+        "geometry": "0x19e0",
+        "geometry_flags": "0x7",
+        "strips": 3,
+        "vertices": 236,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          }
+        ]
+      },
+      {
+        "offset": "0xb90",
+        "frame": "0x3e00",
+        "frame_name": "bump_rear_dummy",
+        "flags": "0xaa01",
+        "geometry": "0xc80",
+        "geometry_flags": "0x7",
+        "strips": 3,
+        "vertices": 236,
+        "skin": "0x0",
+        "materials": [
+          {
+            "name": "banshee868bit_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegrunge_sl",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "name": "xv_vehiclegeneric_sl",
+            "rgba": [
+              149,
+              149,
+              149,
+              255
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 176,
+    "p": "0x512040",
+    "type": 6,
+    "hash": "0xde56422f",
+    "name": "",
+    "txd": 172,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "PEREN",
+    "vehicle_type": 0,
+    "wheel_scale": 0.6600000262260437,
+    "wheel_scale_rear": 0.6600000262260437,
+    "handling": "0x4c57e0",
+    "wheel_model_id": 326
+  },
+  {
+    "id": 177,
+    "p": "0x5122e0",
+    "type": 6,
+    "hash": "0x28c4fcb0",
+    "name": "",
+    "txd": 173,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BLISTA",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c58c0",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 178,
+    "p": "0x512580",
+    "type": 6,
+    "hash": "0xb43fadba",
+    "name": "",
+    "txd": 174,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BMX",
+    "vehicle_type": 8,
+    "wheel_scale": 0.6000000238418579,
+    "wheel_scale_rear": 0.6000000238418579,
+    "handling": "0x4c4990",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 179,
+    "p": "0x512820",
+    "type": 6,
+    "hash": "0x84cd3dcf",
+    "name": "",
+    "txd": 175,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BMXG",
+    "vehicle_type": 8,
+    "wheel_scale": 0.6000000238418579,
+    "wheel_scale_rear": 0.8999999761581421,
+    "handling": "0x4c4a70",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 180,
+    "p": "0x512ac0",
+    "type": 6,
+    "hash": "0x10ab7225",
+    "name": "",
+    "txd": 176,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BOBCAT",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c4b50",
+    "wheel_model_id": 327
+  },
+  {
+    "id": 181,
+    "p": "0x512d60",
+    "type": 6,
+    "hash": "0x4c43591f",
+    "name": "",
+    "txd": 177,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BULLDOZ",
+    "vehicle_type": 0,
+    "wheel_scale": 1.399999976158142,
+    "wheel_scale_rear": 1.399999976158142,
+    "handling": "0x4c4c30",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 182,
+    "p": "0x513000",
+    "type": 6,
+    "hash": "0x896cf409",
+    "name": "",
+    "txd": 178,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BURRITO",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c4d10",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 183,
+    "p": "0x5132a0",
+    "type": 6,
+    "hash": "0xc76cdf2c",
+    "name": "",
+    "txd": 179,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "CABBIE",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c4df0",
+    "wheel_model_id": 326
+  },
+  {
+    "id": 184,
+    "p": "0x513540",
+    "type": 6,
+    "hash": "0xf417536e",
+    "name": "",
+    "txd": 180,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "CADDY",
+    "vehicle_type": 0,
+    "wheel_scale": 0.5,
+    "wheel_scale_rear": 0.5,
+    "handling": "0x4c4ed0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 185,
+    "p": "0x5137e0",
+    "type": 6,
+    "hash": "0x8f5a9ff5",
+    "name": "",
+    "txd": 181,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SPEEDER2",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c4fb0",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 186,
+    "p": "0x513a80",
+    "type": 6,
+    "hash": "0x4441f9b2",
+    "name": "",
+    "txd": 182,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "PIMP",
+    "vehicle_type": 0,
+    "wheel_scale": 0.800000011920929,
+    "wheel_scale_rear": 0.8500000238418579,
+    "handling": "0x4c5090",
+    "wheel_model_id": 323
+  },
+  {
+    "id": 187,
+    "p": "0x513d20",
+    "type": 6,
+    "hash": "0x6553419c",
+    "name": "",
+    "txd": 183,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "DELUXO",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c41b0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 188,
+    "p": "0x513fc0",
+    "type": 6,
+    "hash": "0x75d5ee7a",
+    "name": "",
+    "txd": 184,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "HUEY",
+    "vehicle_type": 4,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.6399999856948853,
+    "handling": "0x4c4290",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 189,
+    "p": "0x514260",
+    "type": 6,
+    "hash": "0xa445ecf7",
+    "name": "",
+    "txd": 185,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "AIRAMB",
+    "vehicle_type": 4,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.6399999856948853,
+    "handling": "0x4c4370",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 190,
+    "p": "0x514500",
+    "type": 6,
+    "hash": "0x12408208",
+    "name": "",
+    "txd": 186,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "ELECTRA",
+    "vehicle_type": 6,
+    "wheel_scale": 0.6539999842643738,
+    "wheel_scale_rear": 0.6539999842643738,
+    "handling": "0x4c4450",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 191,
+    "p": "0x5147a0",
+    "type": 6,
+    "hash": "0x919307cf",
+    "name": "",
+    "txd": 187,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "ELECTRP",
+    "vehicle_type": 6,
+    "wheel_scale": 0.6539999842643738,
+    "wheel_scale_rear": 0.6539999842643738,
+    "handling": "0x4c4530",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 192,
+    "p": "0x514a40",
+    "type": 6,
+    "hash": "0x67a01743",
+    "name": "",
+    "txd": 188,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "ESPERAN",
+    "vehicle_type": 0,
+    "wheel_scale": 0.6399999856948853,
+    "wheel_scale_rear": 0.6399999856948853,
+    "handling": "0x4c4610",
+    "wheel_model_id": 326
+  },
+  {
+    "id": 193,
+    "p": "0x514ce0",
+    "type": 6,
+    "hash": "0x4dc8d6b6",
+    "name": "",
+    "txd": 189,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "FBICAR",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c46f0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 194,
+    "p": "0x514f80",
+    "type": 6,
+    "hash": "0x787cf6b1",
+    "name": "",
+    "txd": 190,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "FIRETRK",
+    "vehicle_type": 0,
+    "wheel_scale": 1.0,
+    "wheel_scale_rear": 1.0,
+    "handling": "0x4c47d0",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 195,
+    "p": "0x515220",
+    "type": 6,
+    "hash": "0xbd2c1413",
+    "name": "",
+    "txd": 191,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "GLENDAL",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c48b0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 196,
+    "p": "0x5154c0",
+    "type": 6,
+    "hash": "0x41f347ea",
+    "name": "",
+    "txd": 192,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "GREENWO",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c39d0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 197,
+    "p": "0x515760",
+    "type": 6,
+    "hash": "0x5b0f63d0",
+    "name": "",
+    "txd": 193,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "HERMES",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c3ab0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 198,
+    "p": "0x515a00",
+    "type": 6,
+    "hash": "0xc1e9e782",
+    "name": "",
+    "txd": 194,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "HOVER",
+    "vehicle_type": 5,
+    "wheel_scale": 1.0,
+    "wheel_scale_rear": 1.0,
+    "handling": "0x4c3b90",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 199,
+    "p": "0x515ca0",
+    "type": 6,
+    "hash": "0xd7d3834b",
+    "name": "",
+    "txd": 195,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "IDAHO",
+    "vehicle_type": 0,
+    "wheel_scale": 0.6399999856948853,
+    "wheel_scale_rear": 0.6399999856948853,
+    "handling": "0x4c3c70",
+    "wheel_model_id": 326
+  },
+  {
+    "id": 200,
+    "p": "0x515f40",
+    "type": 6,
+    "hash": "0xbab749b3",
+    "name": "",
+    "txd": 196,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "LANDSTK",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8199999928474426,
+    "wheel_scale_rear": 0.949999988079071,
+    "handling": "0x4c3d50",
+    "wheel_model_id": 327
+  },
+  {
+    "id": 201,
+    "p": "0x5161e0",
+    "type": 6,
+    "hash": "0xfddaed63",
+    "name": "",
+    "txd": 197,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "MANANA",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c3e30",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 202,
+    "p": "0x516480",
+    "type": 6,
+    "hash": "0xb29d00db",
+    "name": "",
+    "txd": 198,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "MOPED",
+    "vehicle_type": 6,
+    "wheel_scale": 0.46399998664855957,
+    "wheel_scale_rear": 0.46399998664855957,
+    "handling": "0x4c3f10",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 203,
+    "p": "0x516720",
+    "type": 6,
+    "hash": "0x5ecdf11e",
+    "name": "",
+    "txd": 199,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "OCEANIC",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c3ff0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 204,
+    "p": "0x5169c0",
+    "type": 6,
+    "hash": "0xbd486072",
+    "name": "",
+    "txd": 200,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "VICECHE",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c40d0",
+    "wheel_model_id": 323
+  },
+  {
+    "id": 205,
+    "p": "0x516c60",
+    "type": 6,
+    "hash": "0xa2f1c44b",
+    "name": "",
+    "txd": 201,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SANCHEZ",
+    "vehicle_type": 6,
+    "wheel_scale": 0.6600000262260437,
+    "wheel_scale_rear": 0.6600000262260437,
+    "handling": "0x4c31f0",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 206,
+    "p": "0x516f00",
+    "type": 6,
+    "hash": "0x87e51b01",
+    "name": "",
+    "txd": 202,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "STALION",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c32d0",
+    "wheel_model_id": 326
+  },
+  {
+    "id": 207,
+    "p": "0x5171a0",
+    "type": 6,
+    "hash": "0x33e86684",
+    "name": "",
+    "txd": 203,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "POLICEM",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c33b0",
+    "wheel_model_id": 326
+  },
+  {
+    "id": 208,
+    "p": "0x517440",
+    "type": 6,
+    "hash": "0xb04c0b2e",
+    "name": "",
+    "txd": 204,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BOBO",
+    "vehicle_type": 0,
+    "wheel_scale": 0.30000001192092896,
+    "wheel_scale_rear": 0.30000001192092896,
+    "handling": "0x4c3490",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 209,
+    "p": "0x5176e0",
+    "type": 6,
+    "hash": "0x4d79ceb5",
+    "name": "",
+    "txd": 205,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "PATRIOT",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8999999761581421,
+    "wheel_scale_rear": 0.8999999761581421,
+    "handling": "0x4c3570",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 210,
+    "p": "0x517980",
+    "type": 6,
+    "hash": "0x123d6e67",
+    "name": "",
+    "txd": 206,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "PONY",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c3650",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 211,
+    "p": "0x517c20",
+    "type": 6,
+    "hash": "0xc1fa8dfc",
+    "name": "",
+    "txd": 207,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SENTINL",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c3730",
+    "wheel_model_id": 327
+  },
+  {
+    "id": 212,
+    "p": "0x517ec0",
+    "type": 6,
+    "hash": "0x70305316",
+    "name": "",
+    "txd": 208,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "PCJ600",
+    "vehicle_type": 6,
+    "wheel_scale": 0.6700000166893005,
+    "wheel_scale_rear": 0.6700000166893005,
+    "handling": "0x4c3810",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 213,
+    "p": "0x518160",
+    "type": 6,
+    "hash": "0xa4e8400c",
+    "name": "",
+    "txd": 209,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "MAVERIC",
+    "vehicle_type": 4,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c38f0",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 214,
+    "p": "0x518400",
+    "type": 6,
+    "hash": "0x4fdef27c",
+    "name": "",
+    "txd": 210,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "REEFER",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c2a10",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 215,
+    "p": "0x5186a0",
+    "type": 6,
+    "hash": "0x3f010aee",
+    "name": "",
+    "txd": 211,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SPEEDER",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c2af0",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 216,
+    "p": "0x518940",
+    "type": 6,
+    "hash": "0xbbf61557",
+    "name": "",
+    "txd": 212,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "LINERUN",
+    "vehicle_type": 0,
+    "wheel_scale": 1.100000023841858,
+    "wheel_scale_rear": 1.100000023841858,
+    "handling": "0x4c2bd0",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 217,
+    "p": "0x518be0",
+    "type": 6,
+    "hash": "0x66d7495e",
+    "name": "",
+    "txd": 213,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "WALTON",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c2cb0",
+    "wheel_model_id": 327
+  },
+  {
+    "id": 218,
+    "p": "0x518e80",
+    "type": 6,
+    "hash": "0xa01734dd",
+    "name": "",
+    "txd": 214,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BARRCKS",
+    "vehicle_type": 0,
+    "wheel_scale": 1.2000000476837158,
+    "wheel_scale_rear": 1.2000000476837158,
+    "handling": "0x4c2d90",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 219,
+    "p": "0x519120",
+    "type": 6,
+    "hash": "0x33ce94be",
+    "name": "",
+    "txd": 215,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "PREDATR",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c2e70",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 220,
+    "p": "0x5193c0",
+    "type": 6,
+    "hash": "0x938f24be",
+    "name": "",
+    "txd": 216,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "FLATBED",
+    "vehicle_type": 0,
+    "wheel_scale": 1.2000000476837158,
+    "wheel_scale_rear": 1.2000000476837158,
+    "handling": "0x4c2f50",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 221,
+    "p": "0x519660",
+    "type": 6,
+    "hash": "0x3ec67354",
+    "name": "",
+    "txd": 217,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BARRACK",
+    "vehicle_type": 0,
+    "wheel_scale": 1.2000000476837158,
+    "wheel_scale_rear": 1.2000000476837158,
+    "handling": "0x4c3030",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 222,
+    "p": "0x519900",
+    "type": 6,
+    "hash": "0x69950758",
+    "name": "",
+    "txd": 218,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BIPLANE",
+    "vehicle_type": 5,
+    "wheel_scale": 1.0,
+    "wheel_scale_rear": 1.0,
+    "handling": "0x4c3110",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 223,
+    "p": "0x519ba0",
+    "type": 6,
+    "hash": "0x2588305f",
+    "name": "",
+    "txd": 219,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "MOONBM",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c1aa0",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 224,
+    "p": "0x519e40",
+    "type": 6,
+    "hash": "0xa347741f",
+    "name": "",
+    "txd": 220,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "RUMPO",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c1b80",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 225,
+    "p": "0x51a0e0",
+    "type": 6,
+    "hash": "0x4e6fdb39",
+    "name": "",
+    "txd": 221,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "YOLA",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c1c60",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 226,
+    "p": "0x51a380",
+    "type": 6,
+    "hash": "0x96ee7189",
+    "name": "",
+    "txd": 222,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "TAXI",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c1d40",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 227,
+    "p": "0x51a620",
+    "type": 6,
+    "hash": "0xec4fd530",
+    "name": "",
+    "txd": 223,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "AMBULAN",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8999999761581421,
+    "wheel_scale_rear": 0.8999999761581421,
+    "handling": "0x4c1e20",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 228,
+    "p": "0x51a8c0",
+    "type": 6,
+    "hash": "0xc14efee6",
+    "name": "",
+    "txd": 224,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "STRETCH",
+    "vehicle_type": 0,
+    "wheel_scale": 0.75,
+    "wheel_scale_rear": 0.75,
+    "handling": "0x4c1f00",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 229,
+    "p": "0x51ab60",
+    "type": 6,
+    "hash": "0x46619558",
+    "name": "",
+    "txd": 225,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "FAGGIO",
+    "vehicle_type": 6,
+    "wheel_scale": 0.46399998664855957,
+    "wheel_scale_rear": 0.46399998664855957,
+    "handling": "0x4c1fe0",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 230,
+    "p": "0x51ae00",
+    "type": 6,
+    "hash": "0x5fae5fb2",
+    "name": "",
+    "txd": 226,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "QUADBIK",
+    "vehicle_type": 9,
+    "wheel_scale": 0.7599999904632568,
+    "wheel_scale_rear": 0.7599999904632568,
+    "handling": "0x4c20c0",
+    "wheel_model_id": 327
+  },
+  {
+    "id": 231,
+    "p": "0x51b0a0",
+    "type": 6,
+    "hash": "0xa0347bab",
+    "name": "",
+    "txd": 227,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "ANGEL",
+    "vehicle_type": 6,
+    "wheel_scale": 0.6539999842643738,
+    "wheel_scale_rear": 0.6539999842643738,
+    "handling": "0x4c21a0",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 232,
+    "p": "0x51b340",
+    "type": 6,
+    "hash": "0xaaf11929",
+    "name": "",
+    "txd": 228,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "FREEWAY",
+    "vehicle_type": 6,
+    "wheel_scale": 0.6539999842643738,
+    "wheel_scale_rear": 0.6539999842643738,
+    "handling": "0x4c12c0",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 233,
+    "p": "0x51b5e0",
+    "type": 6,
+    "hash": "0x46f5c789",
+    "name": "",
+    "txd": 229,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "JETSKI",
+    "vehicle_type": 2,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c13a0",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 234,
+    "p": "0x51b880",
+    "type": 6,
+    "hash": "0xe7eca7c6",
+    "name": "",
+    "txd": 230,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "ENFORCE",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8999999761581421,
+    "wheel_scale_rear": 0.8999999761581421,
+    "handling": "0x4c1480",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 235,
+    "p": "0x51bb20",
+    "type": 6,
+    "hash": "0xee57b61b",
+    "name": "",
+    "txd": 231,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BOXVIL",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8999999761581421,
+    "wheel_scale_rear": 0.8999999761581421,
+    "handling": "0x4c1560",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 236,
+    "p": "0x51bdc0",
+    "type": 6,
+    "hash": "0x6f0aa2b8",
+    "name": "",
+    "txd": 232,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BENSON",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8999999761581421,
+    "wheel_scale_rear": 0.8999999761581421,
+    "handling": "0x4c1640",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 237,
+    "p": "0x51c060",
+    "type": 6,
+    "hash": "0x37f25083",
+    "name": "",
+    "txd": 233,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "COACH",
+    "vehicle_type": 0,
+    "wheel_scale": 1.0,
+    "wheel_scale_rear": 1.0,
+    "handling": "0x4c1720",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 238,
+    "p": "0x51c300",
+    "type": 6,
+    "hash": "0x87c8f94e",
+    "name": "",
+    "txd": 234,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "MULE",
+    "vehicle_type": 0,
+    "wheel_scale": 0.7599999904632568,
+    "wheel_scale_rear": 0.7599999904632568,
+    "handling": "0x4c1800",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 239,
+    "p": "0x51c5a0",
+    "type": 6,
+    "hash": "0x6b2f1892",
+    "name": "",
+    "txd": 235,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "VOODOO",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c18e0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 240,
+    "p": "0x51c840",
+    "type": 6,
+    "hash": "0xeab8aab2",
+    "name": "",
+    "txd": 236,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SECURI",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8500000238418579,
+    "wheel_scale_rear": 0.8500000238418579,
+    "handling": "0x4c19c0",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 241,
+    "p": "0x51cae0",
+    "type": 6,
+    "hash": "0xd838602",
+    "name": "",
+    "txd": 237,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "TRASHM",
+    "vehicle_type": 0,
+    "wheel_scale": 1.059999942779541,
+    "wheel_scale_rear": 1.059999942779541,
+    "handling": "0x4c0ae0",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 242,
+    "p": "0x51cd80",
+    "type": 6,
+    "hash": "0xea33e073",
+    "name": "",
+    "txd": 238,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "TOPFUN",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c0bc0",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 243,
+    "p": "0x51d020",
+    "type": 6,
+    "hash": "0x8c9335ea",
+    "name": "",
+    "txd": 239,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "YANKEE",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8399999737739563,
+    "wheel_scale_rear": 0.8399999737739563,
+    "handling": "0x4c0ca0",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 244,
+    "p": "0x51d2c0",
+    "type": 6,
+    "hash": "0x6f93fed",
+    "name": "",
+    "txd": 240,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "WHOOPEE",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c0d80",
+    "wheel_model_id": 325
+  },
+  {
+    "id": 245,
+    "p": "0x51d560",
+    "type": 6,
+    "hash": "0x8e35e020",
+    "name": "",
+    "txd": 241,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SANDKIN",
+    "vehicle_type": 0,
+    "wheel_scale": 0.9200000166893005,
+    "wheel_scale_rear": 0.9200000166893005,
+    "handling": "0x4c0e60",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 246,
+    "p": "0x51d800",
+    "type": 6,
+    "hash": "0xd27c6c5e",
+    "name": "",
+    "txd": 242,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "RHINO",
+    "vehicle_type": 0,
+    "wheel_scale": 1.5,
+    "wheel_scale_rear": 1.5,
+    "handling": "0x4c0f40",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 247,
+    "p": "0x51daa0",
+    "type": 6,
+    "hash": "0xab1eb408",
+    "name": "",
+    "txd": 243,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "DINGHY",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c1020",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 248,
+    "p": "0x51dd40",
+    "type": 6,
+    "hash": "0xb8701c4",
+    "name": "",
+    "txd": 244,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "MARQUIS",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c1100",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 249,
+    "p": "0x51dfe0",
+    "type": 6,
+    "hash": "0xa85e747e",
+    "name": "",
+    "txd": 245,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "RIO",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c11e0",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 250,
+    "p": "0x51e280",
+    "type": 6,
+    "hash": "0xfa540aab",
+    "name": "",
+    "txd": 246,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "TROPIC",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c0300",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 251,
+    "p": "0x51e520",
+    "type": 6,
+    "hash": "0xcda5026c",
+    "name": "",
+    "txd": 247,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "FORKLIF",
+    "vehicle_type": 0,
+    "wheel_scale": 0.5,
+    "wheel_scale_rear": 0.5,
+    "handling": "0x4c03e0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 252,
+    "p": "0x51e7c0",
+    "type": 6,
+    "hash": "0x29e75806",
+    "name": "",
+    "txd": 248,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "STREETF",
+    "vehicle_type": 6,
+    "wheel_scale": 0.6600000262260437,
+    "wheel_scale_rear": 0.6600000262260437,
+    "handling": "0x4c04c0",
+    "wheel_model_id": 65535
+  },
+  {
+    "id": 253,
+    "p": "0x51ea60",
+    "type": 6,
+    "hash": "0x5ef15a23",
+    "name": "",
+    "txd": 249,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "VIRGO",
+    "vehicle_type": 0,
+    "wheel_scale": 0.6600000262260437,
+    "wheel_scale_rear": 0.6600000262260437,
+    "handling": "0x4c05a0",
+    "wheel_model_id": 326
+  },
+  {
+    "id": 254,
+    "p": "0x51ed00",
+    "type": 6,
+    "hash": "0xb4279ca1",
+    "name": "",
+    "txd": 250,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "STINGER",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c0680",
+    "wheel_model_id": 323
+  },
+  {
+    "id": 255,
+    "p": "0x51efa0",
+    "type": 6,
+    "hash": "0x2c806690",
+    "name": "",
+    "txd": 251,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "BFINJC",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8999999761581421,
+    "wheel_scale_rear": 0.8999999761581421,
+    "handling": "0x4c0760",
+    "wheel_model_id": 327
+  },
+  {
+    "id": 256,
+    "p": "0x51f240",
+    "type": 6,
+    "hash": "0xcf265325",
+    "name": "",
+    "txd": 252,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "PHEONIX",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c0840",
+    "wheel_model_id": 323
+  },
+  {
+    "id": 257,
+    "p": "0x51f4e0",
+    "type": 6,
+    "hash": "0xf6708611",
+    "name": "",
+    "txd": 253,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SQUALO",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c0920",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 258,
+    "p": "0x51f780",
+    "type": 6,
+    "hash": "0xc012818b",
+    "name": "",
+    "txd": 254,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "JETMAX",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4c0a00",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 259,
+    "p": "0x51fa20",
+    "type": 6,
+    "hash": "0x51d990b9",
+    "name": "",
+    "txd": 255,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "MESA",
+    "vehicle_type": 0,
+    "wheel_scale": 0.8999999761581421,
+    "wheel_scale_rear": 0.8999999761581421,
+    "handling": "0x4bfb20",
+    "wheel_model_id": 328
+  },
+  {
+    "id": 260,
+    "p": "0x51fcc0",
+    "type": 6,
+    "hash": "0xe35a2c37",
+    "name": "",
+    "txd": 256,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "VCNMAV",
+    "vehicle_type": 4,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.6399999856948853,
+    "handling": "0x4bfc00",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 261,
+    "p": "0x51ff60",
+    "type": 6,
+    "hash": "0x5afaeaa0",
+    "name": "",
+    "txd": 257,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "POLMAV",
+    "vehicle_type": 4,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4bfce0",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 262,
+    "p": "0x520200",
+    "type": 6,
+    "hash": "0x956100cf",
+    "name": "",
+    "txd": 258,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SPARROW",
+    "vehicle_type": 4,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.6399999856948853,
+    "handling": "0x4bfdc0",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 263,
+    "p": "0x5204a0",
+    "type": 6,
+    "hash": "0x2b3069e4",
+    "name": "",
+    "txd": 259,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SEASPAR",
+    "vehicle_type": 4,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.6399999856948853,
+    "handling": "0x4bfea0",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 264,
+    "p": "0x520740",
+    "type": 6,
+    "hash": "0xe6549de2",
+    "name": "",
+    "txd": 260,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SCARAB",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4bff80",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 265,
+    "p": "0x5209e0",
+    "type": 6,
+    "hash": "0xaf2a55d1",
+    "name": "",
+    "txd": 261,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "CHOLO",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c0060",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 266,
+    "p": "0x520c80",
+    "type": 6,
+    "hash": "0x7cb3522e",
+    "name": "",
+    "txd": 262,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "COMET",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c0140",
+    "wheel_model_id": 323
+  },
+  {
+    "id": 267,
+    "p": "0x520f20",
+    "type": 6,
+    "hash": "0xd1459e96",
+    "name": "",
+    "txd": 263,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "CUBAN",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4c0220",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 268,
+    "p": "0x5211c0",
+    "type": 6,
+    "hash": "0x442d43be",
+    "name": "",
+    "txd": 264,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "FBIRAN",
+    "vehicle_type": 0,
+    "wheel_scale": 1.100000023841858,
+    "wheel_scale_rear": 1.100000023841858,
+    "handling": "0x4bf340",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 269,
+    "p": "0x521460",
+    "type": 6,
+    "hash": "0xf78cf474",
+    "name": "",
+    "txd": 265,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "GANGBUR",
+    "vehicle_type": 0,
+    "wheel_scale": 1.0850000381469727,
+    "wheel_scale_rear": 1.0850000381469727,
+    "handling": "0x4bf420",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 270,
+    "p": "0x521700",
+    "type": 6,
+    "hash": "0xdf870780",
+    "name": "",
+    "txd": 266,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "INFERNS",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4bf500",
+    "wheel_model_id": 323
+  },
+  {
+    "id": 271,
+    "p": "0x5219a0",
+    "type": 6,
+    "hash": "0x89c1e5df",
+    "name": "",
+    "txd": 267,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "REGINA",
+    "vehicle_type": 0,
+    "wheel_scale": 0.6600000262260437,
+    "wheel_scale_rear": 0.6600000262260437,
+    "handling": "0x4bf5e0",
+    "wheel_model_id": 326
+  },
+  {
+    "id": 272,
+    "p": "0x521c40",
+    "type": 6,
+    "hash": "0x98e351c6",
+    "name": "",
+    "txd": 268,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SABRE",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4bf6c0",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 273,
+    "p": "0x521ee0",
+    "type": 6,
+    "hash": "0xc7c931a5",
+    "name": "",
+    "txd": 269,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SABRETB",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4bf7a0",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 274,
+    "p": "0x522180",
+    "type": 6,
+    "hash": "0xc44a8d4c",
+    "name": "",
+    "txd": 270,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SENTXS",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4bf880",
+    "wheel_model_id": 327
+  },
+  {
+    "id": 275,
+    "p": "0x522420",
+    "type": 6,
+    "hash": "0x45d0b41c",
+    "name": "",
+    "txd": 271,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "HUNTER",
+    "vehicle_type": 4,
+    "wheel_scale": 0.6399999856948853,
+    "wheel_scale_rear": 0.6399999856948853,
+    "handling": "0x4bf960",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 276,
+    "p": "0x5226c0",
+    "type": 6,
+    "hash": "0x2dcbf305",
+    "name": "",
+    "txd": 272,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "WASHIN",
+    "vehicle_type": 0,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4bfa40",
+    "wheel_model_id": 324
+  },
+  {
+    "id": 277,
+    "p": "0x522960",
+    "type": 6,
+    "hash": "0x666f0ad4",
+    "name": "",
+    "txd": 273,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "COASTG",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4bed20",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 278,
+    "p": "0x522c00",
+    "type": 6,
+    "hash": "0x598506d7",
+    "name": "",
+    "txd": 274,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "SKIMMER",
+    "vehicle_type": 1,
+    "wheel_scale": 0.0,
+    "wheel_scale_rear": 0.0,
+    "handling": "0x4bee00",
+    "wheel_model_id": 0
+  },
+  {
+    "id": 279,
+    "p": "0x522ea0",
+    "type": 6,
+    "hash": "0x8102a276",
+    "name": "",
+    "txd": 275,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "CHOPPER",
+    "vehicle_type": 4,
+    "wheel_scale": 0.699999988079071,
+    "wheel_scale_rear": 0.699999988079071,
+    "handling": "0x4beee0",
+    "wheel_model_id": 329
+  },
+  {
+    "id": 280,
+    "p": "0x523140",
+    "type": 6,
+    "hash": "0x822faabd",
+    "name": "",
+    "txd": 276,
+    "group": 0,
+    "element": "0x0",
+    "game_name": "AEROPL",
+    "vehicle_type": 5,
+    "wheel_scale": 1.0,
+    "wheel_scale_rear": 1.0,
+    "handling": "0x4befc0",
+    "wheel_model_id": 319
+  }
+]

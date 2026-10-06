@@ -1,0 +1,11 @@
+{
+  "version": "0.3.0",
+  "windows_executable": "VCS-Rust.exe",
+  "sha256": "884346DB3D63CB210670F236EAB3A210A3BB98451BAD17AA41AD2FFE7C785318",
+  "unit_tests_passed": 42,
+  "native_gpu_captures": 7,
+  "native_gpu_frames": 56,
+  "software_frames": 8,
+  "iso_modified": false,
+  "interactive_viewer_opened_for_testing": false
+}
