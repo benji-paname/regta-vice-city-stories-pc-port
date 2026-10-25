@@ -144,3 +144,11 @@ L’ISO PS2 PAL originale sur F: est conservée intacte. Sa copie complète de t
    - Badges temps réel (`badge-overall.svg`, `badge-routines.svg`, `tests-badge.svg`) et treemap SVG interactif.
    - Compilation et tests orchestrés par `Compiler.ps1 -Test` : 126 tests unitaires passants à 100%, 0 avertissements (`-D warnings`).
    - Contact officiel Discord : `https://discord.com/users/601648068277960714` (`benjamin060936`).
+
+### Nouveaux modules et jalons intégrés (Octobre 2026 - Jalons E, F, G, H) :
+1. **`src/police.rs` (WantedSystem)** : Étoiles de recherche 0..6, détection des infractions, évasion et clignotement.
+2. **`src/save.rs` (GameSaveState)** : Sauvegarde rapide (<kbd>F5</kbd>) et restauration (<kbd>F9</kbd>) dans `VCS-Save.json`.
+3. **Dégâts des véhicules & Pyrotechnie 3D** : Points de vie, fumée de moteur, flammes 3D et explosions dans `src/driving.rs`, `src/weapons.rs` et `src/gpu.rs`.
+4. **Cycle Jour/Nuit 24h & Ciel Synthwave** : Teintes du ciel Vice City, nuit étoilée, phares 3D et feux arrière dans `src/gpu.rs`.
+5. **HUD Wanted Stars** : Étoiles dorées de recherche affichées sous les barres de vie dans `src/hud.rs`.
+6. **Statut de validation** : 138 tests unitaires réussis à 100%, 0 avertissements (`-D warnings`), 578 / 747 routines (78.0%).

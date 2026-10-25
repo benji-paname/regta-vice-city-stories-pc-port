@@ -869,6 +869,11 @@ pub fn viewer(
     let mut fighter = crate::combat::Fighter::default();
     let mut player_status = crate::hud::PlayerStatus::default();
     let mut arsenal = crate::weapons::WeaponArsenal::new();
+    let mut police = crate::police::WantedSystem::new();
+    let save_path = std::env::current_exe()?.with_file_name("VCS-Save.json");
+    let mut banner_message = String::new();
+    let mut banner_timer = 0.0f32;
+    let mut clock_accumulator = 0.0f32;
     crate::access::Access::validate(character)?;
     let settings_path = std::env::current_exe()?.with_file_name("VCS-options.json");
     let mut settings = if headless {
@@ -1231,6 +1236,7 @@ pub fn viewer(
                 crouch.reset();
                 fighter = crate::combat::Fighter::default();
                 arsenal = crate::weapons::WeaponArsenal::new();
+                police.clear();
             }
         }
         if controls
@@ -1269,6 +1275,7 @@ pub fn viewer(
             crouch.reset();
             fighter = crate::combat::Fighter::default();
             arsenal = crate::weapons::WeaponArsenal::new();
+            police.clear();
             let walking = walker.is_some() || in_vehicle;
             population.reset();
             traffic.reset();
@@ -1525,6 +1532,25 @@ pub fn viewer(
             dt,
         );
         arsenal.update(collisions, dt);
+        for exp in &arsenal.explosions {
+            traffic.apply_explosion_damage(exp.position, exp.radius, exp.damage);
+            let dx = car.position[0] - exp.position[0];
+            let dy = car.position[1] - exp.position[1];
+            let dist = dx.hypot(dy);
+            if dist < exp.radius {
+                car.apply_damage(exp.damage * (1.0 - dist / exp.radius));
+            }
+            population.trigger_panic(exp.position, 60.0);
+            police.report_crime(crate::police::CrimeType::ExplosionDetonated, exp.position);
+        }
+        for hit in &arsenal.bullet_hits {
+            traffic.apply_bullet_damage(hit.position, hit.damage);
+            let dx = car.position[0] - hit.position[0];
+            let dy = car.position[1] - hit.position[1];
+            if dx.hypot(dy) < 2.5 {
+                car.apply_damage(hit.damage);
+            }
+        }
         for traffic_car in &mut traffic.cars {
             objects.impact(collisions, &mut traffic_car.car);
         }
@@ -1576,6 +1602,76 @@ pub fn viewer(
             );
             if arsenal.fire(origin, dir, collisions) {
                 population.trigger_panic(origin, 45.0);
+                police.report_crime(crate::police::CrimeType::FirearmDischarge, origin);
+            }
+        }
+
+        if controls && window.is_key_pressed(Key::F5, minifb::KeyRepeat::No) {
+            let state = crate::save::GameSaveState {
+                player_pos: walker.as_ref().map_or(car.position, |w| w.feet),
+                player_yaw: camera.yaw,
+                player_pitch: camera.pitch,
+                health: player_status.health,
+                armor: player_status.armor,
+                money: player_status.money,
+                wanted_level: police.wanted_level,
+                current_weapon: arsenal.current.to_index(),
+                ammo: arsenal.ammo,
+                hour: player_status.hour,
+                minute: player_status.minute,
+                car_pos: car.position,
+                car_heading: car.heading,
+                car_health: car.health,
+            };
+            if state.save_to_file(&save_path).is_ok() {
+                banner_message = "PARTIE SAUVEGARDEE [F5]".into();
+                banner_timer = 2.5;
+            }
+        }
+        if controls && window.is_key_pressed(Key::F9, minifb::KeyRepeat::No) {
+            if let Ok(state) = crate::save::GameSaveState::load_from_file(&save_path) {
+                player_status.health = state.health;
+                player_status.armor = state.armor;
+                player_status.money = state.money;
+                player_status.hour = state.hour;
+                player_status.minute = state.minute;
+                police.set_wanted_level(state.wanted_level);
+                arsenal.select(crate::weapons::WeaponType::from_index(state.current_weapon));
+                arsenal.ammo = state.ammo;
+                car.position = state.car_pos;
+                car.heading = state.car_heading;
+                car.health = state.car_health;
+                car.burning = state.car_health < 250.0 && state.car_health > 0.0;
+                car.exploded = state.car_health <= 0.0;
+                if let Some(w) = &mut walker {
+                    w.feet = state.player_pos;
+                }
+                camera.yaw = state.player_yaw;
+                camera.pitch = state.player_pitch;
+                banner_message = "PARTIE RESTAUREE [F9]".into();
+                banner_timer = 2.5;
+            }
+        }
+
+        clock_accumulator += dt * 6.0;
+        if clock_accumulator >= 1.0 {
+            let added_minutes = clock_accumulator.floor() as u32;
+            clock_accumulator -= added_minutes as f32;
+            player_status.minute += added_minutes;
+            player_status.hour = (player_status.hour + player_status.minute / 60) % 24;
+            player_status.minute %= 60;
+        }
+        police.update(dt);
+        player_status.wanted_level = police.stars_active();
+        player_status.wanted_flashing = police.is_flashing();
+        if banner_timer > 0.0 {
+            banner_timer = (banner_timer - dt).max(0.0);
+        }
+        if police.wanted_level >= 1 {
+            traffic.siren_active = true;
+            traffic.siren_pos = walker.as_ref().map_or(car.position, |w| w.feet);
+            if let Some(first) = traffic.cars.first_mut() {
+                first.car.is_police = true;
             }
         }
         let attack = controls
@@ -1781,6 +1877,12 @@ pub fn viewer(
                 triangles,
                 position: v.position,
                 heading: v.heading,
+                health: v.health,
+                burning: v.burning,
+                exploded: v.exploded,
+                is_police: v.is_police,
+                strobe_timer: v.strobe_timer,
+                headlights: v.headlights,
             })
             .collect();
         let draw_started = Instant::now();
@@ -1855,35 +1957,42 @@ pub fn viewer(
             render_seconds += draw_started.elapsed().as_secs_f64();
             window.update_with_buffer(&frame.pixels, WIDTH, HEIGHT)?;
         }
+        let title_banner = if banner_timer > 0.0 {
+            format!(" | [{banner_message}]")
+        } else {
+            String::new()
+        };
+        let wanted_stars = if police.wanted_level > 0 {
+            format!(" | Police: {}*", police.wanted_level)
+        } else {
+            String::new()
+        };
         window.set_title(&format!(
-            "VCS Rust | {} | {} | {} | Arme: {} | F1 : aide",
+            "VCS Rust | {} | {} | {:02}:{:02} | {} | Arme: {}{}{}",
             settings.gameplay.label(),
             crate::scene::label(index),
+            player_status.hour,
+            player_status.minute,
             if in_vehicle {
                 &format!(
-                    "Banshee | {:.0} km/h | {}{}",
+                    "Banshee | {:.0} km/h (Santé {:.0}%){}{}",
                     car.speed.abs() * 3.6,
-                    if car.speed < -0.1 {
-                        "Marche arriere"
-                    } else {
-                        "Conduite"
-                    },
-                    if traffic.siren_active {
-                        " [GIROPHARE ON]"
-                    } else {
-                        ""
-                    },
+                    (car.health / 10.0).max(0.0),
+                    if car.speed < -0.1 { " [Recul]" } else { "" },
+                    if car.exploded { " [DETRUITE]" } else if car.burning { " [EN FEU]" } else { "" },
                 )
             } else if walker.is_some() {
                 if locomotion.swimming() {
-                    "Nage | MAJ : nager plus vite"
+                    "Nage | MAJ: nager plus vite"
                 } else {
-                    "A pied | ESPACE : sauter"
+                    "A pied | ESPACE: sauter"
                 }
             } else {
                 "Camera libre"
             },
             arsenal.current.name(),
+            wanted_stars,
+            title_banner,
         ));
         ticks += 1;
         if let Some(path) = live_report

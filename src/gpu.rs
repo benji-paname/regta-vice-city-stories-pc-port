@@ -176,6 +176,29 @@ pub struct VehicleFrame<'a> {
     pub triangles: &'a [Triangle],
     pub position: [f32; 3],
     pub heading: f32,
+    pub health: f32,
+    pub burning: bool,
+    pub exploded: bool,
+    pub is_police: bool,
+    pub strobe_timer: f32,
+    pub headlights: bool,
+}
+
+impl<'a> VehicleFrame<'a> {
+    #[allow(dead_code)]
+    pub fn new(triangles: &'a [Triangle], position: [f32; 3], heading: f32) -> Self {
+        Self {
+            triangles,
+            position,
+            heading,
+            health: 1000.0,
+            burning: false,
+            exploded: false,
+            is_police: false,
+            strobe_timer: 0.0,
+            headlights: true,
+        }
+    }
 }
 
 /// Must be dropped while its minifb window still exists, on the creating thread.
@@ -432,12 +455,14 @@ impl GpuRenderer {
             if wglMakeCurrent(self.dc, self.context) == 0 {
                 return Err("OpenGL: contexte de rendu perdu".into());
             }
+            let hour = (12.0 + global_time * (24.0 / 600.0)).rem_euclid(24.0);
+            let (_, mid, _, _fog) = sky_atmosphere(hour);
             glViewport(0, 0, width, height);
             glDepthMask(1);
-            glClearColor(0.36, 0.60, 0.79, 1.0);
+            glClearColor(mid[0], mid[1], mid[2], 1.0);
             glClear(0x00004000 | 0x00000100); // COLOR, DEPTH
             ortho();
-            background();
+            background(hour);
             glMatrixMode(PROJECTION);
             glLoadIdentity();
             let near = crate::render::CAMERA_NEAR as f64;
@@ -496,6 +521,7 @@ impl GpuRenderer {
                 self.textured_triangles += textured;
             }
             draw_traffic_lights(lights, global_time);
+            draw_vehicle_effects(vehicles, global_time, hour);
             if let Some(w) = weapons {
                 draw_weapons_3d(w);
             }
@@ -868,21 +894,195 @@ unsafe fn ortho() {
     glLoadIdentity();
 }
 
-unsafe fn background() {
+pub fn sky_atmosphere(hour: f32) -> ([f32; 3], [f32; 3], [f32; 3], [f32; 4]) {
+    if hour >= 22.0 || hour < 5.0 {
+        // Deep Night
+        (
+            [0.03, 0.04, 0.09],
+            [0.06, 0.08, 0.16],
+            [0.05, 0.06, 0.12],
+            [0.06, 0.08, 0.15, 1.0],
+        )
+    } else if hour >= 5.0 && hour < 8.0 {
+        // Dawn
+        let t = (hour - 5.0) / 3.0;
+        (
+            [0.15 + 0.25 * t, 0.12 + 0.35 * t, 0.25 + 0.45 * t],
+            [0.35 + 0.45 * t, 0.25 + 0.40 * t, 0.30 + 0.50 * t],
+            [0.15 + 0.10 * t, 0.15 + 0.25 * t, 0.20 + 0.28 * t],
+            [0.30 + 0.25 * t, 0.25 + 0.40 * t, 0.35 + 0.45 * t, 1.0],
+        )
+    } else if hour >= 8.0 && hour < 17.5 {
+        // Daytime tropical blue
+        (
+            [0.36, 0.60, 0.79],
+            [0.51, 0.70, 0.89],
+            [0.22, 0.41, 0.48],
+            [0.55, 0.75, 0.90, 1.0],
+        )
+    } else if hour >= 17.5 && hour < 20.5 {
+        // Iconic Vice City Sunset (neon pink & golden orange)
+        let t = (hour - 17.5) / 3.0;
+        (
+            [0.36 + 0.52 * t, 0.60 - 0.38 * t, 0.79 - 0.30 * t],
+            [0.51 + 0.45 * t, 0.70 - 0.20 * t, 0.89 - 0.50 * t],
+            [0.22 + 0.20 * t, 0.41 - 0.25 * t, 0.48 - 0.15 * t],
+            [0.70 * t + 0.55 * (1.0 - t), 0.35 * t + 0.75 * (1.0 - t), 0.55 * t + 0.90 * (1.0 - t), 1.0],
+        )
+    } else {
+        // Dusk transitioning to night (20.5 - 22.0)
+        let t = (hour - 20.5) / 1.5;
+        (
+            [0.81 - 0.78 * t, 0.25 - 0.21 * t, 0.49 - 0.40 * t],
+            [0.96 - 0.90 * t, 0.50 - 0.42 * t, 0.39 - 0.23 * t],
+            [0.42 - 0.37 * t, 0.16 - 0.10 * t, 0.33 - 0.21 * t],
+            [0.70 - 0.64 * t, 0.35 - 0.27 * t, 0.55 - 0.40 * t, 1.0],
+        )
+    }
+}
+
+unsafe fn background(hour: f32) {
+    let (top, mid, bot, _) = sky_atmosphere(hour);
     glDisable(BLEND);
     glBegin(QUADS);
-    glColor3f(0.36, 0.60, 0.79);
+    glColor3f(top[0], top[1], top[2]);
     glVertex2f(0.0, 0.0);
     glVertex2f(WIDTH as f32, 0.0);
-    glColor3f(0.51, 0.70, 0.89);
+    glColor3f(mid[0], mid[1], mid[2]);
     glVertex2f(WIDTH as f32, HEIGHT as f32 / 2.0);
     glVertex2f(0.0, HEIGHT as f32 / 2.0);
-    glColor3f(0.224, 0.408, 0.482);
+    glColor3f(bot[0], bot[1], bot[2]);
     glVertex2f(0.0, HEIGHT as f32 / 2.0);
     glVertex2f(WIDTH as f32, HEIGHT as f32 / 2.0);
     glVertex2f(WIDTH as f32, HEIGHT as f32);
     glVertex2f(0.0, HEIGHT as f32);
     glEnd();
+    if hour >= 21.5 || hour < 5.0 {
+        glBegin(0x0000); // GL_POINTS
+        glColor4f(1.0, 1.0, 1.0, 0.85);
+        for i in 0..48 {
+            let sx = ((i * 137 + 43) % WIDTH) as f32;
+            let sy = ((i * 79 + 19) % (HEIGHT / 2)) as f32;
+            glVertex2f(sx, sy);
+        }
+        glEnd();
+    }
+}
+
+unsafe fn draw_vehicle_effects(vehicles: &[VehicleFrame<'_>], global_time: f32, hour: f32) {
+    glDisable(TEXTURE_2D);
+    glEnable(BLEND);
+    glBlendFunc(0x0302, 0x0303);
+    let is_night = hour < 6.5 || hour > 19.5;
+
+    for v in vehicles {
+        let (s, c) = v.heading.sin_cos();
+
+        // 1. Vehicle headlights on the pavement
+        if is_night || v.headlights {
+            glColor4f(1.0, 0.95, 0.7, 0.22);
+            glBegin(TRIANGLES);
+            // Left headlight beam
+            let lx = v.position[0] - c * 0.65 + s * 1.6;
+            let ly = v.position[1] + s * 0.65 + c * 1.6;
+            let lz = v.position[2] + 0.15;
+            let flx = lx + s * 20.0 - c * 3.0;
+            let fly = ly + c * 20.0 + s * 3.0;
+            let frx = lx + s * 20.0 + c * 1.2;
+            let fry = ly + c * 20.0 - s * 1.2;
+            glVertex3f(lx, ly, lz);
+            glVertex3f(flx, fly, lz);
+            glVertex3f(frx, fry, lz);
+
+            // Right headlight beam
+            let rx = v.position[0] + c * 0.65 + s * 1.6;
+            let ry = v.position[1] - s * 0.65 + c * 1.6;
+            let rz = v.position[2] + 0.15;
+            let rlx = rx + s * 20.0 - c * 1.2;
+            let rly = ry + c * 20.0 + s * 1.2;
+            let rrx = rx + s * 20.0 + c * 3.0;
+            let rry = ry + c * 20.0 - s * 3.0;
+            glVertex3f(rx, ry, rz);
+            glVertex3f(rlx, rly, rz);
+            glVertex3f(rrx, rry, rz);
+            glEnd();
+
+            // Red rear tail lights
+            glBegin(QUADS);
+            glColor4f(1.0, 0.1, 0.05, 0.9);
+            for side in [-0.65, 0.65] {
+                let tx = v.position[0] + c * side - s * 1.8;
+                let ty = v.position[1] - s * side - c * 1.8;
+                let tz = v.position[2] + 0.5;
+                glVertex3f(tx - 0.08, ty, tz - 0.06);
+                glVertex3f(tx + 0.08, ty, tz - 0.06);
+                glVertex3f(tx + 0.08, ty, tz + 0.06);
+                glVertex3f(tx - 0.08, ty, tz + 0.06);
+            }
+            glEnd();
+        }
+
+        // 2. Police roof strobe lights
+        if v.is_police {
+            glBegin(QUADS);
+            let z_roof = v.position[2] + 1.25;
+            let bl_alpha = if v.strobe_timer < 0.5 { 0.95 } else { 0.1 };
+            glColor4f(0.1, 0.4, 1.0, bl_alpha);
+            let bx = v.position[0] - c * 0.35;
+            let by = v.position[1] + s * 0.35;
+            glVertex3f(bx - 0.15, by - 0.15, z_roof);
+            glVertex3f(bx + 0.15, by - 0.15, z_roof);
+            glVertex3f(bx + 0.15, by + 0.15, z_roof + 0.15);
+            glVertex3f(bx - 0.15, by + 0.15, z_roof + 0.15);
+
+            let rd_alpha = if v.strobe_timer >= 0.5 { 0.95 } else { 0.1 };
+            glColor4f(1.0, 0.15, 0.1, rd_alpha);
+            let rx = v.position[0] + c * 0.35;
+            let ry = v.position[1] - s * 0.35;
+            glVertex3f(rx - 0.15, ry - 0.15, z_roof);
+            glVertex3f(rx + 0.15, ry - 0.15, z_roof);
+            glVertex3f(rx + 0.15, ry + 0.15, z_roof + 0.15);
+            glVertex3f(rx - 0.15, ry + 0.15, z_roof + 0.15);
+            glEnd();
+        }
+
+        // 3. Smoke & Engine fire plumes
+        if v.health < 400.0 || v.burning || v.exploded {
+            let hx = v.position[0] + s * 1.35;
+            let hy = v.position[1] + c * 1.35;
+            let hz = v.position[2] + 0.8;
+
+            if v.burning {
+                glBegin(TRIANGLES);
+                let flick = (global_time * 12.0).sin() * 0.15;
+                glColor4f(1.0, 0.5 + flick, 0.05, 0.85);
+                glVertex3f(hx - 0.35, hy, hz);
+                glVertex3f(hx + 0.35, hy, hz);
+                glVertex3f(hx, hy, hz + 0.9 + flick);
+
+                glColor4f(1.0, 0.8, 0.2, 0.9);
+                glVertex3f(hx, hy - 0.25, hz);
+                glVertex3f(hx, hy + 0.25, hz);
+                glVertex3f(hx, hy, hz + 0.6);
+                glEnd();
+            }
+
+            glBegin(QUADS);
+            let smoke_col = if v.exploded || v.burning { 0.15 } else { 0.65 };
+            glColor4f(smoke_col, smoke_col, smoke_col, 0.55);
+            for puff in 0..3 {
+                let pz = hz + 0.4 + puff as f32 * 0.45;
+                let sz = 0.25 + puff as f32 * 0.15;
+                let drift = (global_time * 2.0 + puff as f32).sin() * 0.1;
+                glVertex3f(hx - sz + drift, hy, pz - sz);
+                glVertex3f(hx + sz + drift, hy, pz - sz);
+                glVertex3f(hx + sz + drift, hy, pz + sz);
+                glVertex3f(hx - sz + drift, hy, pz + sz);
+            }
+            glEnd();
+        }
+    }
+    glDisable(BLEND);
 }
 
 unsafe fn quad(x: f32, y: f32, width: f32, height: f32) {
@@ -963,7 +1163,7 @@ unsafe fn draw_guide(zone: &str, walking: bool, driving: bool, show_help: bool) 
             if driving {
                 "ARRET + E: SORTIR | R: REINITIALISER | ECHAP: QUITTER"
             } else {
-                "G: MARCHER | E: MONTER DANS UNE VOITURE ARRETEE | R: DEPART | F1: AIDE"
+                "F5: SAUVER | F9: CHARGER | G: MARCHE | E: VEHICULE | F1: AIDE"
             },
             [0.74, 0.92, 1.0],
         );
@@ -1176,6 +1376,36 @@ unsafe fn draw_crosshair_hud(kind: crate::weapons::CrosshairKind) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn sky_atmosphere_gradient_matches_vice_city_palette() {
+        let (top_noon, mid_noon, _, _) = sky_atmosphere(12.0);
+        assert_eq!(top_noon, [0.36, 0.60, 0.79]);
+        assert_eq!(mid_noon, [0.51, 0.70, 0.89]);
+
+        let (top_sunset, _, _, _) = sky_atmosphere(19.0);
+        assert!(top_sunset[0] > 0.55, "Sunset top should have strong magenta/red component");
+
+        let (top_night, _, _, _) = sky_atmosphere(2.0);
+        assert!(top_night[0] < 0.1, "Night top should be dark");
+    }
+
+    #[test]
+    fn vehicle_frame_holds_damage_and_police_attributes() {
+        let frame = VehicleFrame {
+            triangles: &[],
+            position: [10.0, 20.0, 3.0],
+            heading: 1.57,
+            health: 800.0,
+            burning: false,
+            exploded: false,
+            is_police: true,
+            strobe_timer: 0.25,
+            headlights: true,
+        };
+        assert_eq!(frame.health, 800.0);
+        assert!(frame.is_police);
+    }
+
     #[test]
     fn windows_pixel_descriptor_has_native_size() {
         assert_eq!(std::mem::size_of::<PixelFormat>(), 40);

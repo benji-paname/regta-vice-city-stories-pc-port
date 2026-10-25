@@ -1,9 +1,9 @@
 {
-  "build": "VCS-Rust Native (PS2 PAL SLES-54622 / ULUS-10160 v1.01 target, 585 Rust functions)",
+  "build": "VCS-Rust Native (PS2 PAL SLES-54622 / ULUS-10160 v1.01 target, 620 Rust functions)",
   "bytes": 350235,
-  "portedBytes": 261215,
+  "portedBytes": 273215,
   "routines": 747,
-  "portedRoutines": 554,
+  "portedRoutines": 578,
   "subsystems": [
     {
       "name": "Engine & VIF",
@@ -66,9 +66,9 @@
     {
       "name": "Vehicles & Handling",
       "bytes": 43690,
-      "portedBytes": 27830,
+      "portedBytes": 30070,
       "routines": 82,
-      "portedRoutines": 50,
+      "portedRoutines": 54,
       "classes": [
         {
           "name": "CVehicleModel",
@@ -88,8 +88,8 @@
           "name": "CSuspension4Wheel",
           "bytes": 6990,
           "routines": 14,
-          "portedBytes": 1150,
-          "portedRoutines": 2
+          "portedBytes": 3390,
+          "portedRoutines": 6
         },
         {
           "name": "CTransmissionDynamics",
@@ -161,9 +161,9 @@
     {
       "name": "Combat & Weapons",
       "bytes": 36280,
-      "portedBytes": 17900,
+      "portedBytes": 19450,
       "routines": 75,
-      "portedRoutines": 36,
+      "portedRoutines": 39,
       "classes": [
         {
           "name": "CWeaponManager",
@@ -176,15 +176,15 @@
           "name": "C3DBallistics",
           "bytes": 9640,
           "routines": 20,
-          "portedBytes": 9240,
-          "portedRoutines": 19
+          "portedBytes": 9640,
+          "portedRoutines": 20
         },
         {
           "name": "CProjectileGrenade",
           "bytes": 4860,
           "routines": 10,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 1150,
+          "portedRoutines": 2
         },
         {
           "name": "CProjectileRocket",
@@ -212,9 +212,9 @@
     {
       "name": "AI & Traffic",
       "bytes": 53580,
-      "portedBytes": 39360,
+      "portedBytes": 44300,
       "routines": 112,
-      "portedRoutines": 82,
+      "portedRoutines": 93,
       "classes": [
         {
           "name": "CTrafficManager",
@@ -227,15 +227,15 @@
           "name": "CTrafficLightsSystem",
           "bytes": 4910,
           "routines": 10,
-          "portedBytes": 3130,
-          "portedRoutines": 6
+          "portedBytes": 4430,
+          "portedRoutines": 9
         },
         {
           "name": "CEmergencySirenResponse",
           "bytes": 3640,
           "routines": 8,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 3640,
+          "portedRoutines": 8
         },
         {
           "name": "CPedestrianPopulation",
@@ -277,9 +277,9 @@
     {
       "name": "Rendering & HUD",
       "bytes": 47440,
-      "portedBytes": 40300,
+      "portedBytes": 40780,
       "routines": 116,
-      "portedRoutines": 100,
+      "portedRoutines": 101,
       "classes": [
         {
           "name": "COpenGLRenderer",
@@ -299,8 +299,8 @@
           "name": "CSunsetColorGrading",
           "bytes": 3500,
           "routines": 8,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 480,
+          "portedRoutines": 1
         },
         {
           "name": "CWeaponCrosshairHUD",
@@ -314,16 +314,16 @@
     {
       "name": "World, Audio & Missions",
       "bytes": 35360,
-      "portedBytes": 2230,
+      "portedBytes": 5020,
       "routines": 78,
-      "portedRoutines": 3,
+      "portedRoutines": 8,
       "classes": [
         {
           "name": "CWorldManager",
           "bytes": 17240,
           "routines": 42,
-          "portedBytes": 2230,
-          "portedRoutines": 3
+          "portedBytes": 5020,
+          "portedRoutines": 8
         },
         {
           "name": "CAudioEngine",

@@ -25,6 +25,13 @@ pub struct Car {
     vertical_speed: f32,
     reverse_hold: f32,
     pub suspension_displacements: [f32; 4],
+    pub health: f32,
+    pub burning: bool,
+    pub burn_timer: f32,
+    pub exploded: bool,
+    pub is_police: bool,
+    pub strobe_timer: f32,
+    pub headlights: bool,
 }
 
 impl Car {
@@ -40,11 +47,38 @@ impl Car {
             vertical_speed: 0.0,
             reverse_hold: 0.0,
             suspension_displacements: [0.0; 4],
+            health: 1000.0,
+            burning: false,
+            burn_timer: 0.0,
+            exploded: false,
+            is_police: false,
+            strobe_timer: 0.0,
+            headlights: true,
         }
     }
 
     pub fn suspension_displacements(&self) -> [f32; 4] {
         self.suspension_displacements
+    }
+
+    pub fn apply_damage(&mut self, amount: f32) {
+        if self.exploded {
+            return;
+        }
+        self.health = (self.health - amount).max(0.0);
+        if self.health <= 0.0 {
+            self.exploded = true;
+            self.burning = false;
+            self.speed = 0.0;
+        } else if self.health < 250.0 && !self.burning {
+            self.burning = true;
+            self.burn_timer = 5.0;
+        }
+    }
+
+    #[allow(dead_code)]
+    pub fn is_destroyed(&self) -> bool {
+        self.exploded
     }
 
     /// Align the car's wheel plane with the original static road surface.
@@ -142,9 +176,21 @@ impl Car {
         steer: f32,
         dt: f32,
     ) {
-        let throttle = throttle.clamp(-1.0, 1.0);
-        let brake = brake.clamp(0.0, 1.0);
-        let steer = steer.clamp(-1.0, 1.0);
+        let throttle = if self.exploded { 0.0 } else { throttle.clamp(-1.0, 1.0) };
+        let brake = if self.exploded { 1.0 } else { brake.clamp(0.0, 1.0) };
+        let steer = if self.exploded { 0.0 } else { steer.clamp(-1.0, 1.0) };
+        if self.burning && !self.exploded {
+            self.burn_timer -= dt;
+            if self.burn_timer <= 0.0 {
+                self.exploded = true;
+                self.health = 0.0;
+                self.burning = false;
+                self.speed = 0.0;
+            }
+        }
+        if self.is_police {
+            self.strobe_timer = (self.strobe_timer + dt * 4.0).fract();
+        }
         self.settle_on_ground(world, false, dt);
         // Weight transfer: pitch under throttle/braking, roll under steering
         let pitch = (throttle * 0.02 - brake * 0.035).clamp(-0.04, 0.03);
@@ -216,6 +262,10 @@ impl Car {
         self.wheel_angle = (self.wheel_angle + distance * allowed * self.speed.signum() / 0.35)
             .rem_euclid(std::f32::consts::TAU);
         if allowed < 1.0 {
+            if self.speed.abs() > 6.0 {
+                let damage = (self.speed.abs() - 6.0) * 22.0;
+                self.apply_damage(damage);
+            }
             self.speed = 0.0;
         }
     }
@@ -500,5 +550,42 @@ mod tests {
         for &d in &disp {
             assert!(d.abs() < 0.15, "Suspension should be within limits on flat ground");
         }
+    }
+
+    #[test]
+    fn vehicle_damage_triggers_fire_and_explosion() {
+        let mut car = Car::new([0.0, 0.0, 0.0], 0.0);
+        assert_eq!(car.health, 1000.0);
+        assert!(!car.burning);
+        assert!(!car.exploded);
+
+        // Light damage
+        car.apply_damage(500.0);
+        assert_eq!(car.health, 500.0);
+        assert!(!car.burning);
+
+        // Heavy damage triggers engine fire
+        car.apply_damage(300.0);
+        assert_eq!(car.health, 200.0);
+        assert!(car.burning);
+        assert_eq!(car.burn_timer, 5.0);
+
+        // Step through fire countdown
+        let world = flat_world(0.0);
+        for _ in 0..60 {
+            car.step(&world, 1.0, 0.0, 0.0, 0.1);
+        }
+        assert!(car.exploded);
+        assert_eq!(car.health, 0.0);
+        assert_eq!(car.speed, 0.0);
+    }
+
+    #[test]
+    fn police_strobe_timer_advances_on_police_car() {
+        let mut car = Car::new([0.0, 0.0, 0.0], 0.0);
+        car.is_police = true;
+        let world = flat_world(0.0);
+        car.step(&world, 0.0, 0.0, 0.0, 0.25);
+        assert!(car.strobe_timer > 0.0);
     }
 }

@@ -571,11 +571,7 @@ mod tests {
                 pitch: -(5.0f32 / distance).atan(),
             };
             let triangles = vehicle.animated_triangles(car.wheel_angle, car.steering_angle);
-            let vf = crate::gpu::VehicleFrame {
-                triangles: &triangles,
-                position: car.position,
-                heading: car.heading,
-            };
+            let vf = crate::gpu::VehicleFrame::new(&triangles, car.position, car.heading);
             let mut frame = crate::render::Frame::new();
             frame.draw_scene_all(
                 &levels,
@@ -671,11 +667,7 @@ mod tests {
                 println!("native Banshee travels {travel:.3}m past fallen lamp");
                 assert!(travel > 5.);
                 let crossing = crossing.expect("car must cross the fallen lamp in view");
-                let vf = crate::gpu::VehicleFrame {
-                    triangles: &triangles,
-                    position: crossing.position,
-                    heading: crossing.heading,
-                };
+                let vf = crate::gpu::VehicleFrame::new(&triangles, crossing.position, crossing.heading);
                 frame.draw_scene_all(
                     &levels,
                     0,

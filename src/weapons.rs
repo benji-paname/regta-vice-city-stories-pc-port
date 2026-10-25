@@ -49,6 +49,35 @@ impl WeaponType {
         }
     }
 
+    pub fn to_index(&self) -> usize {
+        match self {
+            Self::Fists => 0,
+            Self::Pistol => 1,
+            Self::MicroSmg => 2,
+            Self::Shotgun => 3,
+            Self::AssaultRifle => 4,
+            Self::SniperRifle => 5,
+            Self::RocketLauncher => 6,
+            Self::Grenade => 7,
+            Self::Flamethrower => 8,
+        }
+    }
+
+    pub fn from_index(idx: usize) -> Self {
+        match idx {
+            0 => Self::Fists,
+            1 => Self::Pistol,
+            2 => Self::MicroSmg,
+            3 => Self::Shotgun,
+            4 => Self::AssaultRifle,
+            5 => Self::SniperRifle,
+            6 => Self::RocketLauncher,
+            7 => Self::Grenade,
+            8 => Self::Flamethrower,
+            _ => Self::Pistol,
+        }
+    }
+
     pub fn damage(&self) -> u32 {
         match self {
             Self::Fists => 12,
@@ -125,6 +154,19 @@ pub struct Particle3D {
     pub kind: ParticleKind,
 }
 
+#[derive(Debug, Clone, Copy)]
+pub struct ExplosionEvent {
+    pub position: [f32; 3],
+    pub radius: f32,
+    pub damage: f32,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct BulletHitEvent {
+    pub position: [f32; 3],
+    pub damage: f32,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CrosshairKind {
     None,
@@ -143,6 +185,8 @@ pub struct WeaponArsenal {
     pub projectiles: Vec<Projectile3D>,
     pub tracers: Vec<BulletTracer>,
     pub particles: Vec<Particle3D>,
+    pub explosions: Vec<ExplosionEvent>,
+    pub bullet_hits: Vec<BulletHitEvent>,
 }
 
 impl Default for WeaponArsenal {
@@ -156,6 +200,8 @@ impl Default for WeaponArsenal {
             projectiles: Vec::new(),
             tracers: Vec::new(),
             particles: Vec::new(),
+            explosions: Vec::new(),
+            bullet_hits: Vec::new(),
         }
     }
 }
@@ -262,6 +308,10 @@ impl WeaponArsenal {
                     color,
                 });
                 self.spawn_impact_sparks(hit_end);
+                self.bullet_hits.push(BulletHitEvent {
+                    position: hit_end,
+                    damage: self.current.damage() as f32 * 6.0,
+                });
             }
             WeaponType::Shotgun => {
                 let range = self.current.range();
@@ -288,6 +338,10 @@ impl WeaponArsenal {
                         lifetime: 0.12,
                         max_lifetime: 0.12,
                         color: [1.0, 0.75, 0.3, 0.75],
+                    });
+                    self.bullet_hits.push(BulletHitEvent {
+                        position: hit_end,
+                        damage: 18.0,
                     });
                 }
             }
@@ -361,6 +415,8 @@ impl WeaponArsenal {
         }
         let dt = dt.min(0.1);
         self.cooldown = (self.cooldown - dt).max(0.0);
+        self.explosions.clear();
+        self.bullet_hits.clear();
 
         // Update bullet tracers
         for tracer in &mut self.tracers {
@@ -407,6 +463,13 @@ impl WeaponArsenal {
                     proj.exploded = true;
                     proj.position = hit.position;
                     spawn_explosion_particles(&mut new_particles, hit.position, proj.kind);
+                    if proj.kind == ProjectileKind::Rocket {
+                        self.explosions.push(ExplosionEvent {
+                            position: hit.position,
+                            radius: 9.0,
+                            damage: 1000.0,
+                        });
+                    }
                 } else if proj.kind == ProjectileKind::Grenade {
                     // Grenade bounce
                     proj.position = [
@@ -453,6 +516,13 @@ impl WeaponArsenal {
             if proj.lifetime <= 0.0 && !proj.exploded {
                 proj.exploded = true;
                 spawn_explosion_particles(&mut new_particles, proj.position, proj.kind);
+                if proj.kind == ProjectileKind::Grenade || proj.kind == ProjectileKind::Rocket {
+                    self.explosions.push(ExplosionEvent {
+                        position: proj.position,
+                        radius: 8.0,
+                        damage: 650.0,
+                    });
+                }
             }
         }
 
@@ -523,6 +593,24 @@ mod tests {
         fn raycast(&self, _origin: [f32; 3], _direction: [f32; 3], _max_distance: f32) -> Option<crate::collision::Hit> {
             None
         }
+    }
+
+    #[test]
+    fn explosion_event_generated_on_rocket_impact() {
+        let mut arsenal = WeaponArsenal::new();
+        arsenal.select(WeaponType::RocketLauncher);
+        let world = crate::collision::CollisionWorld::from_triangles(Vec::new());
+        arsenal.fire([0.0, 0.0, 1.0], [1.0, 0.0, 0.0], &world);
+        assert_eq!(arsenal.projectiles.len(), 1);
+
+        for _ in 0..60 {
+            arsenal.update(&world, 0.1);
+            if !arsenal.explosions.is_empty() {
+                break;
+            }
+        }
+        assert!(!arsenal.explosions.is_empty(), "Explosion event should be generated");
+        assert!(arsenal.explosions[0].damage >= 650.0);
     }
 
     #[test]

@@ -44,6 +44,8 @@ Portage PC natif clean-room et open-source de **Grand Theft Auto: Vice City Stor
 | **F1** | Afficher / Masquer l'aide à l'écran | En jeu |
 | **F2** | Basculer entre 1ère et 3ème personne | À pied |
 | **F3** | Menu d'options (mode Original PS2 vs Moderne) | En jeu |
+| **F5** | **Sauvegarde rapide** de la partie (`VCS-Save.json`) | En jeu |
+| **F9** | **Restauration rapide** de la partie (`VCS-Save.json`) | En jeu |
 | **1 / 2 / 3 / 4** | Téléportation rapide (Beach, Mainland, Mall, Base militaire) | En jeu |
 | **T** | Activer / Désactiver les textures | En jeu |
 | **R** | Réinitialiser la position et le monde | En jeu |
@@ -68,10 +70,22 @@ Portage PC natif clean-room et open-source de **Grand Theft Auto: Vice City Stor
 - **Jalon D — Foule & Réaction de Panique** :
   - Génération de piétons sur les graphes de trottoir avec évitement d'obstacles.
   - Détection des coups de feu et explosions déclenchant la panique immédiate et la fuite désordonnée des PNJ loin de la menace.
+- **Jalon E — Étoiles de Recherche (Wanted Level 0..6) & IA Policière VCPD** :
+  - Évaluation dynamique des crimes : coups de feu en ville, agressions, piétons renversés, explosions.
+  - Poursuite VCPD active : véhicules de patrouille avec gyrophares stroboscopiques 3D bicolores (Bleu/Rouge) et sirène fonçant pour intercepter le joueur.
+  - HUD rétro : jusqu'à 6 étoiles dorées animées avec clignotement d'évasion en haut à droite.
+- **Jalon F — Dégâts des Véhicules, Incendie & Pyrotechnie 3D** :
+  - Gestion des points de vie (1000 PV) : déformation lors des chocs violents et perforation par balles/roquettes.
+  - Volutes de fumée sous le capot à santé < 400 PV, flammes d'incendie moteur 3D vives à santé < 250 PV, et détonation explosive de la carcasse à 0 PV.
+- **Jalon G — Cycle 24h & Coucher de Soleil Synthwave 1984 (Atmosphère Dynamique)** :
+  - Progression fluide des heures du monde : midi tropical bleu azur, spectaculaire coucher de soleil néon magenta/orange doré Vice City, et nuit étoilée avec ciel profond.
+  - Phares 3D projetant des faisceaux lumineux sur la chaussée et feux arrière rouges fonctionnels.
+- **Jalon H — Sauvegarde & Restauration Rapide (F5 / F9)** :
+  - Sauvegarde instantanée (<kbd>F5</kbd>) et chargement (<kbd>F9</kbd>) de l'état complet du monde et du joueur dans `VCS-Save.json` avec bandeau de confirmation à l'écran.
 - **Infrastructure & Vitrine Interactive** :
   - Site vitrine rétro-synthwave 1984 sous `docs/` (`index.html` et `progress.html`).
-  - Outil automatisé `tools/progress/progress.py` générant les métriques, la cartographie SVG Treemap et les badges.
-  - Script racine `Compiler.ps1 -Test` intégrant la compilation Release sous `-D warnings`, l'exécution des tests (126 tests à 100% passants) et la mise à jour des statistiques.
+  - Outil automatisé `tools/progress/progress.py` mesurant 578 / 747 routines portées (78.0% global).
+  - Script racine `Compiler.ps1 -Test` intégrant la compilation Release sous `-D warnings`, l'exécution de 138 tests unitaires passants à 100% et la synchronisation automatique des badges SVG.
 
 ---
 

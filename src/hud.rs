@@ -14,6 +14,8 @@ pub struct PlayerStatus {
     pub money: u32,
     pub hour: u32,
     pub minute: u32,
+    pub wanted_level: u32,
+    pub wanted_flashing: bool,
 }
 impl Default for PlayerStatus {
     fn default() -> Self {
@@ -23,6 +25,8 @@ impl Default for PlayerStatus {
             money: 0,
             hour: 12,
             minute: 0,
+            wanted_level: 0,
+            wanted_flashing: false,
         }
     }
 }
@@ -220,7 +224,7 @@ impl GameHud {
         heading: f32,
         exterior: bool,
     ) -> [Layer; 3] {
-        let mut status = Layer::new(WIDTH - 264, 16, 248, 128);
+        let mut status = Layer::new(WIDTH - 264, 16, 248, 148);
         self.numbers(
             &mut status,
             &format!("{:02}:{:02}", state.hour % 24, state.minute % 60),
@@ -238,6 +242,19 @@ impl GameHud {
         self.draw_bar(&mut status, 32, state.armor, 0, [20, 210, 220, 255]);
         self.draw_bar(&mut status, 59, state.health, 1, [220, 80, 150, 255]);
         self.icon_fist(&mut status);
+        if state.wanted_level > 0 && !state.wanted_flashing {
+            for i in 0..6 {
+                let sx = 60 + i as i32 * 17;
+                let sy = 120;
+                let active = i < state.wanted_level as usize;
+                let col = if active {
+                    [255, 215, 0, 255]
+                } else {
+                    [45, 45, 45, 140]
+                };
+                draw_star(&mut status, sx, sy, col);
+            }
+        }
         let mut radar = Layer::new(20, HEIGHT - 180, 160, 160);
         radar.icon(&self.back, [0, 0, 160, 160]);
         let (s, c) = yaw.sin_cos();
@@ -336,6 +353,23 @@ impl GameHud {
         layer.rect([38, y + 7, 20, 10], [0, 0, 0, 255]);
         layer.rect([46, y + 4, 4, 16], color);
         layer.rect([41, y + 10, 14, 4], color);
+    }
+}
+
+fn draw_star(layer: &mut Layer, x: i32, y: i32, color: [u8; 4]) {
+    let pattern = [
+        0b00100,
+        0b11111,
+        0b01110,
+        0b10101,
+        0b01010,
+    ];
+    for (row, bits) in pattern.iter().enumerate() {
+        for col in 0..5 {
+            if (bits & (1 << (4 - col))) != 0 {
+                layer.rect([x + col * 2, y + row as i32 * 2, 2, 2], color);
+            }
+        }
     }
 }
 fn radar_sample(world: [f32; 2]) -> Option<(usize, [usize; 2])> {
@@ -507,7 +541,7 @@ pub fn guide(pixels: &mut [u32], zone: &str, walking: bool, driving: bool, show_
             if driving {
                 "ARRET + E: SORTIR | R: REINITIALISER | ECHAP: QUITTER"
             } else {
-                "G: MARCHER | E: MONTER DANS UNE VOITURE ARRETEE | R: DEPART | F1: AIDE"
+                "F5: SAUVER | F9: CHARGER | G: MARCHE | E: VEHICULE | F1: AIDE"
             },
             0xbceaff,
         );

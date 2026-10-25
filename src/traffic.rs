@@ -413,6 +413,32 @@ impl Traffic {
             vehicle.car.step(&scene, throttle, brake, steer, dt);
         }
     }
+
+    pub fn apply_explosion_damage(&mut self, pos: [f32; 3], radius: f32, max_damage: f32) {
+        for v in &mut self.cars {
+            let dx = v.car.position[0] - pos[0];
+            let dy = v.car.position[1] - pos[1];
+            let dz = v.car.position[2] - pos[2];
+            let dist = (dx * dx + dy * dy + dz * dz).sqrt();
+            if dist < radius {
+                let factor = 1.0 - dist / radius;
+                v.car.apply_damage(max_damage * factor);
+            }
+        }
+    }
+
+    pub fn apply_bullet_damage(&mut self, hit_pos: [f32; 3], damage: f32) {
+        for v in &mut self.cars {
+            let dx = v.car.position[0] - hit_pos[0];
+            let dy = v.car.position[1] - hit_pos[1];
+            let dz = v.car.position[2] - hit_pos[2];
+            let dist = (dx * dx + dy * dy + dz * dz).sqrt();
+            if dist < 2.5 {
+                v.car.apply_damage(damage);
+                break;
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -600,6 +626,25 @@ mod tests {
             traffic.step(&world, &paths, &shape, [0.0; 3], &[], 1.0 / 60.0);
         }
         assert!(traffic.cars[0].car.position[1] < start[1] + 10.5);
+    }
+
+    #[test]
+    fn traffic_car_damaged_by_explosion_and_bullets() {
+        let mut traffic = Traffic::new();
+        traffic.cars.push(TrafficCar {
+            car: Car::new([100.0, 100.0, 0.0], 0.0),
+            parked: false,
+            from: 0,
+            to: 1,
+            serial: 1,
+        });
+        assert_eq!(traffic.cars[0].car.health, 1000.0);
+
+        traffic.apply_bullet_damage([100.5, 100.2, 0.5], 50.0);
+        assert_eq!(traffic.cars[0].car.health, 950.0);
+
+        traffic.apply_explosion_damage([102.0, 100.0, 0.0], 6.0, 800.0);
+        assert!(traffic.cars[0].car.health < 950.0);
     }
 
     #[test]

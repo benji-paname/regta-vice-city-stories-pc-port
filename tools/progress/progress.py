@@ -55,6 +55,8 @@ RUST_MODULE_MAP = {
     'combat.rs': ['CWeaponManager'],
     'weapons.rs': ['C3DBallistics', 'CProjectileGrenade', 'CProjectileRocket', 'CFireFlamethrower', 'CSniperScopeView'],
     'traffic.rs': ['CTrafficManager', 'CTrafficLightsSystem', 'CEmergencySirenResponse'],
+    'police.rs': ['CEmergencySirenResponse', 'CTrafficManager'],
+    'save.rs': ['CWorldManager', 'CMissionScriptSystem'],
     'population.rs': ['CPedestrianPopulation', 'CPedestrianObstacleAvoidance', 'CPedestrianPanicReaction'],
     'paths.rs': ['CLeedsPathNetwork'],
     'props.rs': ['CPropsObjectsManager'],

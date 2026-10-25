@@ -69,3 +69,10 @@ Le projet, les outils, les données extraites et la copie de travail ISO complè
    - Outil de mesure et d'analyse `tools/progress/progress.py` s'appuyant sur la base de routines `progress/reference.json`.
    - Génération dynamique de badges SVG (`badge-overall.svg`, `badge-routines.svg`, `tests-badge.svg`) et d'un treemap SVG interactif.
    - Script racine `Compiler.ps1 -Test` intégrant `-D warnings`, 100% de tests réussis (126 tests passants) et synchronisation des métriques (progression 74.6%, 554/747 routines).
+
+19. **Jalons E, F, G, H — Étoiles de Recherche, Dégâts/Explosions, Cycle 24h & Sauvegarde Rapide (terminé et validé)** :
+   - **Jalon E (Police & Étoiles de recherche)** : création de `src/police.rs` (`WantedSystem`, `CrimeType`). Détection des infractions (tirs, vols, piétons renversés, explosions), évasion progressive après 18s sans crime avec clignotement, affichage de jusqu'à 6 étoiles dorées animées sur le HUD (`src/hud.rs`). Véhicule VCPD en poursuite active dans `src/traffic.rs` avec sirène et gyrophares stroboscopiques bleus/rouges 3D.
+   - **Jalon F (Dégâts des véhicules & Pyrotechnie 3D)** : intégration de la santé (1000 PV) dans `src/driving.rs`, dégâts de collision et dégâts balistiques (balles, roquettes, grenades) dans `src/weapons.rs`. Rendu 3D dans `src/gpu.rs` de volutes de fumée sous le capot ($H < 400$), de flammes d'incendie moteur vives ($H < 250$) et détonation de la carcasse ($H \le 0$).
+   - **Jalon G (Cycle Jour/Nuit 24h & Atmosphère Synthwave 1984)** : modélisation de `sky_atmosphere` dans `src/gpu.rs` avec teinte du ciel et du brouillard progressifs (Midi bleu azur, coucher de soleil néon magenta/orange Vice City, nuit étoilée). Phares 3D projetant des faisceaux lumineux sur la route et feux arrière rouges.
+   - **Jalon H (Sauvegarde & Restauration Rapide F5/F9)** : création de `src/save.rs` sérialisant l'état complet dans `VCS-Save.json` avec bandeau de notification visuel.
+   - **Résultat** : 138 tests unitaires validés à 100%, 0 avertissements (`-D warnings`), progression globale de **78.0%** (578 / 747 routines).

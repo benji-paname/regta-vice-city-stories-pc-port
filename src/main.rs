@@ -24,6 +24,8 @@ mod texture;
 mod traffic;
 mod vehicle;
 mod water;
+mod police;
+mod save;
 mod weapons;
 use iso::{Disc, Result};
 use sha2::{Digest, Sha256};
@@ -150,6 +152,12 @@ fn run() -> Result<()> {
             triangles: &vehicle.triangles,
             position: [0.0; 3],
             heading: -1.1,
+            health: 1000.0,
+            burning: false,
+            exploded: false,
+            is_police: false,
+            strobe_timer: 0.0,
+            headlights: true,
         };
         let ground_vertex = |p| leeds::Vertex {
             p,
@@ -443,6 +451,12 @@ fn run() -> Result<()> {
             triangles: &vehicle.triangles,
             position: preview_car.position,
             heading: -1.1,
+            health: 1000.0,
+            burning: false,
+            exploded: false,
+            is_police: false,
+            strobe_timer: 0.0,
+            headlights: true,
         };
         frame.draw_scene_all(
             &levels,
