@@ -15,16 +15,146 @@
     "bones": 25,
     "clips": [
       {
+        "duration_seconds": 0.13333334028720856,
+        "maximum_duration_error": 0.00003255903720855713,
+        "name": "CAR_align_RHS",
+        "root_planar_speed": 0.1187753900885582,
+        "rotation_keys": 108,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.7333333492279053,
+        "maximum_duration_error": 0.00017905235290527344,
+        "name": "CAR_closedoorL_RHS",
+        "root_planar_speed": 0.0,
+        "rotation_keys": 149,
+        "rotation_tracks": 21
+      },
+      {
+        "duration_seconds": 0.7333333492279053,
+        "maximum_duration_error": 0.00017905235290527344,
+        "name": "CAR_close_RHS",
+        "root_planar_speed": 0.0,
+        "rotation_keys": 438,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 1.0,
+        "maximum_duration_error": 0.000244140625,
+        "name": "CAR_getinL_RHS",
+        "root_planar_speed": 0.9934194684028625,
+        "rotation_keys": 601,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.9666666388511658,
+        "maximum_duration_error": 0.00023597478866577148,
+        "name": "CAR_getoutL_RHS",
+        "root_planar_speed": 1.0270897150039673,
+        "rotation_keys": 581,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.03333333507180214,
+        "maximum_duration_error": 8.139759302139282e-6,
+        "name": "CAR_Lsit",
+        "root_planar_speed": 0.0,
+        "rotation_keys": 44,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 1.1333333253860474,
+        "maximum_duration_error": 0.0002766847610473633,
+        "name": "CAR_open_RHS",
+        "root_planar_speed": 0.01397357601672411,
+        "rotation_keys": 239,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.800000011920929,
+        "maximum_duration_error": 0.00019532442092895508,
+        "name": "FALL_glide",
+        "root_planar_speed": 0.0,
+        "rotation_keys": 60,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.5666666626930237,
+        "maximum_duration_error": 0.00026041269302368164,
+        "name": "FALL_land",
+        "root_planar_speed": 0.6702309250831604,
+        "rotation_keys": 318,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 1.2999999523162842,
+        "maximum_duration_error": 0.0006835460662841797,
+        "name": "FIGHTIDLE",
+        "root_planar_speed": 0.0,
+        "rotation_keys": 424,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.46666666865348816,
+        "maximum_duration_error": 0.00011393427848815918,
+        "name": "Hit_L_hook",
+        "root_planar_speed": 1.4471677541732788,
+        "rotation_keys": 217,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.46666666865348816,
+        "maximum_duration_error": 0.00023600459098815918,
+        "name": "Hit_R_hook",
+        "root_planar_speed": 1.162050724029541,
+        "rotation_keys": 232,
+        "rotation_tracks": 22
+      },
+      {
         "duration_seconds": 8.066666603088379,
         "maximum_duration_error": 0.004776954650878906,
         "name": "IDLE_stance",
+        "root_planar_speed": 0.0,
         "rotation_keys": 185,
         "rotation_tracks": 21
+      },
+      {
+        "duration_seconds": 0.4333333373069763,
+        "maximum_duration_error": 0.00022786855697631836,
+        "name": "JUMP_glide",
+        "root_planar_speed": 0.0,
+        "rotation_keys": 261,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.20000000298023224,
+        "maximum_duration_error": 0.00004883110523223877,
+        "name": "JUMP_land",
+        "root_planar_speed": 5.857300758361816,
+        "rotation_keys": 146,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.20000000298023224,
+        "maximum_duration_error": 0.00004883110523223877,
+        "name": "JUMP_launch",
+        "root_planar_speed": 3.884428024291992,
+        "rotation_keys": 139,
+        "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.800000011920929,
+        "maximum_duration_error": 0.00019532442092895508,
+        "name": "KO_skid_back",
+        "root_planar_speed": 0.0,
+        "rotation_keys": 506,
+        "rotation_tracks": 22
       },
       {
         "duration_seconds": 0.7333333492279053,
         "maximum_duration_error": 0.00042319297790527344,
         "name": "run_player",
+        "root_planar_speed": 5.278764247894287,
         "rotation_keys": 340,
         "rotation_tracks": 22
       },
@@ -32,16 +162,86 @@
         "duration_seconds": 1.3333333730697632,
         "maximum_duration_error": 0.0005697011947631836,
         "name": "WALK_player",
+        "root_planar_speed": 1.295654296875,
         "rotation_keys": 570,
         "rotation_tracks": 22
+      },
+      {
+        "duration_seconds": 0.3333333432674408,
+        "maximum_duration_error": 0.0000813901424407959,
+        "name": "WEAPON_crouch",
+        "root_planar_speed": 0.08861446380615234,
+        "rotation_keys": 92,
+        "rotation_tracks": 20
+      },
+      {
+        "duration_seconds": 0.6000000238418579,
+        "maximum_duration_error": 0.03347170352935791,
+        "name": "Fight_Ljab",
+        "root_planar_speed": 0.3481038212776184,
+        "rotation_keys": 254,
+        "rotation_tracks": 20
+      },
+      {
+        "duration_seconds": 0.6333333253860474,
+        "maximum_duration_error": 0.00015461444854736328,
+        "name": "Fight_Rcross",
+        "root_planar_speed": 0.39608603715896606,
+        "rotation_keys": 212,
+        "rotation_tracks": 20
+      },
+      {
+        "duration_seconds": 1.3666666746139526,
+        "maximum_duration_error": 0.03365886211395264,
+        "name": "swim",
+        "root_planar_speed": 1.368557095527649,
+        "rotation_keys": 186,
+        "rotation_tracks": 20
+      },
+      {
+        "duration_seconds": 0.8333333134651184,
+        "maximum_duration_error": 0.03352862596511841,
+        "name": "swim_fast",
+        "root_planar_speed": 2.856152296066284,
+        "rotation_keys": 179,
+        "rotation_tracks": 20
+      },
+      {
+        "duration_seconds": 1.3333333730697632,
+        "maximum_duration_error": 0.0004476308822631836,
+        "name": "swim_idle",
+        "root_planar_speed": 0.0,
+        "rotation_keys": 146,
+        "rotation_tracks": 20
+      },
+      {
+        "duration_seconds": 0.5,
+        "maximum_duration_error": 0.0001220703125,
+        "name": "swim_start",
+        "root_planar_speed": 0.0,
+        "rotation_keys": 90,
+        "rotation_tracks": 20
+      },
+      {
+        "duration_seconds": 1.3333333730697632,
+        "maximum_duration_error": 0.0008138418197631836,
+        "name": "swim_to_idle",
+        "root_planar_speed": 1.03363037109375,
+        "rotation_keys": 105,
+        "rotation_tracks": 20
       }
+    ],
+    "clothing_colors": null,
+    "collision_primitives": [
+      0,
+      3
     ],
     "drawable_triangles": 1644,
     "max_bind_inverse_error": 2.980232238769531e-7,
     "max_weight_sum_error": 0.0,
     "model_bytes": 89211,
     "model_id": 0,
-    "root_translation_locked": true,
+    "root_planar_translation_locked": true,
     "source_strip_triangles": 2559,
     "source_vertices": 2581,
     "texture_bytes": 45880,
@@ -119,7 +319,7 @@
       "zone": "MALL"
     }
   ],
-  "iso": "F:\\JEUX EMULATION\\PS2 GAMES\\Grand Theft Auto - Vice City Stories.iso",
+  "iso": "C:\\Users\\BENJAMIN\\Documents\\Codex\\2026-10-05\\en\\work\\Grand Theft Auto - Vice City Stories.iso",
   "iso_entries": {
     "AUDIO": {
       "directory": true,
@@ -2396,18 +2596,118 @@
     }
   ],
   "limitations": [
-    "No original game logic, missions, AI or original pedestrian physics",
-    "Vehicle rendering integrated for Banshee; driving physics, player entry/exit and traffic remain in development",
-    "Original character rotations; root translation locked, no gait IK or transition blending",
-    "Initial static colliders; scripted swaps and dynamic object activation are not implemented",
-    "Visual visibility uses noon and default script state; LOD, underwater passes and additional interiors remain incomplete"
+    "No missions or original game logic; pedestrian and traffic controllers are provisional",
+    "Banshee handling is approximate; native low-car entry/exit/root motion and door hinges, provisional alignment and opening timing",
+    "Original jump/swim poses and root height, controller-owned XY; provisional blends/physics, no gait IK",
+    "Native map/vehicle colliders and selected dynamic street props; mission-driven swaps remain incomplete",
+    "Visual visibility and HUD clock use noon; health/armor react to melee, economy not implemented",
+    "Native unarmed combat clips; damage, impact timing and retaliation remain provisional, no firearms/grappling",
+    "Original PS2 preset disables optional modern crouch/low-ledge traversal; modern animation adaptation is not a native San Andreas animation",
+    "LOD and additional interiors remain incomplete",
+    "Native water grid/texture and swimming clips; provisional swimmer buoyancy/drag, no waves/diving/stamina/quay climbing"
   ],
   "pose_checks": [
+    {
+      "clip": "CAR_align_RHS",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.32660549879074097
+    },
+    {
+      "clip": "CAR_closedoorL_RHS",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.7987129092216492
+    },
+    {
+      "clip": "CAR_close_RHS",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.5998389720916748
+    },
+    {
+      "clip": "CAR_getinL_RHS",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.5212798118591309
+    },
+    {
+      "clip": "CAR_getoutL_RHS",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 1.0249207019805908
+    },
+    {
+      "clip": "CAR_Lsit",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 2.384185791015625e-7
+    },
+    {
+      "clip": "CAR_open_RHS",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.31380367279052734
+    },
+    {
+      "clip": "FALL_glide",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.13269902765750885
+    },
+    {
+      "clip": "FALL_land",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.5237687826156616
+    },
+    {
+      "clip": "FIGHTIDLE",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.06503486633300781
+    },
+    {
+      "clip": "Hit_L_hook",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.8568252325057983
+    },
+    {
+      "clip": "Hit_R_hook",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.5080957412719727
+    },
     {
       "clip": "IDLE_stance",
       "finite": true,
       "max_loop_error_m": 0.0,
       "max_position_variation_m": 0.03639960289001465
+    },
+    {
+      "clip": "JUMP_glide",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.6815909147262573
+    },
+    {
+      "clip": "JUMP_land",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.5250251293182373
+    },
+    {
+      "clip": "JUMP_launch",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.418820858001709
+    },
+    {
+      "clip": "KO_skid_back",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 1.0956377983093262
     },
     {
       "clip": "run_player",
@@ -2420,9 +2720,205 @@
       "finite": true,
       "max_loop_error_m": 0.0,
       "max_position_variation_m": 0.7993965148925781
+    },
+    {
+      "clip": "WEAPON_crouch",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.28248822689056396
+    },
+    {
+      "clip": "Fight_Ljab",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.704500675201416
+    },
+    {
+      "clip": "Fight_Rcross",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.32774627208709717
+    },
+    {
+      "clip": "swim",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.42719566822052
+    },
+    {
+      "clip": "swim_fast",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 1.3593566417694092
+    },
+    {
+      "clip": "swim_idle",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.45222681760787964
+    },
+    {
+      "clip": "swim_start",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 0.38776808977127075
+    },
+    {
+      "clip": "swim_to_idle",
+      "finite": true,
+      "max_loop_error_m": 0.0,
+      "max_position_variation_m": 1.0423845052719116
     }
   ],
-  "status": "continuous-map-and-animated-player-prototype",
+  "status": "continuous-map-player-and-ambient-traffic-prototype",
+  "street_furniture": {
+    "already_present": 1,
+    "by_model": {
+      "lamppost1": 182,
+      "lamppost2": 63,
+      "lamppost3": 244,
+      "mlamppost": 235,
+      "parkbench1": 54,
+      "streetlamp1": 229,
+      "streetlamp2": 21
+    },
+    "original_physics": {
+      "lamppost1": {
+        "mass": 600.0,
+        "raw_bytes_1c_to_20": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "raw_floats_04_to_18": [
+          4000.0,
+          0.9900000095367432,
+          0.05000000074505806,
+          9.600000381469727,
+          240.0,
+          1.0
+        ],
+        "record_index": 7
+      },
+      "lamppost2": {
+        "mass": 1250.0,
+        "raw_bytes_1c_to_20": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "raw_floats_04_to_18": [
+          12500.0,
+          0.9900000095367432,
+          0.05000000074505806,
+          20.0,
+          240.0,
+          1.0
+        ],
+        "record_index": 8
+      },
+      "lamppost3": {
+        "mass": 700.0,
+        "raw_bytes_1c_to_20": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "raw_floats_04_to_18": [
+          6000.0,
+          0.9900000095367432,
+          0.05000000074505806,
+          11.199999809265137,
+          240.0,
+          1.0
+        ],
+        "record_index": 9
+      },
+      "mlamppost": {
+        "mass": 600.0,
+        "raw_bytes_1c_to_20": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "raw_floats_04_to_18": [
+          4000.0,
+          0.9900000095367432,
+          0.05000000074505806,
+          9.600000381469727,
+          240.0,
+          1.0
+        ],
+        "record_index": 84
+      },
+      "parkbench1": {
+        "mass": 50.0,
+        "raw_bytes_1c_to_20": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "raw_floats_04_to_18": [
+          100.0,
+          0.9900000095367432,
+          0.05000000074505806,
+          0.800000011920929,
+          5.0,
+          1.0
+        ],
+        "record_index": 30
+      },
+      "streetlamp1": {
+        "mass": 600.0,
+        "raw_bytes_1c_to_20": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "raw_floats_04_to_18": [
+          4000.0,
+          0.9900000095367432,
+          0.05000000074505806,
+          9.600000381469727,
+          240.0,
+          1.0
+        ],
+        "record_index": 12
+      },
+      "streetlamp2": {
+        "mass": 600.0,
+        "raw_bytes_1c_to_20": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "raw_floats_04_to_18": [
+          4000.0,
+          0.9900000095367432,
+          0.05000000074505806,
+          9.600000381469727,
+          240.0,
+          1.0
+        ],
+        "record_index": 13
+      }
+    },
+    "restored": 1028
+  },
   "vehicle": {
     "body_triangles": 1582,
     "bounds": [
@@ -2437,14 +2933,171 @@
         1.3264474868774414
       ]
     ],
+    "collision_primitives": [
+      12,
+      22
+    ],
+    "frame_positions": {
+      "backtop": [
+        2.1199673128080576e-9,
+        0.0,
+        0.699999988079071
+      ],
+      "banshee": [
+        0.0,
+        0.0,
+        0.699999988079071
+      ],
+      "bonnet_dummy": [
+        0.0,
+        0.47699999809265137,
+        0.9539999961853027
+      ],
+      "bottom": [
+        2.1199673128080576e-9,
+        0.0,
+        0.699999988079071
+      ],
+      "bump_front_dummy": [
+        0.0,
+        2.369999885559082,
+        0.3720000088214874
+      ],
+      "bump_rear_dummy": [
+        0.0,
+        -2.268266439437866,
+        0.3409999907016754
+      ],
+      "chassis_dummy": [
+        0.0,
+        0.0,
+        0.699999988079071
+      ],
+      "chassis_hi": [
+        2.1199673128080576e-9,
+        0.0,
+        0.699999988079071
+      ],
+      "chassis_vlo": [
+        0.0,
+        2.0236727849010094e-9,
+        0.699999988079071
+      ],
+      "dash": [
+        2.1199673128080576e-9,
+        0.0,
+        0.699999988079071
+      ],
+      "door_lf_dummy": [
+        -1.027999997138977,
+        0.3889999985694885,
+        0.5989999771118164
+      ],
+      "door_rf_dummy": [
+        1.027999997138977,
+        0.3889999985694885,
+        0.5989999771118164
+      ],
+      "engine": [
+        2.1199673128080576e-9,
+        0.0,
+        0.699999988079071
+      ],
+      "innerarch": [
+        2.1199673128080576e-9,
+        0.0,
+        0.699999988079071
+      ],
+      "seats": [
+        2.1199673128080576e-9,
+        0.0,
+        0.699999988079071
+      ],
+      "wheel_lb_dummy": [
+        -0.9390000104904175,
+        -1.5410000085830688,
+        0.3499999940395355
+      ],
+      "wheel_lf_dummy": [
+        -0.9390000104904175,
+        1.5369999408721924,
+        0.3499999940395355
+      ],
+      "wheel_rb_dummy": [
+        0.9390000104904175,
+        -1.5410000085830688,
+        0.34999990463256836
+      ],
+      "wheel_rf_dummy": [
+        0.9390000104904175,
+        1.5369999408721924,
+        0.3499999940395355
+      ],
+      "windscreen_dummy": [
+        9.378796406167567e-9,
+        0.10899999737739563,
+        1.1069999933242798
+      ],
+      "wing_lf_dummy": [
+        -0.8859999775886536,
+        1.277999997138977,
+        0.574999988079071
+      ],
+      "wing_rf_dummy": [
+        0.8859999775886536,
+        1.277999997138977,
+        0.574999988079071
+      ]
+    },
+    "handling_record_address": 5003008,
+    "missing_texture_names": [],
     "model_id": 175,
     "name": "BANSHEE",
-    "texture_names": [
-      "xv_vehiclegrunge_sl",
+    "resolved_texture_names": [
+      "banshee868bit_sl",
       "tyres",
+      "xv_vcs_licenseplates_cs",
+      "xv_vehiclegeneric_sl",
+      "xv_vehiclegrunge_sl"
+    ],
+    "texture_names": [
+      "tyres",
+      "xv_vcs_licenseplates_cs",
       "banshee868bit_sl",
       "xv_vehiclegeneric_sl",
-      "xv_vcs_licenseplates_cs"
+      "xv_vehiclegrunge_sl"
+    ],
+    "textures": [
+      {
+        "has_alpha": false,
+        "height": 64,
+        "name": "tyres",
+        "width": 32
+      },
+      {
+        "has_alpha": false,
+        "height": 64,
+        "name": "xv_vcs_licenseplates_cs",
+        "width": 128
+      },
+      {
+        "has_alpha": false,
+        "height": 128,
+        "name": "banshee868bit_sl",
+        "width": 128
+      },
+      {
+        "has_alpha": false,
+        "height": 128,
+        "name": "xv_vehiclegeneric_sl",
+        "width": 128
+      },
+      {
+        "has_alpha": false,
+        "height": 128,
+        "name": "xv_vehiclegrunge_sl",
+        "width": 128
+      }
     ],
     "total_atomics": 20,
     "total_triangles": 2238,
@@ -2454,5 +3107,24 @@
     "wheel_scale": 0.699999988079071,
     "wheel_triangles": 656
   },
-  "version": "0.3.0"
+  "version": "0.3.0",
+  "water": {
+    "cells": 11672,
+    "height_levels": [
+      6.0
+    ],
+    "noon_weather_zero_rgba": [
+      42,
+      131,
+      134,
+      130
+    ],
+    "patches": 224,
+    "texture_name": "particle/waterclear256",
+    "texture_size": [
+      128,
+      128
+    ],
+    "triangles": 23344
+  }
 }

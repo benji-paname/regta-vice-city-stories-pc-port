@@ -1,0 +1,837 @@
+[
+  {
+    "model_id": 14,
+    "texture_stream_id": 7546,
+    "model_bytes": 54498,
+    "texture_bytes": 9392,
+    "bones": 25,
+    "source_vertices": 1449,
+    "source_strip_triangles": 1429,
+    "drawable_triangles": 907,
+    "textures": 7,
+    "texture_names": [
+      "male_01_polo_shirt",
+      "male_01_polo_shirt",
+      "male_01_trousers",
+      "male_01_head",
+      "male_01_arms",
+      "white_hand_base_32",
+      "male_01_shoe"
+    ],
+    "clothing_colors": [
+      [
+        123,
+        107,
+        198
+      ],
+      [
+        90,
+        107,
+        132
+      ],
+      [
+        247,
+        231,
+        206
+      ],
+      [
+        41,
+        66,
+        140
+      ]
+    ],
+    "collision_primitives": [
+      0,
+      3
+    ],
+    "bind_bounds": [
+      [
+        -0.9010349,
+        -0.11380903,
+        -0.000051259995
+      ],
+      [
+        0.90105563,
+        0.20737812,
+        1.8638688
+      ]
+    ],
+    "max_bind_inverse_error": 2.3841858e-7,
+    "max_weight_sum_error": 0.000012397766,
+    "clips": [
+      {
+        "name": "CAR_align_RHS",
+        "duration_seconds": 0.13333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 98,
+        "maximum_duration_error": 0.000032559037,
+        "root_planar_speed": 0.11877539
+      },
+      {
+        "name": "CAR_closedoorL_RHS",
+        "duration_seconds": 0.73333335,
+        "rotation_tracks": 21,
+        "rotation_keys": 149,
+        "maximum_duration_error": 0.00017905235,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "CAR_close_RHS",
+        "duration_seconds": 0.73333335,
+        "rotation_tracks": 20,
+        "rotation_keys": 413,
+        "maximum_duration_error": 0.00017905235,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "CAR_getinL_RHS",
+        "duration_seconds": 1.0,
+        "rotation_tracks": 20,
+        "rotation_keys": 554,
+        "maximum_duration_error": 0.00024414062,
+        "root_planar_speed": 0.99341947
+      },
+      {
+        "name": "CAR_getoutL_RHS",
+        "duration_seconds": 0.96666664,
+        "rotation_tracks": 20,
+        "rotation_keys": 542,
+        "maximum_duration_error": 0.00023597479,
+        "root_planar_speed": 1.0270897
+      },
+      {
+        "name": "CAR_Lsit",
+        "duration_seconds": 0.033333335,
+        "rotation_tracks": 20,
+        "rotation_keys": 40,
+        "maximum_duration_error": 0.000008139759,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "CAR_open_RHS",
+        "duration_seconds": 1.1333333,
+        "rotation_tracks": 20,
+        "rotation_keys": 223,
+        "maximum_duration_error": 0.00027668476,
+        "root_planar_speed": 0.013973576
+      },
+      {
+        "name": "FALL_glide",
+        "duration_seconds": 0.8,
+        "rotation_tracks": 20,
+        "rotation_keys": 56,
+        "maximum_duration_error": 0.00019532442,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "FALL_land",
+        "duration_seconds": 0.56666666,
+        "rotation_tracks": 20,
+        "rotation_keys": 298,
+        "maximum_duration_error": 0.00013834238,
+        "root_planar_speed": 0.6702309
+      },
+      {
+        "name": "FIGHTIDLE",
+        "duration_seconds": 1.3,
+        "rotation_tracks": 20,
+        "rotation_keys": 420,
+        "maximum_duration_error": 0.00068354607,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "Hit_L_hook",
+        "duration_seconds": 0.46666667,
+        "rotation_tracks": 20,
+        "rotation_keys": 212,
+        "maximum_duration_error": 0.00011393428,
+        "root_planar_speed": 1.4471678
+      },
+      {
+        "name": "Hit_R_hook",
+        "duration_seconds": 0.46666667,
+        "rotation_tracks": 20,
+        "rotation_keys": 226,
+        "maximum_duration_error": 0.00023600459,
+        "root_planar_speed": 1.1620507
+      },
+      {
+        "name": "IDLE_stance",
+        "duration_seconds": 8.066667,
+        "rotation_tracks": 21,
+        "rotation_keys": 185,
+        "maximum_duration_error": 0.0047769547,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "JUMP_glide",
+        "duration_seconds": 0.43333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 249,
+        "maximum_duration_error": 0.000105798244,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "JUMP_land",
+        "duration_seconds": 0.2,
+        "rotation_tracks": 20,
+        "rotation_keys": 137,
+        "maximum_duration_error": 0.000048831105,
+        "root_planar_speed": 5.8573008
+      },
+      {
+        "name": "JUMP_launch",
+        "duration_seconds": 0.2,
+        "rotation_tracks": 20,
+        "rotation_keys": 135,
+        "maximum_duration_error": 0.000048831105,
+        "root_planar_speed": 3.884428
+      },
+      {
+        "name": "KO_skid_back",
+        "duration_seconds": 0.8,
+        "rotation_tracks": 20,
+        "rotation_keys": 466,
+        "maximum_duration_error": 0.00019532442,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "run_player",
+        "duration_seconds": 0.73333335,
+        "rotation_tracks": 20,
+        "rotation_keys": 336,
+        "maximum_duration_error": 0.00042319298,
+        "root_planar_speed": 5.2787642
+      },
+      {
+        "name": "WALK_player",
+        "duration_seconds": 1.3333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 566,
+        "maximum_duration_error": 0.0005697012,
+        "root_planar_speed": 1.2956543
+      },
+      {
+        "name": "WEAPON_crouch",
+        "duration_seconds": 0.33333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 92,
+        "maximum_duration_error": 0.00008139014,
+        "root_planar_speed": 0.088614464
+      },
+      {
+        "name": "Fight_Ljab",
+        "duration_seconds": 0.6,
+        "rotation_tracks": 20,
+        "rotation_keys": 254,
+        "maximum_duration_error": 0.033471704,
+        "root_planar_speed": 0.34810382
+      },
+      {
+        "name": "Fight_Rcross",
+        "duration_seconds": 0.6333333,
+        "rotation_tracks": 20,
+        "rotation_keys": 212,
+        "maximum_duration_error": 0.00015461445,
+        "root_planar_speed": 0.39608604
+      },
+      {
+        "name": "swim",
+        "duration_seconds": 1.3666667,
+        "rotation_tracks": 20,
+        "rotation_keys": 186,
+        "maximum_duration_error": 0.033658862,
+        "root_planar_speed": 1.3685571
+      },
+      {
+        "name": "swim_fast",
+        "duration_seconds": 0.8333333,
+        "rotation_tracks": 20,
+        "rotation_keys": 179,
+        "maximum_duration_error": 0.033528626,
+        "root_planar_speed": 2.8561523
+      },
+      {
+        "name": "swim_idle",
+        "duration_seconds": 1.3333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 146,
+        "maximum_duration_error": 0.00044763088,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "swim_start",
+        "duration_seconds": 0.5,
+        "rotation_tracks": 20,
+        "rotation_keys": 90,
+        "maximum_duration_error": 0.00012207031,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "swim_to_idle",
+        "duration_seconds": 1.3333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 105,
+        "maximum_duration_error": 0.0008138418,
+        "root_planar_speed": 1.0336304
+      }
+    ],
+    "root_planar_translation_locked": true
+  },
+  {
+    "model_id": 19,
+    "texture_stream_id": 7551,
+    "model_bytes": 54438,
+    "texture_bytes": 9392,
+    "bones": 25,
+    "source_vertices": 1449,
+    "source_strip_triangles": 1427,
+    "drawable_triangles": 901,
+    "textures": 6,
+    "texture_names": [
+      "hmost_shirt",
+      "hmost_arms",
+      "hispanic_hand_base_32",
+      "hmost_trousers",
+      "hmost_shoe",
+      "hmost_head"
+    ],
+    "clothing_colors": [
+      [
+        255,
+        165,
+        82
+      ],
+      [
+        165,
+        173,
+        189
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "collision_primitives": [
+      0,
+      3
+    ],
+    "bind_bounds": [
+      [
+        -0.3359319,
+        -0.15513787,
+        -0.016727924
+      ],
+      [
+        0.35435575,
+        0.2875874,
+        1.8535398
+      ]
+    ],
+    "max_bind_inverse_error": 6.556511e-7,
+    "max_weight_sum_error": 0.000015258789,
+    "clips": [
+      {
+        "name": "CAR_align_RHS",
+        "duration_seconds": 0.13333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 98,
+        "maximum_duration_error": 0.000032559037,
+        "root_planar_speed": 0.11877539
+      },
+      {
+        "name": "CAR_closedoorL_RHS",
+        "duration_seconds": 0.73333335,
+        "rotation_tracks": 21,
+        "rotation_keys": 149,
+        "maximum_duration_error": 0.00017905235,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "CAR_close_RHS",
+        "duration_seconds": 0.73333335,
+        "rotation_tracks": 20,
+        "rotation_keys": 413,
+        "maximum_duration_error": 0.00017905235,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "CAR_getinL_RHS",
+        "duration_seconds": 1.0,
+        "rotation_tracks": 20,
+        "rotation_keys": 554,
+        "maximum_duration_error": 0.00024414062,
+        "root_planar_speed": 0.99341947
+      },
+      {
+        "name": "CAR_getoutL_RHS",
+        "duration_seconds": 0.96666664,
+        "rotation_tracks": 20,
+        "rotation_keys": 542,
+        "maximum_duration_error": 0.00023597479,
+        "root_planar_speed": 1.0270897
+      },
+      {
+        "name": "CAR_Lsit",
+        "duration_seconds": 0.033333335,
+        "rotation_tracks": 20,
+        "rotation_keys": 40,
+        "maximum_duration_error": 0.000008139759,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "CAR_open_RHS",
+        "duration_seconds": 1.1333333,
+        "rotation_tracks": 20,
+        "rotation_keys": 223,
+        "maximum_duration_error": 0.00027668476,
+        "root_planar_speed": 0.013973576
+      },
+      {
+        "name": "FALL_glide",
+        "duration_seconds": 0.8,
+        "rotation_tracks": 20,
+        "rotation_keys": 56,
+        "maximum_duration_error": 0.00019532442,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "FALL_land",
+        "duration_seconds": 0.56666666,
+        "rotation_tracks": 20,
+        "rotation_keys": 298,
+        "maximum_duration_error": 0.00013834238,
+        "root_planar_speed": 0.6702309
+      },
+      {
+        "name": "FIGHTIDLE",
+        "duration_seconds": 1.3,
+        "rotation_tracks": 20,
+        "rotation_keys": 420,
+        "maximum_duration_error": 0.00068354607,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "Hit_L_hook",
+        "duration_seconds": 0.46666667,
+        "rotation_tracks": 20,
+        "rotation_keys": 212,
+        "maximum_duration_error": 0.00011393428,
+        "root_planar_speed": 1.4471678
+      },
+      {
+        "name": "Hit_R_hook",
+        "duration_seconds": 0.46666667,
+        "rotation_tracks": 20,
+        "rotation_keys": 226,
+        "maximum_duration_error": 0.00023600459,
+        "root_planar_speed": 1.1620507
+      },
+      {
+        "name": "IDLE_stance",
+        "duration_seconds": 8.066667,
+        "rotation_tracks": 21,
+        "rotation_keys": 185,
+        "maximum_duration_error": 0.0047769547,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "JUMP_glide",
+        "duration_seconds": 0.43333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 249,
+        "maximum_duration_error": 0.000105798244,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "JUMP_land",
+        "duration_seconds": 0.2,
+        "rotation_tracks": 20,
+        "rotation_keys": 137,
+        "maximum_duration_error": 0.000048831105,
+        "root_planar_speed": 5.8573008
+      },
+      {
+        "name": "JUMP_launch",
+        "duration_seconds": 0.2,
+        "rotation_tracks": 20,
+        "rotation_keys": 135,
+        "maximum_duration_error": 0.000048831105,
+        "root_planar_speed": 3.884428
+      },
+      {
+        "name": "KO_skid_back",
+        "duration_seconds": 0.8,
+        "rotation_tracks": 20,
+        "rotation_keys": 466,
+        "maximum_duration_error": 0.00019532442,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "run_player",
+        "duration_seconds": 0.73333335,
+        "rotation_tracks": 20,
+        "rotation_keys": 336,
+        "maximum_duration_error": 0.00042319298,
+        "root_planar_speed": 5.2787642
+      },
+      {
+        "name": "WALK_player",
+        "duration_seconds": 1.3333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 566,
+        "maximum_duration_error": 0.0005697012,
+        "root_planar_speed": 1.2956543
+      },
+      {
+        "name": "WEAPON_crouch",
+        "duration_seconds": 0.33333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 92,
+        "maximum_duration_error": 0.00008139014,
+        "root_planar_speed": 0.088614464
+      },
+      {
+        "name": "Fight_Ljab",
+        "duration_seconds": 0.6,
+        "rotation_tracks": 20,
+        "rotation_keys": 254,
+        "maximum_duration_error": 0.033471704,
+        "root_planar_speed": 0.34810382
+      },
+      {
+        "name": "Fight_Rcross",
+        "duration_seconds": 0.6333333,
+        "rotation_tracks": 20,
+        "rotation_keys": 212,
+        "maximum_duration_error": 0.00015461445,
+        "root_planar_speed": 0.39608604
+      },
+      {
+        "name": "swim",
+        "duration_seconds": 1.3666667,
+        "rotation_tracks": 20,
+        "rotation_keys": 186,
+        "maximum_duration_error": 0.033658862,
+        "root_planar_speed": 1.3685571
+      },
+      {
+        "name": "swim_fast",
+        "duration_seconds": 0.8333333,
+        "rotation_tracks": 20,
+        "rotation_keys": 179,
+        "maximum_duration_error": 0.033528626,
+        "root_planar_speed": 2.8561523
+      },
+      {
+        "name": "swim_idle",
+        "duration_seconds": 1.3333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 146,
+        "maximum_duration_error": 0.00044763088,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "swim_start",
+        "duration_seconds": 0.5,
+        "rotation_tracks": 20,
+        "rotation_keys": 90,
+        "maximum_duration_error": 0.00012207031,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "swim_to_idle",
+        "duration_seconds": 1.3333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 105,
+        "maximum_duration_error": 0.0008138418,
+        "root_planar_speed": 1.0336304
+      }
+    ],
+    "root_planar_translation_locked": true
+  },
+  {
+    "model_id": 22,
+    "texture_stream_id": 7554,
+    "model_bytes": 56816,
+    "texture_bytes": 9392,
+    "bones": 25,
+    "source_vertices": 1535,
+    "source_strip_triangles": 1511,
+    "drawable_triangles": 967,
+    "textures": 6,
+    "texture_names": [
+      "hmyri_shirt",
+      "hmyri_top",
+      "hmyri_head",
+      "hmyri_hands",
+      "hmyri_trousers",
+      "hmyri_shoes"
+    ],
+    "clothing_colors": [
+      [
+        82,
+        198,
+        247
+      ],
+      [
+        90,
+        107,
+        132
+      ],
+      [
+        16,
+        24,
+        33
+      ],
+      [
+        82,
+        198,
+        247
+      ]
+    ],
+    "collision_primitives": [
+      0,
+      3
+    ],
+    "bind_bounds": [
+      [
+        -0.32279027,
+        -0.1968919,
+        0.011199713
+      ],
+      [
+        0.3324932,
+        0.21668863,
+        1.8550999
+      ]
+    ],
+    "max_bind_inverse_error": 5.9604645e-7,
+    "max_weight_sum_error": 0.0,
+    "clips": [
+      {
+        "name": "CAR_align_RHS",
+        "duration_seconds": 0.13333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 98,
+        "maximum_duration_error": 0.000032559037,
+        "root_planar_speed": 0.11877539
+      },
+      {
+        "name": "CAR_closedoorL_RHS",
+        "duration_seconds": 0.73333335,
+        "rotation_tracks": 21,
+        "rotation_keys": 149,
+        "maximum_duration_error": 0.00017905235,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "CAR_close_RHS",
+        "duration_seconds": 0.73333335,
+        "rotation_tracks": 20,
+        "rotation_keys": 413,
+        "maximum_duration_error": 0.00017905235,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "CAR_getinL_RHS",
+        "duration_seconds": 1.0,
+        "rotation_tracks": 20,
+        "rotation_keys": 554,
+        "maximum_duration_error": 0.00024414062,
+        "root_planar_speed": 0.99341947
+      },
+      {
+        "name": "CAR_getoutL_RHS",
+        "duration_seconds": 0.96666664,
+        "rotation_tracks": 20,
+        "rotation_keys": 542,
+        "maximum_duration_error": 0.00023597479,
+        "root_planar_speed": 1.0270897
+      },
+      {
+        "name": "CAR_Lsit",
+        "duration_seconds": 0.033333335,
+        "rotation_tracks": 20,
+        "rotation_keys": 40,
+        "maximum_duration_error": 0.000008139759,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "CAR_open_RHS",
+        "duration_seconds": 1.1333333,
+        "rotation_tracks": 20,
+        "rotation_keys": 223,
+        "maximum_duration_error": 0.00027668476,
+        "root_planar_speed": 0.013973576
+      },
+      {
+        "name": "FALL_glide",
+        "duration_seconds": 0.8,
+        "rotation_tracks": 20,
+        "rotation_keys": 56,
+        "maximum_duration_error": 0.00019532442,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "FALL_land",
+        "duration_seconds": 0.56666666,
+        "rotation_tracks": 20,
+        "rotation_keys": 298,
+        "maximum_duration_error": 0.00013834238,
+        "root_planar_speed": 0.6702309
+      },
+      {
+        "name": "FIGHTIDLE",
+        "duration_seconds": 1.3,
+        "rotation_tracks": 20,
+        "rotation_keys": 420,
+        "maximum_duration_error": 0.00068354607,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "Hit_L_hook",
+        "duration_seconds": 0.46666667,
+        "rotation_tracks": 20,
+        "rotation_keys": 212,
+        "maximum_duration_error": 0.00011393428,
+        "root_planar_speed": 1.4471678
+      },
+      {
+        "name": "Hit_R_hook",
+        "duration_seconds": 0.46666667,
+        "rotation_tracks": 20,
+        "rotation_keys": 226,
+        "maximum_duration_error": 0.00023600459,
+        "root_planar_speed": 1.1620507
+      },
+      {
+        "name": "IDLE_stance",
+        "duration_seconds": 8.066667,
+        "rotation_tracks": 21,
+        "rotation_keys": 185,
+        "maximum_duration_error": 0.0047769547,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "JUMP_glide",
+        "duration_seconds": 0.43333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 249,
+        "maximum_duration_error": 0.000105798244,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "JUMP_land",
+        "duration_seconds": 0.2,
+        "rotation_tracks": 20,
+        "rotation_keys": 137,
+        "maximum_duration_error": 0.000048831105,
+        "root_planar_speed": 5.8573008
+      },
+      {
+        "name": "JUMP_launch",
+        "duration_seconds": 0.2,
+        "rotation_tracks": 20,
+        "rotation_keys": 135,
+        "maximum_duration_error": 0.000048831105,
+        "root_planar_speed": 3.884428
+      },
+      {
+        "name": "KO_skid_back",
+        "duration_seconds": 0.8,
+        "rotation_tracks": 20,
+        "rotation_keys": 466,
+        "maximum_duration_error": 0.00019532442,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "run_player",
+        "duration_seconds": 0.73333335,
+        "rotation_tracks": 20,
+        "rotation_keys": 336,
+        "maximum_duration_error": 0.00042319298,
+        "root_planar_speed": 5.2787642
+      },
+      {
+        "name": "WALK_player",
+        "duration_seconds": 1.3333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 566,
+        "maximum_duration_error": 0.0005697012,
+        "root_planar_speed": 1.2956543
+      },
+      {
+        "name": "WEAPON_crouch",
+        "duration_seconds": 0.33333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 92,
+        "maximum_duration_error": 0.00008139014,
+        "root_planar_speed": 0.088614464
+      },
+      {
+        "name": "Fight_Ljab",
+        "duration_seconds": 0.6,
+        "rotation_tracks": 20,
+        "rotation_keys": 254,
+        "maximum_duration_error": 0.033471704,
+        "root_planar_speed": 0.34810382
+      },
+      {
+        "name": "Fight_Rcross",
+        "duration_seconds": 0.6333333,
+        "rotation_tracks": 20,
+        "rotation_keys": 212,
+        "maximum_duration_error": 0.00015461445,
+        "root_planar_speed": 0.39608604
+      },
+      {
+        "name": "swim",
+        "duration_seconds": 1.3666667,
+        "rotation_tracks": 20,
+        "rotation_keys": 186,
+        "maximum_duration_error": 0.033658862,
+        "root_planar_speed": 1.3685571
+      },
+      {
+        "name": "swim_fast",
+        "duration_seconds": 0.8333333,
+        "rotation_tracks": 20,
+        "rotation_keys": 179,
+        "maximum_duration_error": 0.033528626,
+        "root_planar_speed": 2.8561523
+      },
+      {
+        "name": "swim_idle",
+        "duration_seconds": 1.3333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 146,
+        "maximum_duration_error": 0.00044763088,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "swim_start",
+        "duration_seconds": 0.5,
+        "rotation_tracks": 20,
+        "rotation_keys": 90,
+        "maximum_duration_error": 0.00012207031,
+        "root_planar_speed": 0.0
+      },
+      {
+        "name": "swim_to_idle",
+        "duration_seconds": 1.3333334,
+        "rotation_tracks": 20,
+        "rotation_keys": 105,
+        "maximum_duration_error": 0.0008138418,
+        "root_planar_speed": 1.0336304
+      }
+    ],
+    "root_planar_translation_locked": true
+  }
+]

@@ -1,78 +1,84 @@
-# VCS Rust 0.3 — carte continue et Vic animé
+# ReGTA: Vice City Stories (VCS-Rust) — Portage PC Natif en Pur Rust
 
-État au 5 octobre 2026 : **exploration native avec carte texturée, Vic animé et caméra à la troisième personne**. Ce prototype Rust lit votre ISO PS2. Les missions et le gameplay complet restent à réimplémenter.
+<p align="center">
+  <img src="docs/assets/badge-overall.svg" alt="Progression Globale" />
+  <img src="docs/assets/badge-routines.svg" alt="Routines Portées" />
+  <img src="docs/assets/tests-badge.svg" alt="Tests Unitaires" />
+  <a href="https://discord.com/users/601648068277960714"><img src="https://img.shields.io/badge/Discord-benjamin060936-7289da?logo=discord&logoColor=white" alt="Discord Benjamin" /></a>
+</p>
 
-## Ouvrir
+Portage PC natif clean-room et open-source de **Grand Theft Auto: Vice City Stories** (PlayStation 2 PAL `SLES-54622` / ELF `SLES_546.22`) développé en **100% pur Rust** (Windows x64).
 
-Double-cliquer sur VCS-Rust.exe. Le programme démarre en marche avec Vic visible. Aucun BIOS PS2, émulateur ou installation de Rust n'est nécessaire.
+> **Auteur & Mainteneur** : Benjamin (« benji-paname »)  
+> **Contact Discord officiel** : [benjamin060936 (601648068277960714)](https://discord.com/users/601648068277960714)  
+> **Vitrine & Tableaux de bord interactifs** : Consultez le site web complet sous `docs/` (`docs/index.html` et `docs/progress.html`).
 
-ISO utilisée : F:\JEUX EMULATION\PS2 GAMES\Grand Theft Auto - Vice City Stories.iso
+---
 
-Le projet est sur C: et l'ISO reste sur F:, sans modification. Seule l'édition PAL SLES-54622, avec l'empreinte vérifiée de son exécutable, est prise en charge.
+## 1. Principes Fondamentaux & Éthique Clean-Room
 
-## Commandes
+1. **100% Rust Natif — Zéro Émulation CPU au Runtime** :
+   - Aucun émulateur (ni MIPS, ni PCSX2, ni PPSSPP). Le code du jeu est compilé directement en binaire x86_64 natif pour garantir des performances optimales (taux de rafraîchissement débloqué, fluidité 60+ FPS, support 4K/Ultrawide).
+2. **Légalité & Zéro Contenu Sous Droits d'Auteur dans le Dépôt** :
+   - Le dépôt Git ne contient AUCUN asset propriétaire (textures, sons, modèles 3D, musiques).
+   - Tous les assets originaux sont lus, décodés et convertis à la volée depuis l'image disque légale de l'utilisateur (`Grand Theft Auto - Vice City Stories.iso`).
+3. **Règle du Progrès Visible (Visual-First)** :
+   - Toute nouvelle mécanique (handling, balistique, circulation, météo, foule) est immédiatement raccordée au moteur de rendu OpenGL (`src/gpu.rs`) pour être visible et jouable en direct dans l'exécutable unique `VCS-Rust.exe`.
 
-- ZQSD ou WASD : avancer et se déplacer de côté.
-- Flèches : orienter la vue ; Maj gauche : courir.
-- F2 : basculer entre la troisième personne et la première personne.
-- G : basculer entre marche et caméra libre.
-- Espace : sauter en marche ; Espace / Ctrl gauche : monter / descendre en caméra libre.
-- 1 / 2 : rejoindre Beach / Mainland ; les deux parties extérieures restent chargées ensemble.
-- 3 : rejoindre Mall ; 4 : rejoindre les abords de la base militaire.
-- T : activer ou désactiver les textures ; F1 : afficher ou masquer l'aide.
-- R : revenir au dernier point de départ ; Échap : fermer.
+---
 
-## Nouveautés de cette étape
+## 2. Commandes & Raccourcis Clavier
 
-Le manque de carte vers la base militaire venait du chargement d'une seule partie extérieure à la fois et d'une distance d'affichage limitée. Beach et Mainland sont maintenant réunis, avec les collisions correspondantes et une distance de dessin de 5 km. Les copies visuelles strictement identiques présentes dans les deux archives sont éliminées, en comparant géométrie, placement et textures. Mall reste un intérieur séparé.
+| Touche | Action | Contexte |
+| :--- | :--- | :--- |
+| **ZQSD** / **WASD** | Se déplacer (ou braquer / accélérer en véhicule) | Pied / Conduite |
+| **Flèches** | Pivoter la caméra et vue libre | Partout |
+| **Maj Gauche** | Courir / Sprint (ou accélérer la nage) | À pied / Nage |
+| **Espace** | Sauter / Franchir un muret (ou frein à main) | À pied / Conduite |
+| **Tab** | **Changer d'arme** (parcourt les 9 armes de l'arsenal) | À pied |
+| **Clic Gauche** / **F** | **Tirer** / Attaquer au corps à corps | À pied |
+| **Clic Droit** / **V** | **Viser** (active le réticule ou la lunette sniper) | À pied |
+| **H** | **Activer le gyrophare d'urgence** | Véhicule / Caméra |
+| **E** | Monter / Sortir de la Banshee | Proche du véhicule |
+| **G** | Basculer entre marche et caméra libre | À pied |
+| **F1** | Afficher / Masquer l'aide à l'écran | En jeu |
+| **F2** | Basculer entre 1ère et 3ème personne | À pied |
+| **F3** | Menu d'options (mode Original PS2 vs Moderne) | En jeu |
+| **1 / 2 / 3 / 4** | Téléportation rapide (Beach, Mainland, Mall, Base militaire) | En jeu |
+| **T** | Activer / Désactiver les textures | En jeu |
+| **R** | Réinitialiser la position et le monde | En jeu |
+| **Échap** | Quitter | En jeu |
 
-Vic utilise le modèle, les huit textures, les 25 os et les trois animations originales lus dans votre ISO : attente, marche et course. Les rotations des os sont interpolées ; le contrôleur Rust déplace le personnage. La caméra suit Vic et se rapproche lorsqu'une collision statique bloque sa vue.
+---
 
-Les surfaces transparentes des passes 5 et 7 sont dessinées après les surfaces opaques, de loin en proche.
+## 3. Dernières Avancées & Jalons Opérationnels
 
-## Fonctions déjà présentes
+- **Jalon A — Physique & Suspensions 4 Roues Indépendantes** :
+  - Suspensions indépendantes sur la Banshee : calcul de déflexion verticale par raycast corner, compression dynamique des ressorts.
+  - Transfert de masse dynamique : tangage réaliste (pitch) lors des fortes accélérations et freinages, roulis (body roll) en virage selon l'accélération centrifuge.
+  - Animation 3D temps réel des roues (braquage et course verticale des moyeux).
+- **Jalon B — Arsenal 3D & Balistique Complète** :
+  - 9 types d'armes portés : Poings, Pistolet 9mm, Micro-SMG, Fusil à pompe, Fusil d'assaut, Fusil de sniper, Lance-roquettes, Grenade, Lance-flammes.
+  - Balistique 3D en temps réel : roquettes propulsées avec traînées de fumée particulaire, grenades paraboliques avec gravité ($g = 9.81\text{ m/s}^2$), traînées lumineuses de balles (hitscan tracers) et gerbes d'étincelles aux impacts.
+  - HUD de visée dynamique : réticules 2D adaptés à l'arme, cercle de dispersion de chevrotine, et lunette sniper plein écran avec repères mil-dots.
+- **Jalon C — Feux Tricolores & Circulation Urbaine** :
+  - Modèle 3D de feux tricolores (poteau, boîte et optiques lumineuses Vert/Orange/Rouge) aux intersections.
+  - Respect des feux de signalisation : les véhicules du réseau Leeds ralentissent et s'immobilisent aux feux rouges et oranges.
+  - Réaction aux véhicules d'urgence : à l'activation du gyrophare (`H`), les conducteurs se déportent vers le bord du trottoir.
+- **Jalon D — Foule & Réaction de Panique** :
+  - Génération de piétons sur les graphes de trottoir avec évitement d'obstacles.
+  - Détection des coups de feu et explosions déclenchant la panique immédiate et la fuite désordonnée des PNJ loin de la menace.
+- **Infrastructure & Vitrine Interactive** :
+  - Site vitrine rétro-synthwave 1984 sous `docs/` (`index.html` et `progress.html`).
+  - Outil automatisé `tools/progress/progress.py` générant les métriques, la cartographie SVG Treemap et les badges.
+  - Script racine `Compiler.ps1 -Test` intégrant la compilation Release sous `-D warnings`, l'exécution des tests (126 tests à 100% passants) et la mise à jour des statistiques.
 
-- Lecteur ISO9660, vérification SHA-256 et décompression des ressources.
-- Géométrie PS2 VIF, placements, textures à palettes, alpha, mipmaps et filtrage.
-- Références de géométrie et de textures résolues pour les placements décodés des trois secteurs.
-- Rendu Windows accéléré via OpenGL, avec secours logiciel.
-- Collisions originales statiques : triangles, boîtes et sphères.
-- Marche, gravité, saut, petits obstacles et glissement contre les murs à pas fixes.
+---
 
-Le programme dessine les données avec son propre code Rust ; il n'exécute pas le programme PS2. Les compteurs de ressources ne mesurent pas la complétion du jeu.
+## 4. Compilation & Vérification
 
-## Limites
-
-Le contrôleur ne reproduit pas encore la physique originale. Les animations conservent leurs rotations originales mais la translation de leur racine est bloquée : le déplacement vient du contrôleur. Il n'y a pas encore de correction des pieds selon le terrain, de transition fondue entre animations ni d'animation de saut. Les pieds peuvent donc glisser ou se décaler légèrement du sol. La caméra utilise un rayon central ; ses bords peuvent croiser un obstacle fin.
-
-Conduite, trafic, autres piétons, IA, missions, combat, sauvegarde et son restent à développer. Les changements d'objets par script, les collisions dynamiques et le streaming final restent incomplets.
-
-La visibilité utilise midi et l'état initial des scripts. Les niveaux de détail, les passes sous-marines, l'eau et les autres intérieurs ne sont pas encore reproduits complètement. Le filtre de collisions conserve les objets globaux et les deux niveaux extérieurs, ou Mall ; trois objets du niveau 250 restent exclus.
-
-## Vérification et compilation
-
-Les sources sont dans src/ et les dépendances sont figées dans Cargo.lock. Compiler.ps1 utilise les outils portables déjà préparés sur C: ; compilation et tests fonctionnent hors ligne. L'exécutable final n'a pas besoin d'internet.
-
-Options de diagnostic :
-
-- --verify : vérifier les ressources, les contacts au sol et les animations sans fenêtre.
-- --walk / --fly : choisir marche ou caméra libre au démarrage.
-- --first-person : démarrer sans afficher le personnage.
-- --zone BEACH|MAINLA|MALL : choisir le point de départ.
-- --headless : effectuer huit images de vérification avec une fenêtre masquée.
-- --capture fichier.bmp : enregistrer le rendu puis fermer après huit images.
-- --smoke : effectuer huit images dans une fenêtre visible.
-- --software : utiliser le rendu logiciel.
-- --preview fichier.bmp : produire une image de diagnostic en logiciel.
-- --camera x,y,z,yaw,pitch : imposer une position et une orientation.
-- --animation idle|walk|run|bind et --animation-time secondes : choisir une pose de diagnostic.
-- --simulate secondes : simuler un déplacement en mode --headless --walk, au maximum 30 secondes.
-- --iso chemin.iso et --output dossier : choisir les données et les diagnostics.
-
-VALIDATION.md et data/validation-v03.json consignent les résultats. Les aperçus nommés apercu-v03-* et apercu-base-militaire.png sont issus de cette version ; les captures précédentes restent conservées.
-
-## Recherche et crédits
-
-Formats comparés avec [aap/librwgta](https://github.com/aap/librwgta) et [spicybung/Storyland](https://github.com/spicybung/Storyland). [SK8-ENGINE/skate-3-rust-engine](https://github.com/SK8-ENGINE/skate-3-rust-engine) et [vladtrc/iw4L](https://github.com/vladtrc/iw4L) ont servi de références pour l'approche de réécriture native.
-
-Le code du prototype a été écrit pour ce projet. Les dépendances conservent leurs licences. Les ressources GTA viennent de votre copie locale ; les sources ne contiennent pas d'archive de ressources originales à redistribuer.
+Pour compiler et vérifier l'ensemble du projet sans dépendance externe :
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Compiler.ps1 -Test
+```
+L'exécutable autonome généré est `VCS-Rust.exe` à la racine.

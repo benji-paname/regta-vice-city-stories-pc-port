@@ -24,6 +24,161 @@ struct Mip {
 }
 
 impl Texture {
+    /// A named streamed TXD uses the same raster layout as the embedded HUD.
+    pub fn load_streamed_named(
+        disc: &mut crate::iso::Disc,
+        game: &[u8],
+        name: &str,
+    ) -> Result<Self> {
+        let pool = u32le(game, 0x60)? as usize;
+        let items = u32le(game, pool)? as usize;
+        let count = u32le(game, pool + 8)? as usize;
+        if count > 65536 {
+            return Err("Invalid TXD pool".into());
+        }
+        bytes(game, items, count * 28)?;
+        for slot in 0..count {
+            let raw = bytes(game, items + slot * 28 + 8, 20)?;
+            let end = raw.iter().position(|&c| c == 0).unwrap_or(20);
+            if !std::str::from_utf8(&raw[..end])?.eq_ignore_ascii_case(name) {
+                continue;
+            }
+            let manager = u32le(game, 0x7c)? as usize;
+            let base = u32le(game, manager + 8)? as usize;
+            let table = u32le(game, manager + 0xc8)? as usize;
+            let row = table + (base + slot) * 24;
+            let sector = u32le(game, row + 16)? as usize;
+            let size = u32le(game, row + 20)? as usize;
+            if size == 0 || size > 4096 {
+                return Err("Invalid HUD streaming extent".into());
+            }
+            let data = disc.range("GTA3PS2.IMG", sector * 2048, size * 2048)?;
+            if bytes(&data, 0, 4)? != b"xet\0" {
+                return Err("Invalid HUD TXD magic".into());
+            }
+            let data = bytes(&data, 0, u32le(&data, 8)? as usize)?;
+            let head = 0x28;
+            let link = u32le(data, head)? as usize;
+            if link < 8 || link == head || u32le(data, link)? as usize != head {
+                return Err("Radar TXD must contain exactly one texture".into());
+            }
+            let raster = u32le(data, link - 8)? as usize;
+            bytes(data, raster, 16)?;
+            let format = u16le(data, raster + 6)?;
+            let mut canonical = data.to_vec();
+            canonical[raster..raster + 4].copy_from_slice(&0xccccccccu32.to_le_bytes());
+            canonical[raster + 6..raster + 8].copy_from_slice(&(format | 0xc000).to_le_bytes());
+            return decode_raster(&canonical, raster, 0);
+        }
+        Err(format!("Missing streamed TXD {name}").into())
+    }
+
+    /// Named textures in the embedded dictionaries use linked RslTexture rows.
+    pub fn load_embedded_named(
+        game: &[u8],
+        dictionary_name: &str,
+        texture_name: &str,
+    ) -> Result<Self> {
+        fn name(data: &[u8], at: usize, len: usize) -> Result<&str> {
+            let raw = bytes(data, at, len)?;
+            Ok(std::str::from_utf8(
+                &raw[..raw.iter().position(|&c| c == 0).unwrap_or(len)],
+            )?)
+        }
+        let pool = u32le(game, 0x60)? as usize;
+        let items = u32le(game, pool)? as usize;
+        let count = u32le(game, pool + 8)? as usize;
+        if count > 65536 {
+            return Err("Invalid texture dictionary pool".into());
+        }
+        bytes(game, items, count * 28)?;
+        for i in 0..count {
+            let row = items + i * 28;
+            if !name(game, row + 8, 20)?.eq_ignore_ascii_case(dictionary_name) {
+                continue;
+            }
+            let dictionary = u32le(game, row)? as usize;
+            if dictionary < 32 {
+                return Err("Texture dictionary is not embedded".into());
+            }
+            let head = dictionary + 8;
+            let mut link = u32le(game, head)? as usize;
+            let mut seen = std::collections::HashSet::new();
+            while link != head {
+                if link < 8 || seen.len() >= 1024 || !seen.insert(link) {
+                    return Err("Invalid texture dictionary links".into());
+                }
+                let texture = link - 8;
+                if name(game, texture + 16, 32)?.eq_ignore_ascii_case(texture_name) {
+                    let raster = u32le(game, texture)? as usize;
+                    if raster < 32 {
+                        return Err("Missing embedded texture raster".into());
+                    }
+                    bytes(game, raster, 16)?;
+                    let format = u16le(game, raster + 6)?;
+                    let mut canonical = game.to_vec();
+                    canonical[raster..raster + 4].copy_from_slice(&0xccccccccu32.to_le_bytes());
+                    canonical[raster + 6..raster + 8]
+                        .copy_from_slice(&(format | 0xc000).to_le_bytes());
+                    return decode_raster(&canonical, raster, 0);
+                }
+                link = u32le(game, link)? as usize;
+            }
+        }
+        Err(format!("Missing embedded texture {dictionary_name}/{texture_name}").into())
+    }
+
+    pub fn tinted(&self, tint: [u8; 4]) -> Self {
+        let mut texture = self.clone();
+        let apply = |pixels: &mut [u8]| {
+            for pixel in pixels.chunks_exact_mut(4) {
+                for c in 0..4 {
+                    pixel[c] = ((pixel[c] as u16 * tint[c] as u16 + 127) / 255) as u8;
+                }
+            }
+        };
+        apply(&mut texture.rgba);
+        for mip in &mut texture.mips {
+            apply(&mut mip.rgba);
+        }
+        texture.has_alpha = texture.rgba.chunks_exact(4).any(|p| p[3] < 255);
+        texture
+    }
+    /// Apply palette paint only to neutral body texels. Keep dark trim and
+    /// chromatic atlas details (such as tail lamps) in their original colors.
+    pub fn painted_vehicle_surface(&self, color: [u8; 3]) -> Self {
+        let mut rgba = self.rgba.clone();
+        for pixel in rgba.chunks_exact_mut(4) {
+            let luminance =
+                (0.2126 * pixel[0] as f32 + 0.7152 * pixel[1] as f32 + 0.0722 * pixel[2] as f32)
+                    / 255.0;
+            let darkest = pixel[0].min(pixel[1]).min(pixel[2]) as f32;
+            let brightest = pixel[0].max(pixel[1]).max(pixel[2]) as f32;
+            let saturation = (brightest - darkest) / brightest.max(1.0);
+            if luminance < 0.16 || saturation > 0.16 {
+                continue;
+            }
+            // Retain contrast from the dark grayscale atlas while lifting
+            // its midtones into the selected paint color. The previous
+            // near-white mapping erased the exterior's panel and shadow detail.
+            let detail = 0.55 + 0.45 * luminance.sqrt();
+            for channel in 0..3 {
+                pixel[channel] = (color[channel] as f32 * 1.12 * detail)
+                    .round()
+                    .clamp(0.0, 255.0) as u8;
+            }
+        }
+        let mips = make_mips(self.width, self.height, &rgba);
+        Self {
+            width: self.width,
+            height: self.height,
+            rgba,
+            depth: self.depth,
+            has_alpha: self.has_alpha,
+            mips,
+        }
+    }
+
     /// Nearest sampling with repeat addressing, including negative UVs.
     #[cfg(test)]
     pub fn sample(&self, uv: [f32; 2]) -> [f32; 4] {
@@ -352,6 +507,49 @@ pub fn decode_raster(data: &[u8], start: usize, base: isize) -> Result<Texture> 
 mod tests {
     use super::*;
 
+    #[test]
+    fn water_tint_preserves_native_mips_and_source_pixels() {
+        let original = Texture {
+            width: 2,
+            height: 1,
+            rgba: vec![255, 128, 0, 255, 64, 32, 255, 128],
+            depth: 32,
+            has_alpha: true,
+            mips: vec![Mip {
+                width: 1,
+                height: 1,
+                rgba: vec![20, 40, 60, 255],
+            }],
+        };
+        let tinted = original.tinted([42, 131, 134, 130]);
+        assert_eq!(tinted.rgba, [42, 66, 0, 130, 11, 16, 134, 65]);
+        assert_eq!(tinted.mip(1).unwrap(), (1, 1, [3, 21, 32, 130].as_slice()));
+        assert!(tinted.has_alpha);
+        assert_eq!(original.rgba[0], 255);
+        assert_eq!(original.mip(1).unwrap().2, [20, 40, 60, 255]);
+    }
+
+    #[test]
+    fn embedded_dictionary_rejects_cycles_and_truncation() {
+        assert!(Texture::load_embedded_named(&[0; 20], "particle", "water").is_err());
+        let mut game = vec![0; 0x300];
+        for (at, value) in [
+            (0x60, 0x100u32),
+            (0x100, 0x120),
+            (0x108, 1),
+            (0x120, 0x160),
+            (0x168, 0x188),
+            (0x188, 0x188),
+        ] {
+            game[at..at + 4].copy_from_slice(&value.to_le_bytes());
+        }
+        game[0x128..0x130].copy_from_slice(b"particle");
+        let error = Texture::load_embedded_named(&game, "particle", "water").unwrap_err();
+        assert!(error.to_string().contains("links"));
+        game.truncate(0x170);
+        assert!(Texture::load_embedded_named(&game, "particle", "water").is_err());
+    }
+
     fn raster(width_log: u32, height_log: u32, depth: u32, mips: u32) -> Vec<u8> {
         let width = 1usize << width_log;
         let height = 1usize << height_log;
@@ -430,6 +628,27 @@ mod tests {
         assert!(decode_raster(&data, 0, 0).is_err());
         assert!(decode_raster(&[0; 64], 0, 0).is_err());
         assert!(decode_raster(&[], usize::MAX, -32).is_err());
+    }
+
+    #[test]
+    fn painted_vehicle_surface_uses_palette_and_preserves_alpha() {
+        let texture = Texture {
+            width: 4,
+            height: 1,
+            rgba: vec![
+                8, 8, 8, 255, 220, 24, 20, 255, 80, 80, 80, 128, 220, 220, 220, 64,
+            ],
+            depth: 32,
+            has_alpha: true,
+            mips: Vec::new(),
+        };
+        let painted = texture.painted_vehicle_surface([188, 188, 180]);
+        assert_eq!(&painted.rgba[..8], &[8, 8, 8, 255, 220, 24, 20, 255]);
+        assert!(painted.rgba[8] > 80);
+        assert!(painted.rgba[12] > painted.rgba[8]);
+        assert_eq!(painted.rgba[11], 128);
+        assert_eq!(painted.rgba[15], 64);
+        assert_eq!(painted.mip_levels(), 3);
     }
 
     #[test]

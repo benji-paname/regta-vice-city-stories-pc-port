@@ -33,17 +33,381 @@ struct Sphere {
     surface: u8,
     model_id: u16,
     level: u8,
+    entity: Option<usize>,
 }
 
 #[derive(Clone, Copy, Debug)]
 pub struct Hit {
     /// Physical distance along the normalized world ray.
     pub distance: f32,
+    /// Serialized placement address, absent for actor/test shapes.
+    pub entity: Option<usize>,
     pub position: Vec3,
     /// Unit surface normal, facing against the incoming ray (double-sided).
     pub normal: Vec3,
     pub surface: u8,
     pub model_id: u16,
+}
+
+/// Shared query interface for the static map and moving instances. Driving
+/// still queries the static world, so a vehicle never collides with itself.
+pub trait CollisionQuery {
+    fn raycast(&self, origin: Vec3, direction: Vec3, max_distance: f32) -> Option<Hit>;
+    fn raycast_batch(&self, rays: &[Ray]) -> Vec<Option<Hit>> {
+        rays.iter()
+            .map(|r| self.raycast(r.origin, r.direction, r.distance))
+            .collect()
+    }
+    /// Vehicle/pedestrian contacts can differ from camera/world contacts.
+    fn actor_raycast(&self, origin: Vec3, direction: Vec3, distance: f32) -> Option<Hit> {
+        self.raycast(origin, direction, distance)
+    }
+    fn actor_raycast_batch(&self, rays: &[Ray]) -> Vec<Option<Hit>> {
+        self.raycast_batch(rays)
+    }
+}
+
+pub struct ActorQuery<'a, Q: CollisionQuery + ?Sized>(pub &'a Q);
+impl<Q: CollisionQuery + ?Sized> CollisionQuery for ActorQuery<'_, Q> {
+    fn raycast(&self, o: Vec3, d: Vec3, distance: f32) -> Option<Hit> {
+        self.0.actor_raycast(o, d, distance)
+    }
+    fn raycast_batch(&self, rays: &[Ray]) -> Vec<Option<Hit>> {
+        self.0.actor_raycast_batch(rays)
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct Ray {
+    pub origin: Vec3,
+    pub direction: Vec3,
+    pub distance: f32,
+}
+
+#[derive(Clone)]
+pub struct NativeCollider {
+    triangles: Vec<Triangle>,
+    spheres: Vec<Sphere>,
+    bounds: [Vec3; 2],
+}
+
+impl NativeCollider {
+    /// Use the original shared three-sphere pedestrian body, with the declared
+    /// bottom of CColModel aligned to the controller's feet. This body remains
+    /// upright; it is not the separate animated hit model used for combat.
+    pub fn load_pedestrian(game: &[u8], model_id: u16) -> Result<Self> {
+        let count = u32le(game, 0x38)? as usize;
+        if count > MAX_MODELS || model_id as usize >= count {
+            return Err("Invalid pedestrian collision model ID".into());
+        }
+        let table = checked_ptr(game, 0x3c, count * 4)?;
+        let info = checked_ptr(game, table + model_id as usize * 4, 0x18)?;
+        let address = checked_ptr(game, info + 0x14, 0x60)?;
+        let bottom = f32le(game, address + 0x18)?;
+        if !bottom.is_finite() || bottom.abs() > 10.0 {
+            return Err("Invalid pedestrian collision base".into());
+        }
+        let root = [
+            1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, -bottom, 1.0,
+        ];
+        Self::from_model(&decode_model(game, address)?, model_id, &root)
+    }
+
+    /// Vehicle CColModel coordinates are relative to its clump root. Apply the
+    /// SAME root matrix as the visible mesh (Banshee root is translated +0.7 Z).
+    pub fn load_embedded(game: &[u8], model_id: u16, root: &[f32; 16]) -> Result<Self> {
+        let count = u32le(game, 0x38)? as usize;
+        if count > MAX_MODELS || model_id as usize >= count {
+            return Err("Invalid dynamic collision model ID".into());
+        }
+        let table = checked_ptr(game, 0x3c, count * 4)?;
+        let info = checked_ptr(game, table + model_id as usize * 4, 0x18)?;
+        let address = checked_ptr(game, info + 0x14, 0x60)?;
+        let model = decode_model(game, address)?;
+        Self::from_model(&model, model_id, root)
+    }
+
+    fn from_model(model: &Model, model_id: u16, root: &[f32; 16]) -> Result<Self> {
+        let inverse = inverse_linear(root)?;
+        let mut triangles: Vec<_> = model
+            .triangles
+            .iter()
+            .map(|(vertices, surface)| Triangle {
+                vertices: vertices.map(|p| transform(root, p)),
+                surface: *surface,
+                model_id,
+            })
+            .collect();
+        for (bounds, surface) in &model.boxes {
+            let points: [Vec3; 8] = std::array::from_fn(|i| {
+                transform(
+                    root,
+                    [
+                        bounds[i & 1][0],
+                        bounds[(i >> 1) & 1][1],
+                        bounds[(i >> 2) & 1][2],
+                    ],
+                )
+            });
+            for f in [
+                [0, 1, 3],
+                [0, 3, 2],
+                [4, 6, 7],
+                [4, 7, 5],
+                [0, 4, 5],
+                [0, 5, 1],
+                [2, 3, 7],
+                [2, 7, 6],
+                [0, 2, 6],
+                [0, 6, 4],
+                [1, 5, 7],
+                [1, 7, 3],
+            ] {
+                triangles.push(Triangle {
+                    vertices: f.map(|i| points[i]),
+                    surface: *surface,
+                    model_id,
+                });
+            }
+        }
+        let spheres = model
+            .spheres
+            .iter()
+            .map(|(center, radius, surface)| {
+                let wc = transform(root, *center);
+                let mut bounds = [wc, wc];
+                for a in 0..3 {
+                    let extent = radius
+                        * (root[a].powi(2) + root[4 + a].powi(2) + root[8 + a].powi(2)).sqrt();
+                    bounds[0][a] -= extent;
+                    bounds[1][a] += extent;
+                }
+                Sphere {
+                    center: *center,
+                    radius: *radius,
+                    inverse,
+                    origin: [root[12], root[13], root[14]],
+                    bounds,
+                    surface: *surface,
+                    model_id,
+                    level: 0,
+                    entity: None,
+                }
+            })
+            .collect();
+        Ok(Self::from_primitives(triangles, spheres))
+    }
+
+    fn from_primitives(triangles: Vec<Triangle>, spheres: Vec<Sphere>) -> Self {
+        let mut bounds = [[f32::INFINITY; 3], [f32::NEG_INFINITY; 3]];
+        for p in triangles
+            .iter()
+            .flat_map(|t| t.vertices)
+            .chain(spheres.iter().flat_map(|s| s.bounds))
+        {
+            for a in 0..3 {
+                bounds[0][a] = bounds[0][a].min(p[a]);
+                bounds[1][a] = bounds[1][a].max(p[a]);
+            }
+        }
+        Self {
+            triangles,
+            spheres,
+            bounds,
+        }
+    }
+
+    pub fn primitive_counts(&self) -> [usize; 2] {
+        [self.triangles.len(), self.spheres.len()]
+    }
+
+    pub fn at(&self, position: Vec3, heading: f32) -> CollisionInstance<'_> {
+        let (s, c) = heading.sin_cos();
+        self.transformed(&[
+            c,
+            -s,
+            0.,
+            0.,
+            s,
+            c,
+            0.,
+            0.,
+            0.,
+            0.,
+            1.,
+            0.,
+            position[0],
+            position[1],
+            position[2],
+            1.,
+        ])
+    }
+
+    /// Rigid world-space transform; callers supply an orthonormal basis.
+    pub fn transformed(&self, matrix: &[f32; 16]) -> CollisionInstance<'_> {
+        CollisionInstance {
+            collider: self,
+            matrix: *matrix,
+        }
+    }
+
+    pub fn support_points(&self) -> Vec<Vec3> {
+        let mut points: Vec<_> = self.triangles.iter().flat_map(|t| t.vertices).collect();
+        for s in &self.spheres {
+            // Bounds conservatively cover the serialized ellipsoid.
+            for i in 0..8 {
+                points.push(std::array::from_fn(|a| s.bounds[(i >> a) & 1][a]));
+            }
+        }
+        points.sort_by(|a, b| {
+            a[0].total_cmp(&b[0])
+                .then(a[1].total_cmp(&b[1]))
+                .then(a[2].total_cmp(&b[2]))
+        });
+        points.dedup();
+        points
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct CollisionInstance<'a> {
+    collider: &'a NativeCollider,
+    matrix: [f32; 16],
+}
+
+impl CollisionInstance<'_> {
+    /// Conservative occupancy guard for restoring distant native placements.
+    /// Test in the actor's local space; this can defer restoration around a
+    /// hollow model but cannot restore furniture through a nearby actor.
+    fn overlaps_sphere(&self, center: Vec3, radius: f32) -> bool {
+        let d = sub(center, self.matrix[12..15].try_into().unwrap());
+        let p: Vec3 = std::array::from_fn(|a| (0..3).map(|i| self.matrix[a * 4 + i] * d[i]).sum());
+        (0..3)
+            .map(|a| {
+                let delta =
+                    p[a] - p[a].clamp(self.collider.bounds[0][a], self.collider.bounds[1][a]);
+                delta * delta
+            })
+            .sum::<f32>()
+            <= radius * radius
+    }
+}
+impl CollisionQuery for CollisionInstance<'_> {
+    fn raycast(&self, origin: Vec3, direction: Vec3, max_distance: f32) -> Option<Hit> {
+        if origin.iter().any(|v| !v.is_finite()) || !max_distance.is_finite() || max_distance <= 0.0
+        {
+            return None;
+        }
+        let direction = normalized(direction)?;
+        let m = &self.matrix;
+        let local = |v: Vec3| {
+            std::array::from_fn(|a| m[a * 4] * v[0] + m[a * 4 + 1] * v[1] + m[a * 4 + 2] * v[2])
+        };
+        let world =
+            |v: Vec3| std::array::from_fn(|a| m[a] * v[0] + m[4 + a] * v[1] + m[8 + a] * v[2]);
+        let o = local(sub(origin, [m[12], m[13], m[14]]));
+        let d = local(direction);
+        if !ray_bounds(o, d, max_distance, self.collider.bounds) {
+            return None;
+        }
+        let mut nearest = max_distance;
+        let mut hit = None;
+        for tri in &self.collider.triangles {
+            if let Some(contact) = ray_triangle(o, d, nearest, tri) {
+                nearest = contact.distance;
+                hit = Some(contact);
+            }
+        }
+        for sphere in &self.collider.spheres {
+            if let Some(contact) = ray_sphere(o, d, nearest, sphere) {
+                nearest = contact.distance;
+                hit = Some(contact);
+            }
+        }
+        hit.map(|mut contact| {
+            contact.position = transform(m, contact.position);
+            contact.normal = world(contact.normal);
+            contact
+        })
+    }
+}
+
+pub struct CollisionScene<'a> {
+    pub world: &'a dyn CollisionQuery,
+    pub instances: &'a [CollisionInstance<'a>],
+}
+impl CollisionQuery for CollisionScene<'_> {
+    fn actor_raycast(&self, o: Vec3, d: Vec3, distance: f32) -> Option<Hit> {
+        CollisionScene {
+            world: &ActorQuery(self.world),
+            instances: self.instances,
+        }
+        .raycast(o, d, distance)
+    }
+    fn actor_raycast_batch(&self, rays: &[Ray]) -> Vec<Option<Hit>> {
+        CollisionScene {
+            world: &ActorQuery(self.world),
+            instances: self.instances,
+        }
+        .raycast_batch(rays)
+    }
+    fn raycast_batch(&self, rays: &[Ray]) -> Vec<Option<Hit>> {
+        let mut hits = self.world.raycast_batch(rays);
+        for instance in self.instances {
+            for (r, hit) in rays.iter().zip(&mut hits) {
+                if let Some(h) = instance.raycast(
+                    r.origin,
+                    r.direction,
+                    hit.as_ref().map_or(r.distance, |h| h.distance),
+                ) {
+                    *hit = Some(h);
+                }
+            }
+        }
+        hits
+    }
+    fn raycast(&self, origin: Vec3, direction: Vec3, max_distance: f32) -> Option<Hit> {
+        let mut hit = self.world.raycast(origin, direction, max_distance);
+        for instance in self.instances {
+            let max = hit.as_ref().map_or(max_distance, |h| h.distance);
+            if let Some(contact) = instance.raycast(origin, direction, max) {
+                hit = Some(contact);
+            }
+        }
+        hit
+    }
+}
+
+impl CollisionQuery for CollisionWorld {
+    fn actor_raycast(&self, o: Vec3, d: Vec3, distance: f32) -> Option<Hit> {
+        self.query(o, d, distance, None, true)
+    }
+    fn actor_raycast_batch(&self, rays: &[Ray]) -> Vec<Option<Hit>> {
+        self.batch(rays, true)
+    }
+    fn raycast_batch(&self, rays: &[Ray]) -> Vec<Option<Hit>> {
+        self.batch(rays, false)
+    }
+    fn raycast(&self, origin: Vec3, direction: Vec3, max_distance: f32) -> Option<Hit> {
+        CollisionWorld::raycast(self, origin, direction, max_distance)
+    }
+}
+
+#[cfg(test)]
+pub(crate) fn test_box_collider(bounds: [Vec3; 2]) -> NativeCollider {
+    let model = Model {
+        triangles: Vec::new(),
+        boxes: vec![(bounds, 1)],
+        spheres: Vec::new(),
+    };
+    NativeCollider::from_model(
+        &model,
+        175,
+        &[
+            1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+        ],
+    )
+    .unwrap()
 }
 
 #[derive(Default, Serialize, Debug)]
@@ -70,6 +434,23 @@ pub struct CollisionWorld {
     oversized: Vec<usize>,
     triangle_levels: Vec<u8>,
     active_levels: Option<Vec<u8>>,
+    triangle_entities: Vec<Option<usize>>,
+    entities: HashMap<usize, EntityRange>,
+    moved: HashMap<usize, MovingCollider>,
+}
+
+struct EntityRange {
+    triangles: std::ops::Range<usize>,
+    spheres: std::ops::Range<usize>,
+    level: u8,
+}
+struct MovingCollider {
+    shape: NativeCollider,
+    matrix: [f32; 16],
+    bounds: [Vec3; 2],
+    points: Vec<Vec3>,
+    level: u8,
+    ignore_actors: bool,
 }
 
 #[derive(Clone)]
@@ -340,6 +721,9 @@ pub fn load_world(disc: &mut Disc, game: &[u8]) -> Result<CollisionWorld> {
         oversized: Vec::new(),
         triangle_levels: Vec::new(),
         active_levels: None,
+        triangle_entities: Vec::new(),
+        entities: HashMap::new(),
+        moved: HashMap::new(),
     };
     for header in [0x24, 0x28, 0x2c] {
         let pool = checked_ptr(game, header, 32)?;
@@ -379,6 +763,8 @@ pub fn load_world(disc: &mut Disc, game: &[u8]) -> Result<CollisionWorld> {
                 matrix[c * 4..c * 4 + 3].copy_from_slice(&v);
             }
             // Matrix fourth components are runtime flags, not float coordinates.
+            let triangle_start = world.triangles.len();
+            let sphere_start = world.spheres.len();
             let inverse = inverse_linear(&matrix)?;
             world.stats.collidable_entities += 1;
             for (vertices, surface) in &model.triangles {
@@ -446,8 +832,20 @@ pub fn load_world(disc: &mut Disc, game: &[u8]) -> Result<CollisionWorld> {
                     surface: *surface,
                     model_id: mid,
                     level,
+                    entity: Some(row),
                 });
             }
+            world
+                .triangle_entities
+                .resize(world.triangles.len(), Some(row));
+            world.entities.insert(
+                row,
+                EntityRange {
+                    triangles: triangle_start..world.triangles.len(),
+                    spheres: sphere_start..world.spheres.len(),
+                    level,
+                },
+            );
         }
     }
     world.stats.triangles = world.triangles.len();
@@ -470,6 +868,31 @@ fn cell(p: Vec3) -> [i32; 2] {
 }
 
 impl CollisionWorld {
+    #[cfg(test)]
+    pub(crate) fn test_add_entity(&mut self, entity: usize, shape: NativeCollider, level: u8) {
+        let triangles = self.triangles.len()..self.triangles.len() + shape.triangles.len();
+        let spheres = self.spheres.len()..self.spheres.len() + shape.spheres.len();
+        self.triangles.extend(shape.triangles);
+        self.triangle_entities
+            .resize(self.triangles.len(), Some(entity));
+        self.triangle_levels.resize(self.triangles.len(), level);
+        self.spheres.extend(shape.spheres.into_iter().map(|mut s| {
+            s.entity = Some(entity);
+            s.level = level;
+            s
+        }));
+        self.entities.insert(
+            entity,
+            EntityRange {
+                triangles,
+                spheres,
+                level,
+            },
+        );
+        self.cells.clear();
+        self.oversized.clear();
+        self.build_index();
+    }
     /// Builds an indexed world from known collision triangles (tools/test scenes).
     #[cfg_attr(not(test), allow(dead_code))]
     pub fn from_triangles(triangles: Vec<Triangle>) -> Self {
@@ -486,7 +909,11 @@ impl CollisionWorld {
             oversized: Vec::new(),
             triangle_levels: vec![0; triangle_count],
             active_levels: None,
+            triangle_entities: Vec::new(),
+            entities: HashMap::new(),
+            moved: HashMap::new(),
         };
+        world.triangle_entities.resize(triangle_count, None);
         world.build_index();
         world
     }
@@ -501,6 +928,134 @@ impl CollisionWorld {
     /// Query multiple exterior zones together while retaining global colliders.
     pub fn set_active_levels(&mut self, levels: &[u8]) {
         self.active_levels = Some(levels.to_vec());
+    }
+
+    pub fn entity_active(&self, entity: usize) -> bool {
+        self.entities.get(&entity).is_some_and(|e| {
+            e.level == 0
+                || self
+                    .active_levels
+                    .as_ref()
+                    .is_none_or(|a| a.contains(&e.level))
+        })
+    }
+
+    /// Coherent car probes share a small swept box. Select original primitives
+    /// once for that box, instead of scanning an entire 32m cell for every ray.
+    /// This only accelerates queries; contacts still use the original geometry.
+    fn batch(&self, rays: &[Ray], actor: bool) -> Vec<Option<Hit>> {
+        let normalized_rays: Vec<_> = rays
+            .iter()
+            .map(|r| {
+                if r.origin.iter().any(|v| !v.is_finite())
+                    || !r.distance.is_finite()
+                    || r.distance <= 0.
+                {
+                    None
+                } else {
+                    normalized(r.direction).map(|d| (r.origin, d, r.distance))
+                }
+            })
+            .collect();
+        let mut bounds = [[f32::INFINITY; 3], [f32::NEG_INFINITY; 3]];
+        for &(o, d, length) in normalized_rays.iter().flatten() {
+            for a in 0..3 {
+                let end = o[a] + d[a] * length;
+                bounds[0][a] = bounds[0][a].min(o[a].min(end));
+                bounds[1][a] = bounds[1][a].max(o[a].max(end));
+            }
+        }
+        if !bounds[0][0].is_finite() {
+            return vec![None; rays.len()];
+        }
+        let lo = cell(bounds[0]);
+        let hi = cell(bounds[1]);
+        let size =
+            (hi[0] as i64 - lo[0] as i64 + 1).saturating_mul(hi[1] as i64 - lo[1] as i64 + 1);
+        if size > 4096 {
+            return rays
+                .iter()
+                .map(|r| self.query(r.origin, r.direction, r.distance, None, actor))
+                .collect();
+        }
+        let overlaps = |b: [Vec3; 2]| {
+            (0..3).all(|a| b[0][a] <= bounds[1][a] + 0.0001 && b[1][a] >= bounds[0][a] - 0.0001)
+        };
+        let mut ids: HashSet<_> = self.oversized.iter().copied().collect();
+        for x in lo[0]..=hi[0] {
+            for y in lo[1]..=hi[1] {
+                if let Some(cell) = self.cells.get(&[x, y]) {
+                    ids.extend(cell);
+                }
+            }
+        }
+        let candidates: Vec<_> = ids
+            .into_iter()
+            .filter_map(|id| {
+                let (level, entity, b) = if id < self.triangles.len() {
+                    (
+                        self.triangle_levels[id],
+                        self.triangle_entities[id],
+                        triangle_bounds(&self.triangles[id]),
+                    )
+                } else {
+                    let s = &self.spheres[id - self.triangles.len()];
+                    (s.level, s.entity, s.bounds)
+                };
+                if self
+                    .active_levels
+                    .as_ref()
+                    .is_some_and(|a| level != 0 && !a.contains(&level))
+                    || entity.is_some_and(|e| self.moved.contains_key(&e))
+                    || !overlaps(b)
+                {
+                    None
+                } else {
+                    Some((id, entity, b))
+                }
+            })
+            .collect();
+        let moved: Vec<_> = self
+            .moved
+            .iter()
+            .filter(|(e, b)| {
+                self.entity_active(**e) && !(actor && b.ignore_actors) && overlaps(b.bounds)
+            })
+            .collect();
+        normalized_rays
+            .into_iter()
+            .map(|r| {
+                let (o, d, mut nearest) = r?;
+                let mut hit = None;
+                for &(id, entity, b) in &candidates {
+                    if !ray_bounds(o, d, nearest, b) {
+                        continue;
+                    }
+                    let candidate = if id < self.triangles.len() {
+                        ray_triangle(o, d, nearest, &self.triangles[id])
+                    } else {
+                        ray_sphere(o, d, nearest, &self.spheres[id - self.triangles.len()])
+                    };
+                    if let Some(mut h) = candidate {
+                        h.entity = entity;
+                        nearest = h.distance;
+                        hit = Some(h);
+                    }
+                }
+                for &(entity, body) in &moved {
+                    if !ray_bounds(o, d, nearest, body.bounds) {
+                        continue;
+                    }
+                    if let Some(mut h) = body.shape.transformed(&body.matrix).raycast(o, d, nearest)
+                    {
+                        h.entity = Some(*entity);
+                        nearest = h.distance;
+                        hit = Some(h);
+                    }
+                }
+                hit
+            })
+            .collect()
     }
 
     fn build_index(&mut self) {
@@ -528,6 +1083,28 @@ impl CollisionWorld {
     /// Two-sided raycast against original static PS2 collision surfaces.
     /// `direction` may be any nonzero finite vector and is normalized internally.
     pub fn raycast(&self, origin: Vec3, direction: Vec3, max_distance: f32) -> Option<Hit> {
+        self.raycast_except(origin, direction, max_distance, None)
+    }
+
+    /// Excludes one awake prop from its own terrain/obstacle queries.
+    pub fn raycast_except(
+        &self,
+        origin: Vec3,
+        direction: Vec3,
+        max_distance: f32,
+        skip: Option<usize>,
+    ) -> Option<Hit> {
+        self.query(origin, direction, max_distance, skip, false)
+    }
+
+    fn query(
+        &self,
+        origin: Vec3,
+        direction: Vec3,
+        max_distance: f32,
+        skip: Option<usize>,
+        actor: bool,
+    ) -> Option<Hit> {
         if origin.iter().any(|v| !v.is_finite()) || !max_distance.is_finite() || max_distance <= 0.0
         {
             return None;
@@ -573,6 +1150,14 @@ impl CollisionWorld {
         let mut nearest = max_distance;
         let mut hit = None;
         for id in candidates {
+            let entity = if id < self.triangles.len() {
+                self.triangle_entities[id]
+            } else {
+                self.spheres[id - self.triangles.len()].entity
+            };
+            if entity.is_some_and(|e| self.moved.contains_key(&e) || skip == Some(e)) {
+                continue;
+            }
             let level = if id < self.triangles.len() {
                 self.triangle_levels[id]
             } else {
@@ -593,13 +1178,141 @@ impl CollisionWorld {
                     &self.spheres[id - self.triangles.len()],
                 )
             };
-            if let Some(c) = candidate {
+            if let Some(mut c) = candidate {
+                c.entity = entity;
+                nearest = c.distance;
+                hit = Some(c);
+            }
+        }
+        for (&entity, body) in &self.moved {
+            if skip == Some(entity)
+                || (actor && body.ignore_actors)
+                || self
+                    .active_levels
+                    .as_ref()
+                    .is_some_and(|a| body.level != 0 && !a.contains(&body.level))
+            {
+                continue;
+            }
+            if !ray_bounds(origin, direction, nearest, body.bounds) {
+                continue;
+            }
+            if let Some(mut c) = body
+                .shape
+                .transformed(&body.matrix)
+                .raycast(origin, direction, nearest)
+            {
+                c.entity = Some(entity);
                 nearest = c.distance;
                 hit = Some(c);
             }
         }
         hit
     }
+
+    /// Retain indexed static geometry until the exact placement is awakened.
+    pub fn awaken(&mut self, entity: usize) -> Option<Vec<Vec3>> {
+        if let Some(body) = self.moved.get(&entity) {
+            return Some(body.points.clone());
+        }
+        let range = self.entities.get(&entity)?;
+        let shape = NativeCollider::from_primitives(
+            self.triangles[range.triangles.clone()].to_vec(),
+            self.spheres[range.spheres.clone()].to_vec(),
+        );
+        let points = shape.support_points();
+        if points.is_empty() {
+            return None;
+        }
+        let matrix = [
+            1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.,
+        ];
+        self.moved.insert(
+            entity,
+            MovingCollider {
+                shape,
+                matrix,
+                bounds: point_bounds(&points),
+                points: points.clone(),
+                level: range.level,
+                ignore_actors: false,
+            },
+        );
+        Some(points)
+    }
+
+    pub fn move_entity(&mut self, entity: usize, matrix: [f32; 16]) {
+        if let Some(body) = self.moved.get_mut(&entity) {
+            body.matrix = matrix;
+            body.bounds = point_bounds(
+                &body
+                    .points
+                    .iter()
+                    .map(|&p| transform(&matrix, p))
+                    .collect::<Vec<_>>(),
+            );
+        }
+    }
+
+    pub fn set_ignores_actors(&mut self, entity: usize, ignore: bool) {
+        if let Some(body) = self.moved.get_mut(&entity) {
+            body.ignore_actors = ignore;
+        }
+    }
+
+    /// Restore the original indexed shape only when its visible instance is
+    /// also restored. Removing an awake shape alone would leave a ghost pole.
+    pub fn restore_entity(&mut self, entity: usize) {
+        self.moved.remove(&entity);
+    }
+
+    pub fn restoration_clear(
+        &self,
+        entity: usize,
+        origin: Vec3,
+        radius: f32,
+        actors: &[CollisionInstance<'_>],
+    ) -> bool {
+        !actors.iter().any(|a| a.overlaps_sphere(origin, radius))
+            && !self.moved.iter().any(|(&id, b)| {
+                id != entity
+                    && self.entity_active(id)
+                    && b.shape
+                        .transformed(&b.matrix)
+                        .overlaps_sphere(origin, radius)
+            })
+    }
+}
+
+fn point_bounds(points: &[Vec3]) -> [Vec3; 2] {
+    let mut bounds = [points[0]; 2];
+    for p in points {
+        for a in 0..3 {
+            bounds[0][a] = bounds[0][a].min(p[a]);
+            bounds[1][a] = bounds[1][a].max(p[a]);
+        }
+    }
+    bounds
+}
+fn ray_bounds(origin: Vec3, direction: Vec3, distance: f32, bounds: [Vec3; 2]) -> bool {
+    let mut near: f32 = 0.;
+    let mut far = distance;
+    for a in 0..3 {
+        if direction[a].abs() < 1e-8 {
+            if origin[a] < bounds[0][a] || origin[a] > bounds[1][a] {
+                return false;
+            }
+        } else {
+            let x = (bounds[0][a] - origin[a]) / direction[a];
+            let y = (bounds[1][a] - origin[a]) / direction[a];
+            near = near.max(x.min(y));
+            far = far.min(x.max(y));
+            if near > far {
+                return false;
+            }
+        }
+    }
+    true
 }
 
 fn ray_triangle(origin: Vec3, d: Vec3, max: f32, tri: &Triangle) -> Option<Hit> {
@@ -634,6 +1347,7 @@ fn ray_triangle(origin: Vec3, d: Vec3, max: f32, tri: &Triangle) -> Option<Hit> 
     }
     Some(Hit {
         distance,
+        entity: None,
         position: [
             origin[0] + d[0] * distance,
             origin[1] + d[1] * distance,
@@ -688,6 +1402,7 @@ fn ray_sphere(origin: Vec3, d: Vec3, max: f32, sphere: &Sphere) -> Option<Hit> {
     }
     Some(Hit {
         distance,
+        entity: None,
         position: [
             origin[0] + d[0] * distance,
             origin[1] + d[1] * distance,
@@ -702,6 +1417,78 @@ fn ray_sphere(origin: Vec3, d: Vec3, max: f32, sphere: &Sphere) -> Option<Hit> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn moving_collider_rotates_ray_and_normal_and_leaves_no_old_instance() {
+        let collider = test_box_collider([[-1.0, -2.0, 0.0], [1.0, 2.0, 1.3]]);
+        let car = collider.at([10.0, 20.0, 3.0], std::f32::consts::FRAC_PI_2);
+        let hit = car
+            .raycast([15.0, 20.0, 3.5], [-1.0, 0.0, 0.0], 10.0)
+            .unwrap();
+        assert!((hit.distance - 3.0).abs() < 1e-5);
+        assert!((hit.position[0] - 12.0).abs() < 1e-5);
+        assert!((hit.normal[0] - 1.0).abs() < 1e-5);
+        assert_eq!(hit.model_id, 175);
+        assert!(car
+            .raycast([0.0, -5.0, 0.5], [0.0, 1.0, 0.0], 10.0)
+            .is_none());
+    }
+
+    #[test]
+    fn scene_selects_nearest_contact_without_mutating_static_world() {
+        let world = CollisionWorld::from_triangles(vec![Triangle {
+            vertices: [[-10.0, -10.0, 0.0], [10.0, -10.0, 0.0], [0.0, 10.0, 0.0]],
+            surface: 0,
+            model_id: 5,
+        }]);
+        let collider = test_box_collider([[-1.0, -2.0, 0.1], [1.0, 2.0, 1.3]]);
+        let instances = [collider.at([0.0; 3], 0.0)];
+        let scene = CollisionScene {
+            world: &world,
+            instances: &instances,
+        };
+        let hit = scene
+            .raycast([0.0, 0.0, 4.0], [0.0, 0.0, -1.0], 10.0)
+            .unwrap();
+        assert!((hit.position[2] - 1.3).abs() < 1e-5);
+        assert_eq!(hit.model_id, 175);
+        assert_eq!(
+            world
+                .raycast([0.0, 0.0, 4.0], [0.0, 0.0, -1.0], 10.0)
+                .unwrap()
+                .model_id,
+            5
+        );
+    }
+
+    #[test]
+    fn native_root_translation_applies_to_spheres_and_triangles() {
+        let model = Model {
+            triangles: vec![([[-1.0, -1.0, 0.0], [1.0, -1.0, 0.0], [0.0, 1.0, 0.0]], 0)],
+            boxes: Vec::new(),
+            spheres: vec![([3.0, 0.0, 0.0], 0.5, 0)],
+        };
+        let root = [
+            1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.7, 1.0,
+        ];
+        let collider = NativeCollider::from_model(&model, 175, &root).unwrap();
+        let car = collider.at([0.0; 3], 0.0);
+        assert!(
+            (car.raycast([0.0, 0.0, 3.0], [0.0, 0.0, -1.0], 4.0)
+                .unwrap()
+                .position[2]
+                - 0.7)
+                .abs()
+                < 1e-5
+        );
+        assert!(
+            (car.raycast([3.0, 0.0, 3.0], [0.0, 0.0, -1.0], 4.0)
+                .unwrap()
+                .position[2]
+                - 1.2)
+                .abs()
+                < 1e-5
+        );
+    }
     fn world(triangles: Vec<Triangle>) -> CollisionWorld {
         CollisionWorld::from_triangles(triangles)
     }
@@ -785,6 +1572,65 @@ mod tests {
         assert!(decode_model(&data, 32).is_err());
     }
     #[test]
+    fn batched_queries_match_individual_with_moving_props_and_actors() {
+        let mut world = CollisionWorld::from_triangles(Vec::new());
+        let shape = test_box_collider([[-1., -1., 0.], [1., 1., 3.]]);
+        world.test_add_entity(42, shape.clone(), 1);
+        world.test_add_entity(43, test_box_collider([[4., -1., 0.], [5., 1., 2.]]), 2);
+        world.awaken(42).unwrap();
+        world.move_entity(
+            42,
+            [
+                1., 0., 0., 0., 0., 0., 1., 0., 0., -1., 0., 0., 0., 0., 1., 1.,
+            ],
+        );
+        world.set_ignores_actors(42, true);
+        let instances = [shape.at([0., 5., 0.], 0.3)];
+        let mut rays = Vec::new();
+        for x in -6..=6 {
+            for y in -6..=6 {
+                rays.push(Ray {
+                    origin: [x as f32, y as f32, 1.2],
+                    direction: [0.3, 1., 0.],
+                    distance: 10.,
+                });
+                rays.push(Ray {
+                    origin: [x as f32, y as f32, 6.],
+                    direction: [0., 0., -2.],
+                    distance: 10.,
+                });
+            }
+        }
+        rays.push(Ray {
+            origin: [0.; 3],
+            direction: [f32::NAN, 0., 0.],
+            distance: 3.,
+        });
+        rays.push(Ray {
+            origin: [0.; 3],
+            direction: [1., 0., 0.],
+            distance: -1.,
+        });
+        for level in [None, Some(1), Some(2)] {
+            world.set_active_level(level);
+            let scene = CollisionScene {
+                world: &world,
+                instances: &instances,
+            };
+            let actors = ActorQuery(&scene);
+            for query in [&scene as &dyn CollisionQuery, &actors] {
+                for (r, h) in rays.iter().zip(query.raycast_batch(&rays)) {
+                    let individual = query.raycast(r.origin, r.direction, r.distance);
+                    assert_eq!(h.is_some(), individual.is_some());
+                    if let (Some(a), Some(b)) = (h, individual) {
+                        assert!((a.distance - b.distance).abs() < 0.0001);
+                        assert_eq!(a.entity, b.entity);
+                    }
+                }
+            }
+        }
+    }
+    #[test]
     fn exact_scaled_sphere_returns_physical_distance() {
         let s = Sphere {
             center: [0.0; 3],
@@ -795,6 +1641,7 @@ mod tests {
             surface: 1,
             model_id: 8,
             level: 0,
+            entity: None,
         };
         let h = ray_sphere([-5.0, 0.0, 0.0], [1.0, 0.0, 0.0], 10.0, &s).unwrap();
         assert_eq!(h.distance, 3.0);

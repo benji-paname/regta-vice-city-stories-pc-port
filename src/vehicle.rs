@@ -11,6 +11,35 @@ use std::collections::{HashMap, HashSet};
 type Matrix = [f32; 16];
 pub const VEHICLE_TEXTURE_BASE: u16 = 50000;
 
+fn banshee_paint_color(game: &[u8]) -> Result<[u8; 3]> {
+    // ResourceImage::modelInfoPtrs and colourTable in this PS2 PAL image.
+    let model_infos = u32le(game, 0x3c)? as usize;
+    let model_info = u32le(game, model_infos + 175 * 4)? as usize;
+    let colour_table = u32le(game, 0x90)? as usize;
+    let colour_count = *bytes(game, model_info + 0x161, 1)?.first().unwrap() as usize;
+    if colour_count == 0 || colour_count > 8 {
+        return Err("Banshee has an invalid vehicle colour list".into());
+    }
+    let colours = bytes(game, model_info + 0x163, colour_count * 2)?;
+    let palette = bytes(game, colour_table, 256 * 3)?;
+
+    // Use the lightest documented Banshee palette entry, matching the white
+    // car shown in the user's reference image.
+    let mut selected = None;
+    for pair in colours.chunks_exact(2) {
+        let primary_id = pair[0] as usize;
+        let primary_at = (128 + primary_id) * 3;
+        let rgb = bytes(palette, primary_at, 3)?;
+        let luminance = 0.2126 * rgb[0] as f32 + 0.7152 * rgb[1] as f32 + 0.0722 * rgb[2] as f32;
+        if selected.is_none_or(|(_, best)| luminance > best) {
+            selected = Some(([rgb[0], rgb[1], rgb[2]], luminance));
+        }
+    }
+    selected
+        .map(|(rgb, _)| rgb)
+        .ok_or_else(|| "Banshee has no usable paint colour".into())
+}
+
 #[derive(Serialize, Clone, Debug)]
 pub struct VehicleStats {
     pub name: String,
@@ -25,6 +54,20 @@ pub struct VehicleStats {
     pub total_triangles: usize,
     pub bounds: [[f32; 3]; 2],
     pub texture_names: Vec<String>,
+    pub resolved_texture_names: Vec<String>,
+    pub missing_texture_names: Vec<String>,
+    pub handling_record_address: usize,
+    pub textures: Vec<VehicleTextureInfo>,
+    pub collision_primitives: [usize; 2],
+    pub frame_positions: std::collections::BTreeMap<String, [f32; 3]>,
+}
+
+#[derive(Serialize, Clone, Debug)]
+pub struct VehicleTextureInfo {
+    pub name: String,
+    pub width: usize,
+    pub height: usize,
+    pub has_alpha: bool,
 }
 
 #[allow(dead_code)]
@@ -34,6 +77,24 @@ pub struct VehicleModel {
     pub triangles: Vec<Triangle>,
     pub textures: HashMap<u16, Texture>,
     pub bounds: [[f32; 3]; 2],
+    pub wheels: Vec<VehicleWheel>,
+    pub doors: Vec<VehicleDoor>,
+    pub collision: crate::collision::NativeCollider,
+}
+
+#[derive(Clone, Debug)]
+pub struct VehicleWheel {
+    pub triangle_range: std::ops::Range<usize>,
+    pub center: [f32; 3],
+    pub front: bool,
+    pub is_left: bool,
+}
+
+#[derive(Clone, Debug)]
+pub struct VehicleDoor {
+    pub triangle_range: std::ops::Range<usize>,
+    pub hinge: [f32; 3],
+    pub side: f32,
 }
 
 #[derive(Clone)]
@@ -166,8 +227,16 @@ fn decode_atomic_triangles(
     if strips == 0 || strips > 512 {
         return Err("Invalid strip count in vehicle geometry".into());
     }
-    let scale = [f32le(data, h + 40)?, f32le(data, h + 44)?, f32le(data, h + 48)?];
-    let origin = [f32le(data, h + 52)?, f32le(data, h + 56)?, f32le(data, h + 60)?];
+    let scale = [
+        f32le(data, h + 40)?,
+        f32le(data, h + 44)?,
+        f32le(data, h + 48)?,
+    ];
+    let origin = [
+        f32le(data, h + 52)?,
+        f32le(data, h + 56)?,
+        f32le(data, h + 60)?,
+    ];
     let strip_table = h + 64;
     bytes(data, strip_table, strips * 48)?;
     let dma_base = strip_table + strips * 48;
@@ -377,6 +446,9 @@ impl VehicleModel {
         let txd_slot: u16 = 171;
         let wheel_model_id: u16 = 323;
         let wheel_scale: f32 = 0.7;
+        let paint_color = banshee_paint_color(game)?;
+        // Banshee's native handling record, found from the model's GAME.DTZ entry.
+        let handling_address = 0x4c5700usize;
 
         // 1. Read vehicle model data from ISO
         let model_row = table + model_id as usize * 24;
@@ -405,7 +477,18 @@ impl VehicleModel {
         let clump = u32le(&model_data, 0x20)? as usize;
         let root_frame = u32le(&model_data, clump + 4)? as usize;
         let mut frames = HashMap::new();
-        walk_frames(&model_data, root_frame, None, &mut frames, &mut HashSet::new())?;
+        walk_frames(
+            &model_data,
+            root_frame,
+            None,
+            &mut frames,
+            &mut HashSet::new(),
+        )?;
+        let collision = crate::collision::NativeCollider::load_embedded(
+            game,
+            model_id,
+            &frames[&root_frame].world,
+        )?;
 
         // 5. Decode visible body atomics
         let head = clump + 8;
@@ -414,9 +497,11 @@ impl VehicleModel {
         let mut visible_atomics = 0;
 
         let mut triangles = Vec::new();
+        let mut doors = Vec::new();
         let mut assigned_textures = HashMap::new();
         let mut texture_id_alloc = VEHICLE_TEXTURE_BASE;
         let mut texture_name_to_id = HashMap::new();
+        let mut paint_texture_ids = HashMap::new();
 
         while link != head {
             total_atomics += 1;
@@ -444,15 +529,31 @@ impl VehicleModel {
                         String::new()
                     };
                     let rgb = bytes(&model_data, m + 4, 3)?;
-                    mat_colors.push([
-                        rgb[0] as f32 / 255.0,
-                        rgb[1] as f32 / 255.0,
-                        rgb[2] as f32 / 255.0,
-                    ]);
+                    let is_exterior_paint = matches!(
+                        frame_node.name.as_str(),
+                        "bonnet_dummy"
+                            | "bump_front_dummy"
+                            | "door_lf_dummy"
+                            | "door_rf_dummy"
+                            | "chassis_hi"
+                            | "bump_rear_dummy"
+                    ) && matches!(
+                        tex_name.to_ascii_lowercase().as_str(),
+                        "banshee868bit_sl" | "xv_vehiclegrunge_sl"
+                    );
+                    mat_colors.push(if is_exterior_paint {
+                        [1.0, 1.0, 1.0]
+                    } else {
+                        [
+                            rgb[0] as f32 / 255.0,
+                            rgb[1] as f32 / 255.0,
+                            rgb[2] as f32 / 255.0,
+                        ]
+                    });
 
                     let tid = if !tex_name.is_empty() {
                         let lower = tex_name.to_lowercase();
-                        if let Some(&id) = texture_name_to_id.get(&lower) {
+                        let original_id = if let Some(&id) = texture_name_to_id.get(&lower) {
                             id
                         } else {
                             let id = texture_id_alloc;
@@ -462,6 +563,22 @@ impl VehicleModel {
                                 assigned_textures.insert(id, tex.clone());
                             }
                             id
+                        };
+                        if is_exterior_paint {
+                            if let Some(&id) = paint_texture_ids.get(&lower) {
+                                id
+                            } else {
+                                let id = texture_id_alloc;
+                                texture_id_alloc += 1;
+                                if let Some(tex) = texture_sources.get(&lower) {
+                                    assigned_textures
+                                        .insert(id, tex.painted_vehicle_surface(paint_color));
+                                }
+                                paint_texture_ids.insert(lower.clone(), id);
+                                id
+                            }
+                        } else {
+                            original_id
                         }
                     } else {
                         VEHICLE_TEXTURE_BASE
@@ -469,6 +586,7 @@ impl VehicleModel {
                     mat_texture_ids.push(tid);
                 }
 
+                let start = triangles.len();
                 decode_atomic_triangles(
                     &model_data,
                     geometry,
@@ -477,6 +595,21 @@ impl VehicleModel {
                     &mat_texture_ids,
                     &mut triangles,
                 )?;
+                if matches!(frame_node.name.as_str(), "door_lf_dummy" | "door_rf_dummy") {
+                    doors.push(VehicleDoor {
+                        triangle_range: start..triangles.len(),
+                        hinge: [
+                            frame_node.world[12],
+                            frame_node.world[13],
+                            frame_node.world[14],
+                        ],
+                        side: if frame_node.name == "door_lf_dummy" {
+                            -1.
+                        } else {
+                            1.
+                        },
+                    });
+                }
             }
             link = u32le(&model_data, link)? as usize;
         }
@@ -484,6 +617,7 @@ impl VehicleModel {
 
         // 6. Decode shared wheel model from GAME.DTZ
         let mut wheel_triangles_count = 0;
+        let mut wheels = Vec::new();
         let wheel_element = 0x4c5188usize; // Model 323 shared atomic element
         if wheel_element + 0x20 <= game.len() {
             let wheel_atomic = u32le(game, wheel_element)? as usize;
@@ -535,8 +669,10 @@ impl VehicleModel {
                     scale_mat[5] = wheel_scale;
                     scale_mat[10] = wheel_scale;
 
-                    let instance_world = multiply(frame_node.world, multiply(scale_mat, wheel_local));
+                    let instance_world =
+                        multiply(frame_node.world, multiply(scale_mat, wheel_local));
                     let mut wheel_tris = Vec::new();
+                    let triangle_start = triangles.len();
                     decode_atomic_triangles(
                         game,
                         wheel_geom,
@@ -553,6 +689,13 @@ impl VehicleModel {
                         }
                     }
                     wheel_triangles_count += wheel_tris.len();
+                    let name = frame_node.name.to_ascii_lowercase();
+                    wheels.push(VehicleWheel {
+                        triangle_range: triangle_start..triangle_start + wheel_tris.len(),
+                        center: transform(instance_world, [0.0; 3]),
+                        front: name.contains("_rf") || name.contains("_lf"),
+                        is_left,
+                    });
                     triangles.extend(wheel_tris);
                 }
             }
@@ -568,7 +711,24 @@ impl VehicleModel {
             }
         }
 
+        let mut resolved_texture_names: Vec<_> = texture_name_to_id
+            .iter()
+            .filter(|(_, id)| assigned_textures.contains_key(id))
+            .map(|(name, _)| name.clone())
+            .collect();
+        resolved_texture_names.sort();
+        let mut missing_texture_names: Vec<_> = texture_name_to_id
+            .iter()
+            .filter(|(_, id)| !assigned_textures.contains_key(id))
+            .map(|(name, _)| name.clone())
+            .collect();
+        missing_texture_names.sort();
         let stats = VehicleStats {
+            frame_positions: frames
+                .values()
+                .map(|f| (f.name.clone(), [f.world[12], f.world[13], f.world[14]]))
+                .collect(),
+            collision_primitives: collision.primitive_counts(),
             name: "BANSHEE".to_string(),
             model_id,
             txd_id: txd_slot,
@@ -581,14 +741,100 @@ impl VehicleModel {
             total_triangles: triangles.len(),
             bounds,
             texture_names: texture_name_to_id.keys().cloned().collect(),
+            resolved_texture_names,
+            missing_texture_names,
+            handling_record_address: handling_address,
+            textures: texture_name_to_id
+                .iter()
+                .filter_map(|(name, id)| {
+                    assigned_textures.get(id).map(|texture| VehicleTextureInfo {
+                        name: name.clone(),
+                        width: texture.width,
+                        height: texture.height,
+                        has_alpha: texture.has_alpha,
+                    })
+                })
+                .collect(),
         };
 
         Ok(Self {
+            collision,
             stats,
             triangles,
             textures: assigned_textures,
             bounds,
+            wheels,
+            doors,
         })
+    }
+
+    /// Rebuild only the four wheel meshes with spin and front steering for this frame.
+    #[allow(dead_code)]
+    pub fn animated_triangles(&self, wheel_angle: f32, steering: f32) -> Vec<Triangle> {
+        self.animated_triangles_with_suspension(wheel_angle, steering, [0.0; 4])
+    }
+
+    /// Rebuild the four wheel meshes with spin, front steering, and 4-wheel independent suspension deflection.
+    pub fn animated_triangles_with_suspension(
+        &self,
+        wheel_angle: f32,
+        steering: f32,
+        suspensions: [f32; 4],
+    ) -> Vec<Triangle> {
+        let mut triangles = self.triangles.clone();
+        let (spin_s, spin_c) = wheel_angle.sin_cos();
+        let (turn_s, turn_c) = steering.sin_cos();
+        for wheel in &self.wheels {
+            let susp_z = if wheel.front && wheel.is_left {
+                suspensions[0]
+            } else if wheel.front && !wheel.is_left {
+                suspensions[1]
+            } else if !wheel.front && wheel.is_left {
+                suspensions[2]
+            } else {
+                suspensions[3]
+            };
+            for triangle in &mut triangles[wheel.triangle_range.clone()] {
+                for vertex in &mut triangle.vertices {
+                    let mut x = vertex.p[0] - wheel.center[0];
+                    let mut y = vertex.p[1] - wheel.center[1];
+                    let mut z = vertex.p[2] - wheel.center[2];
+                    let spun_y = y * spin_c - z * spin_s;
+                    let spun_z = y * spin_s + z * spin_c;
+                    y = spun_y;
+                    z = spun_z;
+                    if wheel.front {
+                        let turned_x = x * turn_c + y * turn_s;
+                        let turned_y = -x * turn_s + y * turn_c;
+                        x = turned_x;
+                        y = turned_y;
+                    }
+                    vertex.p = [
+                        x + wheel.center[0],
+                        y + wheel.center[1],
+                        z + wheel.center[2] + susp_z,
+                    ];
+                }
+            }
+        }
+        triangles
+    }
+
+    pub fn animate_door(&self, triangles: &mut [Triangle], side: f32, opening: f32) {
+        // Native dummy frames supply the hinge. The 65 degree opening is a
+        // provisional controller angle, not an extracted handling value.
+        let angle = opening.clamp(0., 1.) * 65f32.to_radians() * side;
+        let (s, c) = angle.sin_cos();
+        for door in self.doors.iter().filter(|d| d.side == side) {
+            for tri in &mut triangles[door.triangle_range.clone()] {
+                for v in &mut tri.vertices {
+                    let x = v.p[0] - door.hinge[0];
+                    let y = v.p[1] - door.hinge[1];
+                    v.p[0] = door.hinge[0] + c * x - s * y;
+                    v.p[1] = door.hinge[1] + s * x + c * y;
+                }
+            }
+        }
     }
 }
 
@@ -632,4 +878,3 @@ mod tests {
         assert!(unpack(&bad_data, 0, 0x79000000).is_err());
     }
 }
-

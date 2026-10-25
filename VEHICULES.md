@@ -1,6 +1,13 @@
 # Premier véhicule — analyse préparée
 
-Vérifié sur l'ISO PAL locale le 5 octobre 2026. Le binaire distribué reste la version 0.3 : aucun véhicule pilotable n'y est encore intégré.
+Vérifié sur l'ISO PAL locale le 5 octobre 2026. Le lecteur et le rendu sont intégrés ; le contrôleur Banshee est un prototype arcade, pas une reconstitution des paramètres de conduite PS2.
+
+## Correction de peinture extérieure — 12 octobre 2026
+
+- La couleur claire est lue dans les entrées de palette du modèle Banshee de GAME.DTZ ; la variante la plus claire est retenue pour correspondre à la référence blanche.
+- Les textures de détail spécifiques et de salissure sont recolorées uniquement sur les panneaux extérieurs. Les textures du tableau de bord, des sièges, des vitres et des pneus gardent leur rendu d'origine.
+- Le rendu OpenGL conserve maintenant l'ordre des matériaux des bandes du modèle, au lieu de regrouper toutes les surfaces par texture.
+- Capture rapprochée contrôlée avec `--vehicle-preview fichier.bmp` : 2 237 triangles dessinés, peinture extérieure claire, vitres, plaque et roues visibles. L'éclairage et les reflets du jeu original restent à reproduire.
 
 ## Résultats
 
@@ -14,10 +21,10 @@ Vérifié sur l'ISO PAL locale le 5 octobre 2026. Le binaire distribué reste la
 - Quatre points de fixation de roues trouvés dans la hiérarchie.
 - Roue commune : modèle 323, géométrie embarquée dans GAME.DTZ. Décodage vérifié : 450 sommets sources et 164 triangles non dégénérés par roue. Diamètre local voisin de 1 ; échelles avant/arrière de la Banshee : 0,7.
 - Textures communes retrouvées dans le dictionnaire generic embarqué : carrosserie générique, salissures, plaque, pneus et variantes endommagées.
-- Les paramètres de conduite de la Banshee ont une référence dans GAME.DTZ ; leur disposition et leur interprétation ne sont pas encore établies.
+- Une adresse de table de handling de la Banshee est référencée dans GAME.DTZ ; sa disposition et ses unités ne sont pas encore établies. Le prototype utilise actuellement accélération/freinage et braquage génériques, et ne prétend pas reproduire le handling PS2.
 - MAIN.SCM est présent dans l'ISO ; son contenu et son exécution restent à analyser.
 
-Ces contrôles valident le décodage des données, pas encore leur rendu dans le moteur ni leur comportement en conduite. Les textures ont été localisées par nom ; leurs pixels doivent encore passer dans le lecteur commun pour ce véhicule.
+Le rendu des données, la résolution des textures et l'assemblage sont intégrés au moteur. L'entrée/sortie, l'animation des roues, le recalage au sol par quatre contacts et une caméra de poursuite sont présents. L'enveloppe de collision reste approximée par des rayons contre les collisions statiques.
 
 ## Points utiles pour l'intégration Rust
 
@@ -33,4 +40,4 @@ Les variantes endommagées ont ici leur drapeau de dessin désactivé. Exclure �
 
 Le catalogue et le résumé vérifié sont conservés dans data/vehicle-catalog.json et data/vehicle-probe.json. Les outils reproductibles sont work/probe_vehicle_resources.py et work/probe_vehicle_geometry.py, à la racine du chat. Les géométries intermédiaires restent dans work/vehicle-resource-probe/geometry-decoded.json, avec les pièces et les matrices.
 
-Suite : intégrer un lecteur Rust commun pour ce modèle et les roues, résoudre les textures, vérifier le véhicule assemblé à l'écran en arrière-plan, puis ajouter une simulation de conduite minimale et des collisions avec la carte. La sortie et l'entrée du joueur viendront après le premier véhicule stable.
+Suite : poursuivre d'abord l'analyse structurale du handling documentée dans `HANDLING-RECHERCHE.md`; ne pas supposer que les floats apparents ont des unités connues. Ensuite, utiliser uniquement les champs vérifiés pour améliorer la conduite, animer les roues et remplacer l'approximation par une collision de véhicule plus stable. Puis poursuivre avec le trafic.

@@ -1,0 +1,123 @@
+# Recherche des données de conduite (handling)
+
+État au 12 octobre 2026. Cette note sert à reprendre l'analyse sans refaire les mêmes vérifications. Elle n'autorise pas encore à modifier les paramètres de `src/driving.rs`.
+
+## Fichiers et provenance
+
+- Image de données décompressée déjà disponible localement : `C:\Users\BENJAMIN\Documents\Codex\2026-10-05\en\work\assets-probe\PS2\GAME.DTZ.dat`.
+- Le catalogue `data/vehicle-catalog.json` est produit par `work/probe_vehicle_resources.py`. Pour chaque modèle véhicule, le script lit le pointeur de handling à `model + 0x38` (`u32le`) et l'enregistre comme adresse. Ce n'est donc pas une valeur déduite du nom du véhicule.
+- Les modèles sont dans les données GAME.DTZ, mais attention à ne pas confondre le pointeur de handling inscrit dans chaque modèle, les lignes pointées, et le pointeur global nommé `HANDLING.CFG` dans l'entête DTZ.
+- Recherche locale de structure complémentaire : `work/research/Storyland-main/src/leeds/storyland_dtz.cpp`. Ce code documente le pointeur d'entête `HANDLING.CFG` au champ `0xA8`, borne une plage à partir du prochain pointeur d'entête, puis montre une vue générique par lignes `0xE0`. Son propre commentaire dit que le découpage exact des sous-tables et leur sens restent à nommer. C'est un outil de recherche tiers, pas une spécification officielle.
+
+## Vérifications faites
+
+- Dans la copie décompressée locale, le `u32` à l'offset d'entête `0xA8` vaut `0x419170`. La logique de bornage de Storyland prend comme prochain pointeur d'entête `0x452480` (champ `0x74`), soit une plage candidate de `0x39310` octets. Cette grande plage générique ne doit pas être assimilée à la liste directe des véhicules.
+- Le catalogue contient 111 véhicules et 111 adresses de handling distinctes entre `0x4bed20` et `0x4c58c0`. En triant ces adresses, 107 des 110 écarts adjacents valent `0xE0`; les trois autres valent `0x210`, `0x380` et `0x870`. Cela constitue un indice fort de lignes de `0xE0` regroupées par blocs, avec des lacunes ou sous-tables intermédiaires. Il faut toujours valider les groupes et les bornes avant un parseur.
+- Les trois ruptures adjacentes sont `AEROPL#280 0x4befc0 → FBIRAN#268 0x4bf340` (`0x380`), `ANGEL#231 0x4c21a0 → REEFER#214 0x4c2a10` (`0x870`), et `PIMP#186 0x4c5090 → 6WEELAT#170 0x4c52a0` (`0x210`). Les deux dernières distances ne sont pas des multiples entiers de `0xE0`; ne pas convertir ces écarts en nombre de lignes manquantes. Les IDs ne sont pas triés par adresse; les noms/IDs seuls ne démontrent donc pas l'ordre mémoire.
+- Inspection des candidats situés à intervalles de `0xE0` à l'intérieur des ruptures : les préfixes float32 des lignes de base des modèles connus commencent de façon récurrente par `(-0.2, -0.01, -0.2)`. Les débuts intermédiaires examinés ne reprennent pas ce motif : `0x4bf0a0`, `0x4bf180`, `0x4bf260`; `0x4c2280`, `0x4c2360`, `0x4c2440`, `0x4c2520`, `0x4c2600`, `0x4c26e0`, `0x4c27c0`, `0x4c28a0`, `0x4c2980`; `0x4c5170`, `0x4c5250`. Plusieurs semblent contenir d'autres données structurées (floats, mots entiers/pointeurs ou remplissage `0xEE`). Hypothèse : auxiliaires/sous-structures, peut-être propres à certains types de véhicules; sens non établi.
+- Exemples confirmés dans le catalogue : Banshee ID 175 → `0x4c5700`; Cheetah ID 172 → `0x4c5460`; Admiral ID 171 → `0x4c5380`; Stinger ID 254 → `0x4c0680`.
+- Les lignes sont directement consultables aux adresses pointées dans `GAME.DTZ.dat`; Banshee `0x4c5700` et le prochain pointeur Peren `0x4c57e0` sont séparés de `0xE0` octets.
+- Recoupement nouveau des pointeurs de modèle : le script catalogue lit le champ de base à `model + 0x38`. Les embarcations ont aussi une adresse non nulle à `model + 0x44` : la plupart pointent vers des lignes entre `0x4c2280` et `0x4c2960`, espacées régulièrement de `0xB0` octets (PREDATR, YOLA, JETSKI, DINGHY, MARQUIS, RIO, TROPIC, SQUALO, JETMAX, SCARAB, COASTG). SPEEDER2, REEFER et SPEEDER pointent vers un deuxième groupe à `0x4cc3b0`, `0x4cc460`, `0x4cc510`, aussi espacé de `0xB0`; SKIMMER en référence un à `0x4bec70`. Ceci confirme une famille de structures complémentaires d'embarcation à pas `0xB0`, sans révéler le nom ou l'interprétation des champs.
+- Comptage précis : les 14 modèles de `vehicle_type == 1` et JETSKI (`vehicle_type == 2`) ont tous un pointeur `+0x44` non nul. Ils se répartissent en un groupe de 11 à pas `0xB0`, un groupe de 3 à pas `0xB0`, et une ligne isolée pour SKIMMER. Ce lien direct depuis les entrées modèle renforce l'identification de ces blocs comme extensions spécialisées d'embarcation.
+- Comparaison brute des 11 lignes du premier groupe : les 44 mots du préfixe `0x00..0xAC` sont lisibles comme float32 finis; plusieurs colonnes changent selon le bateau, tandis que `0x2C`, `0x3C`, `0x64..0x6C`, `0x78..0x8C` sont nuls dans ce groupe. Ces motifs peuvent aider à retrouver le parseur, mais ne nomment pas les champs. Le fait que tout se lise comme des floats ne prouve pas que chaque mot soit un float (certains zéros peuvent être réservés, masques ou champs d'une autre représentation).
+- Le type de véhicule catalogué est `1` pour ces embarcations sauf JETSKI (`2`); le même champ `model + 0x44` pointe ailleurs pour 6WEELAT (`model + 0x4c` pointe également vers `0x4c5170`). Ne généraliser donc pas le champ `+0x44` à une signification unique sans connaître le type de modèle.
+- Les mots à `0x4c5170` sont référencés par le modèle 6WEELAT à `model + 0x4c` et JETSKI à `model + 0x48`. Cela indique une autre donnée auxiliaire partagée/spécialisée, mais sa fonction reste inconnue.
+- Comparaison externe, à utiliser uniquement comme piste : le [code source reVC, GTA Vice City PC](https://github.com/mrxenginner/reVC/blob/miami/src/vehicles/HandlingMgr.h) (pas VCS) sépare `tHandlingData`, `tBikeHandlingData`, `tBoatHandlingData` et `tFlyingHandlingData`; son `tBoatHandlingData` déclaré mesure 0x3C octets avec thrust, forces d'aquaplanage/résistance, audio et deux vecteurs. Cela rend plausible l'existence de sous-données spécifiques par classe dans VCS, mais la taille VCS observée de 0xB0 ne correspond pas directement à cette structure reVC. Ne pas recopier ses offsets ou champs dans VCS sans preuve propre au jeu.
+- Des mots interprétés provisoirement en float32 little-endian changent selon les véhicules et leur catégorie. Exemple à l'offset `0x68` : 34 Banshee/Cheetah, 30 Stinger, 35 Admiral. Cela ne prouve ni le type réel du champ, ni son unité, ni sa signification.
+- L'offset `0x5C` donne une valeur très petite/subnormale si on le lit comme float32. Garder en tête qu'un enregistrement peut mélanger floats, entiers, octets, drapeaux et sous-structures.
+
+## Conclusion limitée
+
+Le pas `0xE0` est corroboré par 107 écarts exacts sur 110 entre pointeurs de base des modèles et par une vue exploratoire générique de Storyland. Les références directes modèle `+0x44` confirment aussi des extensions d'embarcation au pas de `0xB0`. Il y a d'autres pointeurs auxiliaires à des offsets distincts. Les champs et unités internes restent inconnus; aucun champ n'est encore suffisamment établi pour piloter l'accélération, la vitesse maximale, le freinage ou le braquage.
+
+## Suite recommandée
+
+1. Tracer les lectures de handling dans l'exécutable MIPS PS2, en partant des pointeurs relevés (`model + 0x38`, `+0x44`, `+0x48`, `+0x4c`). Le fichier exécutable n'est pas encore accessible dans la session; `F:\` est refusé.
+2. Examiner séparément les pointeurs spécialisés 6WEELAT/JETSKI et la région autour de AEROPL pour déterminer leur nature.
+3. Comparer les lignes de base `0xE0` de voitures proches (Banshee/Cheetah/Comet), en séparant octets bruts, pointeurs et interprétations.
+4. En attendant l'exécutable, chercher une définition VCS fiable; reVC (GTA VC PC) demeure une comparaison seulement, avec une structure boat différente. Écrire les preuves et unités avant d'introduire un type Rust dans `src/driving.rs`. La physique actuelle reste inchangée jusque-là.
+
+## Vérification des sources locales complémentaires — 12 octobre 2026
+
+- Recherche dans la copie de `librwgta` (`work/research/librwgta-master`) : l'outil `storiesconv` exporte les métadonnées des véhicules, mais imprime explicitement `HANDLING_TODO` pour leur handling (`tools/storiesconv/storiesconv.cpp`, branche véhicule). Le code VCS local ne fournit donc pas de définition exploitable des champs de conduite.
+- Cette source confirme certaines métadonnées de véhicule et variantes VCS (par exemple l'échelle des roues arrière), mais ne décode pas les enregistrements `0xE0` ni les extensions `0xB0`. Ne pas la citer comme preuve d'offsets de handling.
+- Conclusion de cette étape : l'analyse des tables reste ancrée dans les références du GAME.DTZ et le code VCS spécifique disponible ne suffit pas à nommer les champs. La prochaine étape probante est le traçage des accès dans le code exécutable PS2 (désassemblage MIPS et suivi des pointeurs), ou une définition VCS documentée; sans cela, le contrôleur reste inchangé.
+
+## Première passe dans l'exécutable PS2 — 12 octobre 2026
+
+- Exécutable présent dans le workspace : `C:\Users\BENJAMIN\Documents\Codex\2026-10-05\en\outputs\VCS-PS2-recomp\original\SLES_546.22` (3 994 136 octets). En-tête ELF vérifié : ELF32 little-endian, machine MIPS (EM_MIPS=8), entry `0x001DD680`; `.text` à l'adresse `0x00100000`, offset fichier `0x1000`, taille `0x380888`; `.rodata` commence à `0x00499300`.
+- `llvm-objdump.exe` est dans le toolchain Rust, mais échoue au démarrage avec le statut Windows `0xC0000135` (dépendance DLL manquante). Une lecture exploratoire maison des opcodes MIPS a repéré des grappes de chargements aux offsets `0x38`, `0x44`, `0x48`, `0x4C`, `0x54`, `0x58`, `0x5C`; exemple autour de `0x001EC910–0x001ECA90`. Le décodage partiel ne suffit pas à identifier le type de structure ni à nommer une fonction. Traiter ces adresses comme des candidats de recherche, pas comme une preuve d'usage handling.
+- Important : la valeur de pointeur GAME.DTZ `0x4C5700` (Banshee) tombe numériquement dans la section `.bss` du SLES si on la lit comme adresse virtuelle; ce recouvrement est une coïncidence entre espaces d'adressage. Le champ du modèle reste un offset dans GAME.DTZ; ne pas le convertir directement en adresse SLES.
+- Aucune interprétation de champ de handling n'a été confirmée et aucune physique n'a été modifiée. Prochaine étape : utiliser un désassembleur MIPS fonctionnel (résoudre la dépendance DLL de LLVM ou trouver un outil déjà disponible), puis suivre les fonctions et leurs arguments pour distinguer les accès au model-info de ceux aux lignes GAME.DTZ.
+- Copie de travail de l’ISO créée sur C: : `work/Grand Theft Auto - Vice City Stories.iso`, 4 140 335 104 octets (taille attendue). Vérifications réussies : signature ISO9660 `CD001` au LBA 16; `SLES_546.22` au LBA 692 avec la taille attendue, le SHA-256 indiqué dans `inspection.json` et un contenu identique à l’ELF extrait. `inspection.json` et les outils qui pointaient vers F: ont été redirigés vers cette copie; l’original sur F: reste intact.
+
+- Le chemin ISO par défaut de `src/main.rs` a été redirigé vers la copie sur C:; recompilation release réussie et `VCS-Rust.exe` actualisé. Aucun test ni lancement de jeu dans cette étape.
+
+## Traçage MIPS du pointeur de handling — 12 octobre 2026
+
+- Un désassembleur MIPS reproductible est maintenant installé seulement dans `work/mips-tools` (Capstone 5.0.9). Il n'est pas une dépendance du jeu ni du projet Rust. Script : `work/mips_disasm.py`; exemple : `py work/mips_disasm.py 0x1aa110 0x1aa338`. Le mode MIPS64 little-endian est nécessaire pour les instructions PS2; `skipdata` permet de poursuivre malgré des blocs non décodables dans `.text`. LLVM objdump continuait de planter; Capstone contourne le blocage.
+- La routine `0x001AA110` choisit une entrée de la table des modèles à partir de l'ID modèle (`entity + 0x56`), puis lit son pointeur `model + 0x38`. Elle teste le mot `handling + 0xD0` avec le masque `0x08000000` (constante MIPS `lui 0x800`). Les bateaux de l'échantillon portent bien ce bit (`0x08000010` ou `0x08000410`); Banshee, Cheetah et Admiral examinées ne le portent pas.
+- Si ce bit est présent, la routine lit aussi `model + 0x44`, puis les flottants d'extension `+0x70`, `+0x74`, `+0x78`, `+0x80`, `+0x84`, `+0x88`. Dans le code, `+0x70/+0x80` et `+0x74/+0x84` multiplient deux vecteurs déjà chargés depuis la structure modèle; `+0x78/+0x88` leur ajoutent une composante. Une seconde routine à `0x00369870` répète la même sélection par bit et les mêmes six accès avant de former des différences de vecteurs. Les lignes bateau consultées ont à ces offsets des facteurs/décalages finis, cohérents avec cet usage.
+- Cela confirme un lien exécutable entre les entrées modèle, les enregistrements `0xE0`, le bit `+0xD0` et les extensions bateau `0xB0`. La preuve porte sur l'ajustement de deux vecteurs du modèle; elle ne nomme pas encore ces champs comme des paramètres de propulsion, vitesse ou braquage. Ne pas en déduire des changements de conduite dans `src/driving.rs`.
+- Le candidat antérieur `0x001EC910–0x001ECA90` s'avère être une logique d'état/traitement avec seuils `0x400`; aucune référence identifiée au modèle ou au pointeur de handling n'y apparaît. Le laisser de côté pour la piste physique.
+- Désassemblage conservé dans `work/handling-mips-boat-routine.txt`. Les balayages ont également trouvé des tests de bits `handling + 0xD0` dans les routines `0x00304118` (masque `0x01000000`) et `0x003A3928` (masques `0x2` et `0x1`); leurs interprétations restent à établir.
+- Détail reproductibilité : la distribution installée sous `work/mips-tools` a les métadonnées `capstone 5.0.9`, tandis que `capstone.__version__` renvoie `5.0.7`; c'est le paquet isolé qui est effectivement importé par le script.
+
+### Prochaine étape
+
+Tracer comment le pointeur handling entre dans la structure runtime d'une automobile et suivre ses usages à travers les appels de mise à jour; ne pas supposer qu'une lecture d'un champ `+0x38` correspond à cette ligne (plusieurs faux positifs sont des tableaux géométriques). Chercher les champs copiés lors de l'initialisation et leurs effets sur vitesse, force, freinage, roues ou braquage. Pour nommer un champ, relier l'accès au pointeur à un calcul de mouvement; sinon garder une description de l'opération et son adresse MIPS. Aucune modification de physique n'est encore justifiée.
+
+## Première chaîne handling automobile -> dynamique — 12 octobre 2026
+
+La piste précédente est désormais dépassée : le pointeur handling est relié à l'objet véhicule runtime et plusieurs champs atteignent les calculs de commande et de mouvement. Les détails assemblage par assemblage sont dans `work/handling-mips-dynamics-findings.txt`.
+
+- Initialisation, routine `0x0019C1E0..0x0019C524` : la table model-info, indexée par l'ID véhicule, est chargée à `0x0019C23C..0x0019C254`. Les mots `model-info +0x38/+0x40/+0x44/+0x48` sont copiés vers `vehicle +0x160/+0x164/+0x168/+0x420`. Le catalogue confirme que `model-info +0x38` est le pointeur vers le record handling; le pointeur runtime est donc `vehicle +0x160`.
+- Cette initialisation copie handling `+0xBC` vers véhicule `+0xD0`, handling `+0xC0 * 0.5` vers `+0xD4`, handling `+0xA0..+0xAC` vers `+0xC0..+0xCC`, handling `+0x98` (avec transformation conditionnelle) vers `+0xDC`, et handling `+0xB4` vers `+0x158`. Ces champs sont vus comme flottants par les instructions, mais leur nom et unité ne sont pas établis.
+- Un suivi de helpers affine cette lecture : `0x00347F00` divise les forces reçues par `vehicle +0xD0`, puis ajoute le résultat à `vehicle +0x140`. Comme `+0xD0` reçoit handling `+0xBC` et que Banshee vaut 1400, `handling +0xBC` est la masse utilisée dans l'intégration force/masse. `0x00348278` avance ensuite la position `vehicle +0x30..+0x38` avec le vecteur `+0x140` multiplié par un scalaire global de temps. Le rôle physique de `+0xC0`/`+0xD4` semble lié aux calculs rotatifs de `0x00348058`, mais le nom exact n'est pas encore prouvé.
+- La routine de traitement de commandes commence vers `0x0019F708`. À `0x0019F9C0..0x0019F9D8`, elle prend la commande `vehicle +0x484`, en fait son carré signé, la multiplie par `0x3C8EFA36` (environ `pi/180`), puis par `handling +0x68`, et écrit le résultat en radians vers `vehicle +0x258`; une autre commande est copiée vers `vehicle +0x25C`. Les valeurs brutes de Banshee/Cheetah/Admiral/Stinger sont respectivement 34/34/35/30. L'effet et les unités prouvent que `+0x68` est l'angle maximal de braquage en degrés, même si le nom original du champ est inaccessible.
+- La grande routine de calcul autour de `0x001A0A80..0x001A1C00` consomme ces commandes. À `0x001A14B4..0x001A14D0`, elle multiplie `handling +0x70` par le produit scalaire du vecteur de vitesse `vehicle +0x140` avec l'axe avant de l'objet (`vehicle +0x10..+0x18`), puis calcule `clamp(1 - produit, 0, 1)`; une branche peut diviser le produit par 2. À `0x001A1604..0x001A1648`, ce facteur module la commande `vehicle +0x258` utilisée dans les calculs sin/cos de rotation. Il s'agit donc d'une atténuation du braquage selon la vitesse longitudinale. Valeurs brutes observées : Banshee 0,49; Cheetah 0,50; Admiral 0,45; Stinger 0,48. L'unité de la vitesse interne n'est pas encore convertie en unités Rust.
+- La même routine utilise aussi les copies runtime issues de handling `+0xA0..+0xAC` (`vehicle +0xC0..+0xCC`) et `+0xBC/+0xC0` (`vehicle +0xD0/+0xD4`) dans des formules de vecteurs et un appel à `0x00348058`. Leur interprétation physique exacte reste à démontrer.
+- Aucune structure de champ Rust ne doit encore être inventée : les équations PS2 sont établies partiellement, mais l'échelle temporelle, les unités, l'effet exact sur la vitesse et les valeurs restantes ne sont pas traduits vers le timestep Rust.
+- Première traduction appliquée dans `src/driving.rs` : angle Banshee `34°` converti en radians et courbe d'entrée signée au carré, conformément à la routine MIPS. La réduction du braquage avec la vitesse (`0.72 * speed_fraction`) reste une approximation existante; elle n'est pas attribuée à `handling +0x70`.
+
+### Suite précise
+
+1. Délimiter la routine de calcul autour de `0x001A0xxx`, suivre les écritures d'orientation/vitesse et les entrées `vehicle +0x258/+0x25C` jusqu'aux sorties.
+2. Examiner seulement les champs handling dont la lecture aval est prouvée, avec valeurs brutes de la Banshee et de quelques modèles de comparaison; ne pas mapper par simple ressemblance à GTA VC.
+3. Mesurer l'échelle de temps des étapes PS2 et proposer un mapping limité pour `src/driving.rs`; documenter la correspondance avant tout changement de physique.
+4. Après un changement explicite, compiler/valider seulement si l'utilisateur le demande; jusque-là cette étape reste une analyse statique et la physique Rust ne change pas.
+
+## Précision sur handling +0x70 — 12 octobre 2026
+
+- La routine de dynamique confirme que `+0x70` module l'angle de rotation selon la vitesse avant. `vehicle +0x140` est lu comme vecteur vitesse; son produit scalaire avec l'axe avant (`vehicle +0x10..+0x18`) est multiplié par le float handling `+0x70`, soustrait de 1, puis borné entre 0 et 1. Une condition spécifique réduit parfois de moitié ce produit.
+- Ne pas brancher directement `0.49 * Car.speed` : `Car.speed` est exprimée en unités monde/seconde du prototype, tandis que la vitesse interne PS2 et son pas de simulation ne sont pas encore convertis. Pour remplacer l'approximation `0.72 * speed_fraction`, il faut établir cette échelle ou calibrer une conversion mesurée.
+- Aucun changement supplémentaire du code de conduite à ce jalon; la seule intégration reste le 34° et la courbe de braquage signée au carré.
+- Le vecteur runtime `vehicle +0x140` est confirmé comme vitesse linéaire : le helper d'application de force ajoute force/masse à ce vecteur, puis l'intégrateur position le multiplie par un scalaire global de temps. La valeur de ce scalaire et sa relation exacte à un frame PS2 restent à localiser. Le coefficient `+0x70` ne suffit donc pas seul à dériver une courbe Rust.
+
+## Recensement du bit bateau et tri des faux positifs — 12 octobre 2026
+
+- Balayage des 111 lignes catalogue avec `work/handling_flag_census.py` : le masque `0x08000000` à `handling + 0xD0` apparaît dans 15/15 entrées de type véhicule 1 ou 2 (14 bateaux + JETSKI), et dans 0 des 96 autres entrées. Les 15 ont aussi un pointeur non nul `model + 0x44`. Résultat conservé dans `work/handling-mips-flag-census.txt`.
+- Le SLES contient la chaîne `HF_IS_WATER_VEHICLE` (offset fichier `0x3B7550`) et le chemin source `vehicles/automobile.cpp` (`0x39C848`). Le masque `0x08000000` est exclusivement présent dans les lignes des types 1/2 et sert dans le MIPS à activer les lectures de l'extension bateau. La chaîne est compatible avec une propriété aquatique, mais aucun xref direct ne relie ce nom au masque; consigner l'association comme hypothèse et ne pas lui attribuer un nom enum définitif.
+- Tri de candidats : `0x00211954` charge `model + 0x14`, puis `+0x38`, mais lit une série de vecteurs de pas `0x20` utilisée dans des comparaisons géométriques; ce n'est pas une lecture démontrée d'un record handling `0xE0`. Plusieurs autres accès `model + 0x38` aux offsets `+0x04/+0x08/+0x0C` suivent aussi des tableaux de vecteurs comptés par un octet à `+0x34`; ne pas les confondre avec le pointeur handling du catalogue.
+- L'ELF ne possède pas de `.symtab` ni de symboles nommés, et les chaînes `HF_*` / chemins source n'ont pas de pointeurs directs trouvés dans le binaire. Elles aident à formuler des hypothèses, mais ne localisent pas seules `CAutomobile::ProcessControl`.
+
+### Suite immédiate
+
+Repérer le pointeur handling dans la structure runtime de l'automobile, puis suivre ses usages à travers les appels de mise à jour (ou repérer l'initialisation qui copie ces champs dans l'objet véhicule). Chercher des effets sur vitesse, force, freinage, roues ou direction et écarter les chemins qui ne font que tester des bornes. Le catalogue seul et les accès à des tableaux de vecteurs ne justifient toujours aucun changement de `src/driving.rs`.
+
+
+## Clarification du scalaire d'intégration — 12 octobre 2026
+
+Le suivi de `0x004CD410` aboutit à un paramètre de la structure de configuration manipulée par le chargeur, et non à une valeur de cadence directement identifiée. La routine `0x003AD0C0` copie `input_struct+0x28` vers cette globale; son appel à `0x003ADEF8` est dans le chemin de lecture de configuration. La routine `0x003ACB98` effectue le transfert inverse (globale vers le champ `+0x28` d'une structure), ce qui confirme qu'il s'agit d'un paramètre configurable/sérialisable. Le helper d'intégration `0x00348278` utilise bien la globale comme multiplicateur de déplacement, mais son nom logique, sa valeur par défaut et son unité ne sont pas établis.
+
+L'image ISO inspectée contient `PS2/GAME.DTZ`, mais pas `CONFIGS/GTA_VC.DAT`; ce fichier de configuration est donc absent des données disque étudiées. Ne pas appeler ce champ `timeStep` comme un fait, et ne pas déduire la conversion de vitesse sans valeur observable. La piste « construire la structure locale + retrouver sa source » est partiellement résolue : le transfert est confirmé, mais l'identité du champ reste à retrouver via le descripteur de configuration ou une valeur runtime.
+
+
+## Nouveau candidat handling +0x60 dans la dynamique — 12 octobre 2026
+
+La routine `0x001A0A80..0x001A1C00` lit aussi le float `handling+0x60` (`vehicle+0x160` puis `+0x60`) à `0x001A17A0..0x001A17B4`. Dans cette branche, il est multiplié par `2500.0`; la valeur calculée alimente ensuite la préparation de composantes de force et un appel à `0x00347F00` vers `0x001A1BDC`, helper qui ajoute force/masse au vecteur vitesse `vehicle+0x140`. Cela prouve que `+0x60` participe à un chemin d'application de force, mais pas son nom officiel ni son rôle physique isolé : les autres facteurs et la condition de branche doivent encore être suivis. Ne pas le nommer traction, adhérence ou accélération sans démonstration supplémentaire. Désassemblage complet conservé dans `work/handling-mips-vehicle-update.txt`.
+
+
+### Comparaison des valeurs de handling +0x60
+
+Lecture des floats dans `GAME.DTZ.dat` via les pointeurs du catalogue : Banshee `0.00320`, Cheetah `0.00320`, Admiral `0.00364`, Stinger `0.00320`. Multipliées par la constante MIPS `2500`, elles donnent respectivement `8.0`, `8.0`, `9.1`, `8.0`. La comparaison montre une valeur proche mais pas identique pour l'Admiral; elle ne suffit pas à nommer le paramètre. Vérification statique par lecture du catalogue et des octets extraits, sans exécution du jeu.

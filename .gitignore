@@ -32,6 +32,10 @@ extracted/
 
 # Runtime/error output
 *.err
+data/live-state.json
 
 # Runtime/error output
 *.err
+
+# User gameplay preference
+VCS-options.json

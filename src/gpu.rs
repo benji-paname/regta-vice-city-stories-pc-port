@@ -148,6 +148,8 @@ const FOG: u32 = 0x0b60;
 const BLEND: u32 = 0x0be2;
 const PROJECTION: u32 = 0x1701;
 const MODELVIEW: u32 = 0x1700;
+const LINES: u32 = 0x0001;
+const TRIANGLES: u32 = 0x0004;
 const QUADS: u32 = 0x0007;
 
 struct Batch {
@@ -186,6 +188,7 @@ pub struct GpuRenderer {
     list_handles: Vec<u32>,
     character_textures: HashMap<u16, u32>,
     pub vehicle_textures: HashMap<u16, u32>,
+    hud_handles: [u32; 3],
     anisotropy: f32,
     scene_instances: [Vec<(usize, usize)>; 3],
     pub driver: String,
@@ -209,6 +212,7 @@ impl GpuRenderer {
             list_handles: Vec::new(),
             character_textures: HashMap::new(),
             vehicle_textures: HashMap::new(),
+            hud_handles: [0; 3],
             anisotropy: 1.0,
             scene_instances: std::array::from_fn(|zone| {
                 crate::scene::unique_instances(levels, zone)
@@ -408,9 +412,14 @@ impl GpuRenderer {
         camera: &Camera,
         textures: bool,
         walking: bool,
+        driving: bool,
         show_help: bool,
-        character: Option<&CharacterFrame<'_>>,
-        vehicle: Option<&VehicleFrame<'_>>,
+        characters: &[CharacterFrame<'_>],
+        vehicles: &[VehicleFrame<'_>],
+        hud: &[crate::hud::Layer],
+        lights: &[crate::traffic::TrafficLight],
+        weapons: Option<&crate::weapons::WeaponArsenal>,
+        global_time: f32,
     ) -> Result<()> {
         if zone >= levels.len() || zone >= self.scene_instances.len() {
             return Err("Invalid GPU zone".into());
@@ -431,9 +440,9 @@ impl GpuRenderer {
             background();
             glMatrixMode(PROJECTION);
             glLoadIdentity();
-            let near = 0.5;
-            let right = near * WIDTH as f64 / 1300.0;
-            let top = near * HEIGHT as f64 / 1300.0;
+            let near = crate::render::CAMERA_NEAR as f64;
+            let right = near * WIDTH as f64 / (2.0 * crate::render::CAMERA_FOCAL as f64);
+            let top = near * HEIGHT as f64 / (2.0 * crate::render::CAMERA_FOCAL as f64);
             glFrustum(
                 -right,
                 right,
@@ -472,17 +481,27 @@ impl GpuRenderer {
             // Both outdoor archives share one transparent ordering. Sorting each
             // archive separately would put some near surfaces behind distant ones.
             visible.sort_by(|(a, _), (b, _)| instance_order(a, b, camera));
+            // Actors and vehicles must write depth before translucent world
+            // surfaces, including water. Opaque world geometry still occludes
+            // them normally through the depth test below.
+            for character in characters {
+                let (triangles, textured) =
+                    draw_character(character, &self.character_textures, textures);
+                self.triangles += triangles;
+                self.textured_triangles += textured;
+            }
+            for vehicle in vehicles {
+                let (triangles, textured) = draw_vehicle(vehicle, &self.vehicle_textures, textures);
+                self.triangles += triangles;
+                self.textured_triangles += textured;
+            }
+            draw_traffic_lights(lights, global_time);
+            if let Some(w) = weapons {
+                draw_weapons_3d(w);
+            }
             let mut blending = false;
-            let mut character_drawn = false;
             for (instance, batches) in visible {
                 if crate::scene::is_blended(instance) && !blending {
-                    if let Some(character) = character {
-                        let (triangles, textured) =
-                            draw_character(character, &self.character_textures, textures);
-                        self.triangles += triangles;
-                        self.textured_triangles += textured;
-                    }
-                    character_drawn = true;
                     glEnable(BLEND);
                     glBlendFunc(0x0302, 0x0303); // SRC_ALPHA, ONE_MINUS_SRC_ALPHA
                     glDepthMask(0);
@@ -510,30 +529,65 @@ impl GpuRenderer {
                 }
                 glPopMatrix();
             }
-            if !character_drawn {
-                if let Some(character) = character {
-                    let (triangles, textured) =
-                        draw_character(character, &self.character_textures, textures);
-                    self.triangles += triangles;
-                    self.textured_triangles += textured;
-                }
-            }
-            if let Some(vehicle) = vehicle {
-                let (triangles, textured) =
-                    draw_vehicle(vehicle, &self.vehicle_textures, textures);
-                self.triangles += triangles;
-                self.textured_triangles += textured;
-            }
             glDepthMask(1);
             glDisable(BLEND);
             ortho();
-            draw_guide(crate::scene::label(zone), walking, show_help);
+            self.draw_hud(hud);
+            if let Some(w) = weapons {
+                draw_crosshair_hud(w.crosshair_kind());
+            }
+            draw_guide(crate::scene::label(zone), walking, driving, show_help);
             check_error("rendu")?;
             if !self.offscreen && SwapBuffers(self.dc) == 0 {
                 return Err("OpenGL: affichage de l'image impossible".into());
             }
         }
         Ok(())
+    }
+
+    unsafe fn draw_hud(&mut self, layers: &[crate::hud::Layer]) {
+        glEnable(BLEND);
+        glBlendFunc(0x0302, 0x0303);
+        glEnable(TEXTURE_2D);
+        glColor4f(1., 1., 1., 1.);
+        for (i, layer) in layers.iter().take(3).enumerate() {
+            if self.hud_handles[i] == 0 {
+                glGenTextures(1, &mut self.hud_handles[i]);
+                self.texture_handles.push(self.hud_handles[i]);
+            }
+            glBindTexture(TEXTURE_2D, self.hud_handles[i]);
+            glTexParameteri(TEXTURE_2D, 0x2801, 0x2601); // LINEAR, no mip chain
+            glTexParameteri(TEXTURE_2D, 0x2800, 0x2601);
+            glTexParameteri(TEXTURE_2D, 0x2802, 0x812f); // CLAMP_TO_EDGE
+            glTexParameteri(TEXTURE_2D, 0x2803, 0x812f);
+            glTexImage2D(
+                TEXTURE_2D,
+                0,
+                0x1908,
+                layer.width as i32,
+                layer.height as i32,
+                0,
+                0x1908,
+                0x1401,
+                layer.rgba.as_ptr().cast(),
+            );
+            let x = layer.x as f32;
+            let y = layer.y as f32;
+            let w = layer.width as f32;
+            let h = layer.height as f32;
+            glBegin(QUADS);
+            glTexCoord2f(0., 0.);
+            glVertex2f(x, y);
+            glTexCoord2f(1., 0.);
+            glVertex2f(x + w, y);
+            glTexCoord2f(1., 1.);
+            glVertex2f(x + w, y + h);
+            glTexCoord2f(0., 1.);
+            glVertex2f(x, y + h);
+            glEnd();
+        }
+        glDisable(TEXTURE_2D);
+        glDisable(BLEND);
     }
 
     fn dimensions(&self) -> Result<(i32, i32)> {
@@ -764,30 +818,38 @@ unsafe fn draw_vehicle(
 ) -> (usize, usize) {
     glPushMatrix();
     glMultMatrixf(character_matrix(frame.position, frame.heading).as_ptr());
-    let mut groups = BTreeMap::<u16, Vec<&Triangle>>::new();
-    for triangle in frame.triangles {
-        groups
-            .entry(triangle.texture_id)
-            .or_default()
-            .push(triangle);
-    }
     let mut textured = 0;
-    for (material, triangles) in groups {
-        if let Some(&handle) = material_textures.get(&material).filter(|_| textures) {
-            glEnable(TEXTURE_2D);
-            glBindTexture(TEXTURE_2D, handle);
-            textured += triangles.len();
-        } else {
-            glDisable(TEXTURE_2D);
-        }
-        glBegin(0x0004);
-        for triangle in triangles {
-            for vertex in &triangle.vertices {
-                glColor3f(vertex.color[0], vertex.color[1], vertex.color[2]);
-                glTexCoord2f(vertex.uv[0], vertex.uv[1]);
-                glVertex3f(vertex.p[0], vertex.p[1], vertex.p[2]);
+    let mut active_texture = None;
+    let mut active_textured = false;
+    for triangle in frame.triangles {
+        if active_texture != Some(triangle.texture_id) {
+            if active_texture.is_some() {
+                glEnd();
             }
+            if let Some(&handle) = material_textures
+                .get(&triangle.texture_id)
+                .filter(|_| textures)
+            {
+                glEnable(TEXTURE_2D);
+                glBindTexture(TEXTURE_2D, handle);
+                active_textured = true;
+            } else {
+                glDisable(TEXTURE_2D);
+                active_textured = false;
+            }
+            glBegin(0x0004);
+            active_texture = Some(triangle.texture_id);
         }
+        if active_textured {
+            textured += 1;
+        }
+        for vertex in &triangle.vertices {
+            glColor3f(vertex.color[0], vertex.color[1], vertex.color[2]);
+            glTexCoord2f(vertex.uv[0], vertex.uv[1]);
+            glVertex3f(vertex.p[0], vertex.p[1], vertex.p[2]);
+        }
+    }
+    if active_texture.is_some() {
         glEnd();
     }
     glPopMatrix();
@@ -851,7 +913,10 @@ unsafe fn text(x: f32, y: f32, line: &str, color: [f32; 3]) {
     glEnd();
 }
 
-unsafe fn draw_guide(zone: &str, walking: bool, show_help: bool) {
+unsafe fn draw_guide(zone: &str, walking: bool, driving: bool, show_help: bool) {
+    if !show_help {
+        return;
+    }
     glEnable(BLEND);
     glBlendFunc(0x0302, 0x0303); // SRC_ALPHA, ONE_MINUS_SRC_ALPHA
     glColor4f(0.02, 0.04, 0.06, 0.75);
@@ -861,7 +926,9 @@ unsafe fn draw_guide(zone: &str, walking: bool, show_help: bool) {
         quad(10.0, HEIGHT as f32 - 67.0, WIDTH as f32 - 20.0, 57.0);
     }
     glEnd();
-    let mode = if walking {
+    let mode = if driving {
+        "CONDUITE"
+    } else if walking {
         "MARCHE EXPERIMENTALE"
     } else {
         "CAMERA LIBRE"
@@ -871,14 +938,20 @@ unsafe fn draw_guide(zone: &str, walking: bool, show_help: bool) {
         text(
             20.0,
             HEIGHT as f32 - 57.0,
-            "ZQSD / WASD: DEPLACER | FLECHES: VUE | MAJ: ACCELERER",
+            if driving {
+                "Z/W: ACCELERER | S: FREIN / RECUL | ESPACE: FREIN A MAIN"
+            } else {
+                "ZQSD / WASD: DEPLACER | FLECHES: VUE | MAJ: ACCELERER"
+            },
             [1.0; 3],
         );
         text(
             20.0,
             HEIGHT as f32 - 42.0,
-            if walking {
-                "ESPACE: SAUTER | 1-4: LIEU | F2: VUE | T: TEXTURES"
+            if driving {
+                "Q/A-D: CONDUIRE | H: GIROPHARE | 1-4: LIEU | T: TEXTURES"
+            } else if walking {
+                "ESPACE: SAUT | TAB: ARME | CLIC G/F: TIR | CLIC D/V: VISER"
             } else {
                 "ESPACE / CTRL: HAUTEUR | 1-4: LIEU | T: TEXTURES"
             },
@@ -887,11 +960,217 @@ unsafe fn draw_guide(zone: &str, walking: bool, show_help: bool) {
         text(
             20.0,
             HEIGHT as f32 - 27.0,
-            "G: MARCHER | R: REINITIALISER | F1: AIDE | ECHAP: QUITTER",
+            if driving {
+                "ARRET + E: SORTIR | R: REINITIALISER | ECHAP: QUITTER"
+            } else {
+                "G: MARCHER | E: MONTER DANS UNE VOITURE ARRETEE | R: DEPART | F1: AIDE"
+            },
             [0.74, 0.92, 1.0],
         );
     }
     glDisable(BLEND);
+}
+
+
+unsafe fn draw_traffic_lights(lights: &[crate::traffic::TrafficLight], time: f32) {
+    glDisable(TEXTURE_2D);
+    glDisable(BLEND);
+    for light in lights {
+        let state = light.state_at(time);
+        let x = light.position[0];
+        let y = light.position[1];
+        let z = light.position[2];
+
+        // Vertical post
+        glColor3f(0.25, 0.25, 0.28);
+        glBegin(LINES);
+        glVertex3f(x, y, z);
+        glVertex3f(x, y, z + 4.6);
+        glEnd();
+
+        // Housing box
+        glColor3f(0.12, 0.12, 0.15);
+        glBegin(QUADS);
+        glVertex3f(x - 0.25, y - 0.25, z + 3.5);
+        glVertex3f(x + 0.25, y - 0.25, z + 3.5);
+        glVertex3f(x + 0.25, y - 0.25, z + 4.7);
+        glVertex3f(x - 0.25, y - 0.25, z + 4.7);
+        glEnd();
+
+        // Red lens
+        if state == crate::traffic::TrafficLightState::Red {
+            glColor3f(1.0, 0.08, 0.08);
+        } else {
+            glColor3f(0.25, 0.04, 0.04);
+        }
+        glBegin(QUADS);
+        glVertex3f(x - 0.16, y - 0.26, z + 4.35);
+        glVertex3f(x + 0.16, y - 0.26, z + 4.35);
+        glVertex3f(x + 0.16, y - 0.26, z + 4.65);
+        glVertex3f(x - 0.16, y - 0.26, z + 4.65);
+        glEnd();
+
+        // Amber lens
+        if state == crate::traffic::TrafficLightState::Amber {
+            glColor3f(1.0, 0.75, 0.1);
+        } else {
+            glColor3f(0.25, 0.18, 0.04);
+        }
+        glBegin(QUADS);
+        glVertex3f(x - 0.16, y - 0.26, z + 3.95);
+        glVertex3f(x + 0.16, y - 0.26, z + 3.95);
+        glVertex3f(x + 0.16, y - 0.26, z + 4.25);
+        glVertex3f(x - 0.16, y - 0.26, z + 4.25);
+        glEnd();
+
+        // Green lens
+        if state == crate::traffic::TrafficLightState::Green {
+            glColor3f(0.1, 1.0, 0.3);
+        } else {
+            glColor3f(0.04, 0.22, 0.06);
+        }
+        glBegin(QUADS);
+        glVertex3f(x - 0.16, y - 0.26, z + 3.55);
+        glVertex3f(x + 0.16, y - 0.26, z + 3.55);
+        glVertex3f(x + 0.16, y - 0.26, z + 3.85);
+        glVertex3f(x - 0.16, y - 0.26, z + 3.85);
+        glEnd();
+    }
+}
+
+unsafe fn draw_weapons_3d(arsenal: &crate::weapons::WeaponArsenal) {
+    glDisable(TEXTURE_2D);
+    glEnable(BLEND);
+    glBlendFunc(0x0302, 0x0303);
+
+    for tracer in &arsenal.tracers {
+        let alpha = (tracer.lifetime / tracer.max_lifetime).clamp(0.0, 1.0);
+        glColor4f(tracer.color[0], tracer.color[1], tracer.color[2], tracer.color[3] * alpha);
+        glBegin(LINES);
+        glVertex3f(tracer.start[0], tracer.start[1], tracer.start[2]);
+        glVertex3f(tracer.end[0], tracer.end[1], tracer.end[2]);
+        glEnd();
+    }
+
+    for proj in &arsenal.projectiles {
+        let x = proj.position[0];
+        let y = proj.position[1];
+        let z = proj.position[2];
+        let r = proj.radius;
+        match proj.kind {
+            crate::weapons::ProjectileKind::Rocket => {
+                glColor3f(0.9, 0.2, 0.1);
+                glBegin(TRIANGLES);
+                glVertex3f(x, y + r * 2.0, z);
+                glVertex3f(x - r, y, z - r);
+                glVertex3f(x + r, y, z - r);
+                glVertex3f(x, y + r * 2.0, z);
+                glVertex3f(x + r, y, z - r);
+                glVertex3f(x, y, z + r);
+                glEnd();
+            }
+            crate::weapons::ProjectileKind::Grenade => {
+                glColor3f(0.25, 0.4, 0.2);
+                glBegin(QUADS);
+                glVertex3f(x - r, y - r, z - r);
+                glVertex3f(x + r, y - r, z - r);
+                glVertex3f(x + r, y + r, z - r);
+                glVertex3f(x - r, y + r, z - r);
+                glVertex3f(x - r, y - r, z + r);
+                glVertex3f(x + r, y - r, z + r);
+                glVertex3f(x + r, y + r, z + r);
+                glVertex3f(x - r, y + r, z + r);
+                glEnd();
+            }
+            crate::weapons::ProjectileKind::Flame => {
+                glColor4f(1.0, 0.55, 0.1, 0.85);
+                glBegin(QUADS);
+                glVertex3f(x - r, y, z - r);
+                glVertex3f(x + r, y, z - r);
+                glVertex3f(x + r, y, z + r);
+                glVertex3f(x - r, y, z + r);
+                glEnd();
+            }
+        }
+    }
+
+    for p in &arsenal.particles {
+        let x = p.position[0];
+        let y = p.position[1];
+        let z = p.position[2];
+        let s = p.size;
+        glColor4f(p.color[0], p.color[1], p.color[2], p.color[3]);
+        glBegin(QUADS);
+        glVertex3f(x - s, y, z - s);
+        glVertex3f(x + s, y, z - s);
+        glVertex3f(x + s, y, z + s);
+        glVertex3f(x - s, y, z + s);
+        glEnd();
+    }
+    glDisable(BLEND);
+}
+
+unsafe fn draw_crosshair_hud(kind: crate::weapons::CrosshairKind) {
+    let cx = WIDTH as f32 / 2.0;
+    let cy = HEIGHT as f32 / 2.0;
+    glDisable(TEXTURE_2D);
+
+    match kind {
+        crate::weapons::CrosshairKind::None => {}
+        crate::weapons::CrosshairKind::DotCross => {
+            glEnable(BLEND);
+            glBlendFunc(0x0302, 0x0303);
+            glColor4f(0.0, 0.95, 1.0, 0.85);
+            glBegin(QUADS);
+            quad(cx - 1.5, cy - 1.5, 3.0, 3.0);
+            quad(cx - 14.0, cy - 1.0, 7.0, 2.0);
+            quad(cx + 7.0, cy - 1.0, 7.0, 2.0);
+            quad(cx - 1.0, cy - 14.0, 2.0, 7.0);
+            quad(cx - 1.0, cy + 7.0, 2.0, 7.0);
+            glEnd();
+            glDisable(BLEND);
+        }
+        crate::weapons::CrosshairKind::CircleSpread => {
+            glEnable(BLEND);
+            glBlendFunc(0x0302, 0x0303);
+            glColor4f(1.0, 0.75, 0.2, 0.85);
+            glBegin(QUADS);
+            quad(cx - 16.0, cy - 16.0, 6.0, 2.0);
+            quad(cx - 16.0, cy - 16.0, 2.0, 6.0);
+            quad(cx + 10.0, cy - 16.0, 6.0, 2.0);
+            quad(cx + 14.0, cy - 16.0, 2.0, 6.0);
+            quad(cx - 16.0, cy + 14.0, 6.0, 2.0);
+            quad(cx - 16.0, cy + 10.0, 2.0, 6.0);
+            quad(cx + 10.0, cy + 14.0, 6.0, 2.0);
+            quad(cx + 14.0, cy + 10.0, 2.0, 6.0);
+            glEnd();
+            glDisable(BLEND);
+        }
+        crate::weapons::CrosshairKind::SniperScope => {
+            glEnable(BLEND);
+            glBlendFunc(0x0302, 0x0303);
+            glColor4f(0.04, 0.02, 0.08, 0.92);
+            glBegin(QUADS);
+            quad(0.0, 0.0, cx - 180.0, HEIGHT as f32);
+            quad(cx + 180.0, 0.0, cx - 180.0, HEIGHT as f32);
+            quad(cx - 180.0, 0.0, 360.0, cy - 180.0);
+            quad(cx - 180.0, cy + 180.0, 360.0, cy - 180.0);
+            glEnd();
+
+            glColor4f(0.9, 0.1, 0.2, 0.9);
+            glBegin(QUADS);
+            quad(cx - 180.0, cy - 0.75, 360.0, 1.5);
+            quad(cx - 0.75, cy - 180.0, 1.5, 360.0);
+            quad(cx - 2.0, cy - 2.0, 4.0, 4.0);
+            for &mark in &[30.0, 60.0, 90.0, 120.0] {
+                quad(cx - 6.0, cy + mark, 12.0, 1.5);
+                quad(cx + mark, cy - 4.0, 1.5, 8.0);
+                quad(cx - mark, cy - 4.0, 1.5, 8.0);
+            }
+            glEnd();
+            glDisable(BLEND);
+        }
+    }
 }
 
 #[cfg(test)]

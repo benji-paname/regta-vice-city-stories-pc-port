@@ -104,6 +104,31 @@ pub struct Level {
     instance_visibility: HashMap<u16, Visibility>,
 }
 impl Level {
+    pub fn inspect_visibility(&self, position: [f32; 3]) -> serde_json::Value {
+        let rows: Vec<_> = self.instances.iter().filter(|i| {
+            let d=i.sphere[..3].iter().zip(position).map(|(a,b)|(a-b).powi(2)).sum::<f32>().sqrt();
+            d<i.sphere[3].abs()+20.0
+        }).map(|i| {
+            let mut heights=Vec::new();
+            if let Some(mesh)=self.meshes.get(&i.resource) { for t in &mesh.triangles {
+                let m=i.matrix;
+                let p=t.vertices.map(|v|std::array::from_fn::<_,3,_>(|a|m[a]*v.p[0]+m[4+a]*v.p[1]+m[8+a]*v.p[2]+m[12+a]));
+                let e=[p[1][0]-p[0][0],p[1][1]-p[0][1]];let f=[p[2][0]-p[0][0],p[2][1]-p[0][1]];
+                let d=[position[0]-p[0][0],position[1]-p[0][1]];let det=e[0]*f[1]-e[1]*f[0];
+                if det.abs()<1e-6 {continue;}
+                let u=(d[0]*f[1]-d[1]*f[0])/det;let v=(e[0]*d[1]-e[1]*d[0])/det;
+                if u>=0.0 && v>=0.0 && u+v<=1.0 {heights.push(p[0][2]+u*(p[1][2]-p[0][2])+v*(p[2][2]-p[0][2]));}
+            }}
+            heights.sort_by(f32::total_cmp);heights.dedup_by(|a,b|(*a-*b).abs()<0.01);
+            serde_json::json!({
+            "id":i.id,"resource":i.resource,"pass":i.pass,"sphere":i.sphere,
+            "visible":self.visible(i,12),"triangles":self.meshes.get(&i.resource).map(|m|m.triangles.len()),
+            "resource_conditions":self.resource_visibility.get(&i.resource).map(|v|v.iter().map(|c|[c.off,c.on]).collect::<Vec<_>>()),
+            "instance_condition":self.instance_visibility.get(&i.id).map(|c|[c.off,c.on]),
+            "visual_heights_at_position":heights,
+        })}).collect();
+        serde_json::json!({"level":self.stats.name,"instances":rows})
+    }
     pub fn visible(&self, instance: &Instance, hour: u8) -> bool {
         self.resource_visibility
             .get(&instance.resource)

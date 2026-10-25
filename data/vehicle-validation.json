@@ -22,10 +22,167 @@
     ]
   ],
   "texture_names": [
-    "xv_vehiclegrunge_sl",
     "tyres",
+    "xv_vcs_licenseplates_cs",
     "banshee868bit_sl",
     "xv_vehiclegeneric_sl",
-    "xv_vcs_licenseplates_cs"
-  ]
+    "xv_vehiclegrunge_sl"
+  ],
+  "resolved_texture_names": [
+    "banshee868bit_sl",
+    "tyres",
+    "xv_vcs_licenseplates_cs",
+    "xv_vehiclegeneric_sl",
+    "xv_vehiclegrunge_sl"
+  ],
+  "missing_texture_names": [],
+  "handling_record_address": 5003008,
+  "textures": [
+    {
+      "name": "tyres",
+      "width": 32,
+      "height": 64,
+      "has_alpha": false
+    },
+    {
+      "name": "xv_vcs_licenseplates_cs",
+      "width": 128,
+      "height": 64,
+      "has_alpha": false
+    },
+    {
+      "name": "banshee868bit_sl",
+      "width": 128,
+      "height": 128,
+      "has_alpha": false
+    },
+    {
+      "name": "xv_vehiclegeneric_sl",
+      "width": 128,
+      "height": 128,
+      "has_alpha": false
+    },
+    {
+      "name": "xv_vehiclegrunge_sl",
+      "width": 128,
+      "height": 128,
+      "has_alpha": false
+    }
+  ],
+  "collision_primitives": [
+    12,
+    22
+  ],
+  "frame_positions": {
+    "backtop": [
+      2.1199673e-9,
+      0.0,
+      0.7
+    ],
+    "banshee": [
+      0.0,
+      0.0,
+      0.7
+    ],
+    "bonnet_dummy": [
+      0.0,
+      0.477,
+      0.954
+    ],
+    "bottom": [
+      2.1199673e-9,
+      0.0,
+      0.7
+    ],
+    "bump_front_dummy": [
+      0.0,
+      2.37,
+      0.372
+    ],
+    "bump_rear_dummy": [
+      0.0,
+      -2.2682664,
+      0.341
+    ],
+    "chassis_dummy": [
+      0.0,
+      0.0,
+      0.7
+    ],
+    "chassis_hi": [
+      2.1199673e-9,
+      0.0,
+      0.7
+    ],
+    "chassis_vlo": [
+      0.0,
+      2.0236728e-9,
+      0.7
+    ],
+    "dash": [
+      2.1199673e-9,
+      0.0,
+      0.7
+    ],
+    "door_lf_dummy": [
+      -1.028,
+      0.389,
+      0.599
+    ],
+    "door_rf_dummy": [
+      1.028,
+      0.389,
+      0.599
+    ],
+    "engine": [
+      2.1199673e-9,
+      0.0,
+      0.7
+    ],
+    "innerarch": [
+      2.1199673e-9,
+      0.0,
+      0.7
+    ],
+    "seats": [
+      2.1199673e-9,
+      0.0,
+      0.7
+    ],
+    "wheel_lb_dummy": [
+      -0.939,
+      -1.541,
+      0.35
+    ],
+    "wheel_lf_dummy": [
+      -0.939,
+      1.537,
+      0.35
+    ],
+    "wheel_rb_dummy": [
+      0.939,
+      -1.541,
+      0.3499999
+    ],
+    "wheel_rf_dummy": [
+      0.939,
+      1.537,
+      0.35
+    ],
+    "windscreen_dummy": [
+      9.378796e-9,
+      0.109,
+      1.107
+    ],
+    "wing_lf_dummy": [
+      -0.886,
+      1.278,
+      0.575
+    ],
+    "wing_rf_dummy": [
+      0.886,
+      1.278,
+      0.575
+    ]
+  }
 }

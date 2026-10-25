@@ -1,6 +1,7 @@
 //! Original VCS PS2 player, native skin weights and animation keyframes.
 //! Animation rotations are local absolute quaternions, not invented motion.
-//! The controller owns locomotion: root translation remains at the bind value.
+//! The controller owns world movement. Native root Z is enabled for action
+//! poses; planar root translation stays locked to preserve collision contacts.
 
 use crate::iso::{bytes, f32le, u16le, u32le, Disc, Result};
 use crate::leeds::{half, Triangle, Vertex};
@@ -23,11 +24,13 @@ pub struct CharacterStats {
     pub drawable_triangles: usize,
     pub textures: usize,
     pub texture_names: Vec<String>,
+    pub clothing_colors: Option<[[u8; 3]; 4]>,
+    pub collision_primitives: [usize; 2],
     pub bind_bounds: [[f32; 3]; 2],
     pub max_bind_inverse_error: f32,
     pub max_weight_sum_error: f32,
     pub clips: Vec<ClipStats>,
-    pub root_translation_locked: bool,
+    pub root_planar_translation_locked: bool,
 }
 
 #[derive(Serialize)]
@@ -37,6 +40,7 @@ pub struct ClipStats {
     pub rotation_tracks: usize,
     pub rotation_keys: usize,
     pub maximum_duration_error: f32,
+    pub root_planar_speed: f32,
 }
 
 #[derive(Clone, Copy, Default)]
@@ -66,6 +70,17 @@ struct Bone {
 struct Key {
     time: f32,
     q: [f32; 4],
+    translation: [f32; 3],
+}
+
+/// Sampling policy belongs to the action: locomotion loops, jump phases end
+/// and hold. Root XY always stays under collision-controller ownership.
+#[derive(Clone, Copy, Debug)]
+pub struct Pose {
+    pub clip: &'static str,
+    pub time: f32,
+    pub looping: bool,
+    pub root_height: bool,
 }
 
 struct Track {
@@ -78,10 +93,12 @@ struct Clip {
     duration: f32,
     tracks: Vec<Track>,
     max_duration_error: f32,
+    root_planar_speed: f32,
 }
 
 pub struct Character {
     pub stats: CharacterStats,
+    pub collision: crate::collision::NativeCollider,
     pub textures: HashMap<u16, Texture>,
     vertices: Vec<SkinVertex>,
     faces: Vec<Face>,
@@ -260,7 +277,51 @@ fn require(data: &[u8], at: usize, value: u32) -> Result<()> {
     Ok(())
 }
 
-fn material_textures(data: &[u8], geometry: usize) -> Result<(Vec<String>, Vec<[f32; 3]>)> {
+fn clothing_palette(game: &[u8], info: usize) -> Result<Option<[[u8; 3]; 4]>> {
+    // PS2 CPedModelInfo: variant count at +47, current variant at +48,
+    // then up to sixteen RGBA-channel index tuples at +49. Indices address
+    // the pedestrian half (0..127) of ResourceImage's shared RGB table.
+    let count = bytes(game, info + 0x47, 1)?[0] as usize;
+    if count == 0 {
+        return Ok(None);
+    }
+    if count > 16 {
+        return Err("Invalid pedestrian clothing palette count".into());
+    }
+    bytes(game, info + 0x49, count * 4)?;
+    let table = u32le(game, 0x90)? as usize;
+    bytes(game, table, 128 * 3)?;
+    let mut colors = [[0; 3]; 4];
+    // Deterministic first native variation; palette markers are never colors.
+    for (i, color) in colors.iter_mut().enumerate() {
+        let index = game[info + 0x49 + i] as usize;
+        if index >= 128 {
+            return Err("Invalid pedestrian clothing color".into());
+        }
+        color.copy_from_slice(&game[table + index * 3..table + index * 3 + 3]);
+    }
+    Ok(Some(colors))
+}
+
+fn material_color(rgb: [u8; 3], palette: Option<&[[u8; 3]; 4]>) -> [f32; 3] {
+    // Marker/slot correspondence agrees with the material-remap descriptors
+    // of PS2 models 14, 19 and 22 (green=0, magenta=1, blue=2, red=3).
+    let slot = match rgb {
+        [0, 255, 60] => Some(0),
+        [255, 0, 175] => Some(1),
+        [60, 0, 255] => Some(2),
+        [255, 0, 60] => Some(3),
+        _ => None,
+    };
+    let color = slot.and_then(|i| palette.map(|p| p[i])).unwrap_or(rgb);
+    color.map(|c| c as f32 / 255.0)
+}
+
+fn material_textures(
+    data: &[u8],
+    geometry: usize,
+    palette: Option<&[[u8; 3]; 4]>,
+) -> Result<(Vec<String>, Vec<[f32; 3]>)> {
     let count = u32le(data, geometry + 16)? as usize;
     if count == 0 || count > 128 {
         return Err("Player material count is invalid".into());
@@ -273,11 +334,7 @@ fn material_textures(data: &[u8], geometry: usize) -> Result<(Vec<String>, Vec<[
         let material = u32le(data, table + i * 4)? as usize;
         names.push(string(data, u32le(data, material)? as usize, 128)?);
         let rgb = bytes(data, material + 4, 4)?;
-        colors.push([
-            rgb[0] as f32 / 255.0,
-            rgb[1] as f32 / 255.0,
-            rgb[2] as f32 / 255.0,
-        ]);
+        colors.push(material_color([rgb[0], rgb[1], rgb[2]], palette));
     }
     Ok((names, colors))
 }
@@ -322,6 +379,7 @@ fn load_textures(data: &[u8], names: &[String]) -> Result<HashMap<u16, Texture>>
 
 fn decode_model(
     data: &[u8],
+    palette: Option<&[[u8; 3]; 4]>,
 ) -> Result<(
     Vec<SkinVertex>,
     Vec<Face>,
@@ -372,7 +430,7 @@ fn decode_model(
             inverse: matrix(data, inv_matrix + i * 64)?,
         });
     }
-    let (names, colors) = material_textures(data, geometry)?;
+    let (names, colors) = material_textures(data, geometry, palette)?;
     let header = geometry + 0x20;
     let strips = (u32le(data, header + 16)? >> 20) as usize;
     let flags = u32le(data, header + 20)?;
@@ -545,6 +603,36 @@ fn normalize(q: [f32; 4]) -> [f32; 4] {
     }
 }
 
+fn matrix_quaternion(m: Matrix) -> [f32; 4] {
+    let trace = m[0] + m[5] + m[10];
+    if trace > 0. {
+        let s = (trace + 1.).sqrt() * 2.;
+        normalize([
+            (m[6] - m[9]) / s,
+            (m[8] - m[2]) / s,
+            (m[1] - m[4]) / s,
+            s * 0.25,
+        ])
+    } else {
+        let i = if m[0] > m[5] && m[0] > m[10] {
+            0
+        } else if m[5] > m[10] {
+            1
+        } else {
+            2
+        };
+        let j = (i + 1) % 3;
+        let k = (i + 2) % 3;
+        let s = (1. + m[i * 5] - m[j * 5] - m[k * 5]).max(0.).sqrt() * 2.;
+        let mut q = [0.; 4];
+        q[i] = s * 0.25;
+        q[j] = (m[j * 4 + i] + m[i * 4 + j]) / s;
+        q[k] = (m[k * 4 + i] + m[i * 4 + k]) / s;
+        q[3] = (m[j * 4 + k] - m[k * 4 + j]) / s;
+        normalize(q)
+    }
+}
+
 fn interpolate(a: [f32; 4], mut b: [f32; 4], factor: f32) -> [f32; 4] {
     let mut dot = a.iter().zip(b).map(|(x, y)| x * y).sum::<f32>();
     if dot < 0.0 {
@@ -576,7 +664,7 @@ fn rotation(q: [f32; 4], mut m: Matrix) -> Matrix {
     m
 }
 
-fn load_clips(game: &[u8], bones: &[Bone]) -> Result<Vec<Clip>> {
+fn load_clips(game: &[u8], bones: &[Bone], require_all_tracks: bool) -> Result<Vec<Clip>> {
     let manager = u32le(game, 0x80)? as usize;
     let tree_table = u32le(game, manager + 0x1013c)? as usize;
     let count = u32le(game, manager + 0x10144)? as usize;
@@ -584,7 +672,35 @@ fn load_clips(game: &[u8], bones: &[Bone]) -> Result<Vec<Clip>> {
         return Err("Invalid VCS animation manager".into());
     }
     bytes(game, tree_table, count * 40)?;
-    let wanted = ["IDLE_stance", "WALK_player", "run_player"];
+    let wanted = [
+        "IDLE_stance",
+        "WALK_player",
+        "run_player",
+        "JUMP_launch",
+        "JUMP_glide",
+        "JUMP_land",
+        "FALL_glide",
+        "FALL_land",
+        "swim",
+        "swim_fast",
+        "swim_idle",
+        "swim_start",
+        "swim_to_idle",
+        "FIGHTIDLE",
+        "Fight_Ljab",
+        "Fight_Rcross",
+        "Hit_L_hook",
+        "Hit_R_hook",
+        "KO_skid_back",
+        "CAR_align_RHS",
+        "CAR_open_RHS",
+        "CAR_getinL_RHS",
+        "CAR_closedoorL_RHS",
+        "CAR_getoutL_RHS",
+        "CAR_close_RHS",
+        "CAR_Lsit",
+        "WEAPON_crouch",
+    ];
     let mut clips: Vec<Clip> = Vec::new();
     for i in 0..count {
         let tree = tree_table + i * 40;
@@ -624,10 +740,17 @@ fn load_clips(game: &[u8], bones: &[Bone]) -> Result<Vec<Clip>> {
                 return Err("Player animation bone id is not a direct native id".into());
             }
             let id = (tag & 0xffff) as u8;
-            let bone = bones
-                .iter()
-                .position(|b| b.id == id && id != 255)
-                .ok_or_else(|| format!("Animation {name} has an unresolved bone tag {tag:#x}"))?;
+            let bone = bones.iter().position(|b| b.id == id && id != 255);
+            let Some(bone) = bone else {
+                if require_all_tracks {
+                    return Err(
+                        format!("Animation {name} has an unresolved bone tag {tag:#x}").into(),
+                    );
+                }
+                // Ambient skeletons omit some of Vic's tagged bones. Apply only
+                // exact shared tags; unmatched bones retain their own bind pose.
+                continue;
+            };
             if flags & 2 != 0 && bone != 0 {
                 return Err("Non-root player translation channels are not implemented".into());
             }
@@ -663,6 +786,15 @@ fn load_clips(game: &[u8], bones: &[Bone]) -> Result<Vec<Clip>> {
                 keys.push(Key {
                     time,
                     q: normalize(q),
+                    translation: if flags & 2 != 0 {
+                        [
+                            half(u16le(game, at + 10)?),
+                            half(u16le(game, at + 12)?),
+                            half(u16le(game, at + 14)?),
+                        ]
+                    } else {
+                        [0.; 3]
+                    },
                 });
             }
             // A single zero-time key is a constant pose held for the clip.
@@ -671,14 +803,31 @@ fn load_clips(game: &[u8], bones: &[Bone]) -> Result<Vec<Clip>> {
             }
             tracks.push(Track { bone, keys });
         }
-        if tracks.is_empty() || max_duration_error > 0.01 {
-            return Err("Player animation intervals disagree with clip duration".into());
+        // Native Fight_Ljab/swim/swim_fast channels stop one 30Hz frame before
+        // the declared tree duration (PAL trees247/270/271). Hold the last key for that
+        // final interval; do not rescale their verified original key times.
+        let tolerance = if matches!(name.as_str(), "Fight_Ljab" | "swim" | "swim_fast") {
+            1. / 30. + 0.001
+        } else {
+            0.01
+        };
+        if tracks.is_empty() || max_duration_error > tolerance {
+            return Err(format!(
+                "Animation {name}: intervals disagree with duration by {max_duration_error}"
+            )
+            .into());
         }
+        let root_planar_speed = tracks.iter().find(|t| t.bone == 0).map_or(0., |t| {
+            let first = t.keys[0].translation;
+            let last = t.keys[t.keys.len() - 1].translation;
+            (last[0] - first[0]).hypot(last[1] - first[1]) / duration
+        });
         clips.push(Clip {
             name,
             duration,
             tracks,
             max_duration_error,
+            root_planar_speed,
         });
     }
     if clips.len() != wanted.len() {
@@ -689,14 +838,18 @@ fn load_clips(game: &[u8], bones: &[Bone]) -> Result<Vec<Clip>> {
 
 impl Character {
     pub fn load(disc: &mut Disc, game: &[u8]) -> Result<Self> {
+        Self::load_model(disc, game, 0)
+    }
+
+    pub fn load_model(disc: &mut Disc, game: &[u8], model_id: u16) -> Result<Self> {
         let streaming = u32le(game, 0x7c)? as usize;
         let table = u32le(game, streaming + 0xc8)? as usize;
         let model_count = u32le(game, 0x38)? as usize;
-        if model_count == 0 {
-            return Err("Game has no player model entry".into());
+        if model_id as usize >= model_count || model_id >= 170 {
+            return Err("Invalid pedestrian model ID".into());
         }
         let info_table = u32le(game, 0x3c)? as usize;
-        let player_info = u32le(game, info_table)? as usize;
+        let player_info = u32le(game, info_table + model_id as usize * 4)? as usize;
         if bytes(game, player_info + 16, 1)?[0] != 7 {
             return Err("Player model is not a VCS pedestrian".into());
         }
@@ -704,11 +857,27 @@ impl Character {
         let texture_id = (u32le(game, streaming + 8)? as usize)
             .checked_add(texture_slot)
             .ok_or("Player texture index overflow")?;
-        let model_data = stream_resource(disc, game, table, 0)?;
+        let model_data = stream_resource(disc, game, table, model_id as usize)?;
         let texture_data = stream_resource(disc, game, table, texture_id)?;
-        let (vertices, faces, bones, names, atomic, source_triangles) = decode_model(&model_data)?;
-        let textures = load_textures(&texture_data, &names)?;
-        let clips = load_clips(game, &bones)?;
+        let clothing_colors = if model_id == 0 {
+            None
+        } else {
+            clothing_palette(game, player_info)?
+        };
+        let (vertices, mut faces, bones, names, atomic, source_triangles) =
+            decode_model(&model_data, clothing_colors.as_ref())?;
+        if names.len() > 32 {
+            return Err("Pedestrian texture namespace exhausted".into());
+        }
+        let texture_offset = model_id * 32;
+        let textures: HashMap<u16, Texture> = load_textures(&texture_data, &names)?
+            .into_iter()
+            .map(|(id, texture)| (id + texture_offset, texture))
+            .collect();
+        for face in &mut faces {
+            face.texture_id += texture_offset;
+        }
+        let clips = load_clips(game, &bones, model_id == 0)?;
         let mut worlds = Vec::new();
         let inverse_atomic = inverse_affine(atomic)?;
         let mut bind_error: f32 = 0.0;
@@ -737,8 +906,9 @@ impl Character {
             weight_error =
                 weight_error.max((v.influences.iter().map(|s| s.weight).sum::<f32>() - 1.0).abs());
         }
+        let collision = crate::collision::NativeCollider::load_pedestrian(game, model_id)?;
         let stats = CharacterStats {
-            model_id: 0,
+            model_id,
             texture_stream_id: texture_id as u32,
             model_bytes: u32le(&model_data, 8)? as usize,
             texture_bytes: u32le(&texture_data, 8)? as usize,
@@ -748,6 +918,8 @@ impl Character {
             drawable_triangles: faces.len(),
             textures: textures.len(),
             texture_names: names,
+            clothing_colors,
+            collision_primitives: collision.primitive_counts(),
             bind_bounds: bounds,
             max_bind_inverse_error: bind_error,
             max_weight_sum_error: weight_error,
@@ -759,12 +931,14 @@ impl Character {
                     rotation_tracks: c.tracks.len(),
                     rotation_keys: c.tracks.iter().map(|t| t.keys.len()).sum(),
                     maximum_duration_error: c.max_duration_error,
+                    root_planar_speed: c.root_planar_speed,
                 })
                 .collect(),
-            root_translation_locked: true,
+            root_planar_translation_locked: true,
         };
         Ok(Self {
             stats,
+            collision,
             textures,
             vertices,
             faces,
@@ -778,6 +952,125 @@ impl Character {
     /// The returned model faces +Y, with its bind feet at Z=0. Locomotion root
     /// translation is locked to prevent animation movement bypassing collisions.
     pub fn triangles(&self, clip: &str, seconds: f32) -> Vec<Triangle> {
+        self.skin(&self.local_pose(clip, seconds, true, false))
+    }
+
+    pub fn duration(&self, name: &str) -> Option<f32> {
+        self.clips
+            .iter()
+            .find(|c| c.name.eq_ignore_ascii_case(name))
+            .map(|c| c.duration)
+    }
+
+    /// Sample the original root channel without applying it to world position.
+    /// Vehicle transitions use its displacement relative to their own anchor;
+    /// collision-controlled actions continue to own their movement separately.
+    /// One-shot times clamp at both ends, including the native final held frame.
+    pub fn root_translation(&self, name: &str, seconds: f32) -> Option<[f32; 3]> {
+        let clip = self
+            .clips
+            .iter()
+            .find(|c| c.name.eq_ignore_ascii_case(name))?;
+        let track = clip.tracks.iter().find(|t| t.bone == 0)?;
+        let time = if seconds.is_finite() {
+            seconds.clamp(0., clip.duration)
+        } else {
+            0.
+        };
+        let next = track.keys.partition_point(|k| k.time <= time);
+        if next == 0 {
+            return Some(track.keys[0].translation);
+        }
+        if next >= track.keys.len() {
+            return Some(track.keys.last()?.translation);
+        }
+        let a = track.keys[next - 1];
+        let b = track.keys[next];
+        let span = b.time - a.time;
+        let fraction = if span > 0. {
+            (time - a.time) / span
+        } else {
+            1.
+        };
+        Some(std::array::from_fn(|axis| {
+            a.translation[axis] + (b.translation[axis] - a.translation[axis]) * fraction
+        }))
+    }
+
+    pub fn triangles_blended(&self, pose: Pose, previous: Option<(Pose, f32)>) -> Vec<Triangle> {
+        let mut locals = self.local_pose(pose.clip, pose.time, pose.looping, pose.root_height);
+        if let Some((from, weight)) = previous {
+            let previous = self.local_pose(from.clip, from.time, from.looping, from.root_height);
+            let weight = weight.clamp(0., 1.);
+            for (target, source) in locals.iter_mut().zip(previous) {
+                let q = interpolate(
+                    matrix_quaternion(source),
+                    matrix_quaternion(*target),
+                    weight,
+                );
+                for a in 12..15 {
+                    target[a] = source[a] + (target[a] - source[a]) * weight;
+                }
+                *target = rotation(q, *target);
+            }
+        }
+        self.skin(&locals)
+    }
+
+    /// Optional PC crouch locomotion: the native lowered pose is blended with a
+    /// small amount of WALK_player motion. This is an adaptation, not an SA clip.
+    pub fn crouch_triangles(&self, pose: Pose, gait: f32, moving: bool) -> Vec<Triangle> {
+        let mut locals = self.local_pose(pose.clip, pose.time, false, true);
+        let base = self.skin(&locals);
+        let base_min = base
+            .iter()
+            .flat_map(|t| &t.vertices)
+            .map(|v| v.p[2])
+            .fold(f32::INFINITY, f32::min);
+        let base_max = base
+            .iter()
+            .flat_map(|t| &t.vertices)
+            .map(|v| v.p[2])
+            .fold(f32::NEG_INFINITY, f32::max);
+        if moving && pose.time > 0.2 {
+            let walking = self.local_pose("walk", gait * 1.15, true, false);
+            for (target, source) in locals.iter_mut().zip(walking) {
+                let q = interpolate(matrix_quaternion(*target), matrix_quaternion(source), 0.10);
+                *target = rotation(q, *target);
+            }
+        }
+        let mut mesh = self.skin(&locals);
+        // Blending bent/straight leg rotations otherwise pushes soles through
+        // the ground. Anchor to the actual skinned soles, keeping pelvis lowering.
+        let min = mesh
+            .iter()
+            .flat_map(|t| t.vertices.iter())
+            .map(|v| v.p[2])
+            .fold(f32::INFINITY, f32::min);
+        if min.is_finite() {
+            let max = mesh
+                .iter()
+                .flat_map(|t| &t.vertices)
+                .map(|v| v.p[2])
+                .fold(f32::NEG_INFINITY, f32::max);
+            // Preserve lowered-body clearance during the adapted gait.
+            let scale = ((base_max - base_min) / (max - min).max(0.01)).min(1.);
+            for t in &mut mesh {
+                for v in &mut t.vertices {
+                    v.p[2] = (v.p[2] - min) * scale;
+                }
+            }
+        }
+        mesh
+    }
+
+    fn local_pose(
+        &self,
+        clip: &str,
+        seconds: f32,
+        looping: bool,
+        root_height: bool,
+    ) -> Vec<Matrix> {
         let requested = match clip {
             "idle" => "IDLE_stance",
             "walk" => "WALK_player",
@@ -791,33 +1084,45 @@ impl Character {
         let mut locals: Vec<Matrix> = self.bones.iter().map(|b| b.bind).collect();
         if let Some(clip) = selected {
             let time = if seconds.is_finite() {
-                seconds.rem_euclid(clip.duration)
+                if looping {
+                    seconds.rem_euclid(clip.duration)
+                } else {
+                    seconds.clamp(0., clip.duration)
+                }
             } else {
                 0.0
             };
             for track in &clip.tracks {
                 let next = track.keys.partition_point(|k| k.time <= time);
-                let q = if next == 0 {
-                    track.keys[0].q
+                let (q, height) = if next == 0 {
+                    (track.keys[0].q, track.keys[0].translation[2])
                 } else if next >= track.keys.len() {
-                    track.keys[track.keys.len() - 1].q
+                    let k = track.keys[track.keys.len() - 1];
+                    (k.q, k.translation[2])
                 } else {
                     let a = track.keys[next - 1];
                     let b = track.keys[next];
                     let interval = b.time - a.time;
-                    interpolate(
-                        a.q,
-                        b.q,
-                        if interval > 0.0 {
-                            (time - a.time) / interval
-                        } else {
-                            1.0
-                        },
+                    let fraction = if interval > 0. {
+                        (time - a.time) / interval
+                    } else {
+                        1.
+                    };
+                    (
+                        interpolate(a.q, b.q, fraction),
+                        a.translation[2] + (b.translation[2] - a.translation[2]) * fraction,
                     )
                 };
                 locals[track.bone] = rotation(q, locals[track.bone]);
+                if root_height && track.bone == 0 {
+                    locals[0][14] += height;
+                }
             }
         }
+        locals
+    }
+
+    fn skin(&self, locals: &[Matrix]) -> Vec<Triangle> {
         let mut worlds = Vec::with_capacity(self.bones.len());
         let mut palette = Vec::with_capacity(self.bones.len());
         for (i, bone) in self.bones.iter().enumerate() {
@@ -861,6 +1166,174 @@ mod tests {
     use super::*;
 
     #[test]
+    #[ignore = "Requires the user's local ISO"]
+    fn native_combat_and_vehicle_clips_hold_and_preserve_original_root_motion() {
+        let mut disc = Disc::open(std::path::Path::new(crate::DEFAULT_ISO)).unwrap();
+        let game = crate::leeds::inflate(&disc.read("PS2/GAME.DTZ").unwrap()).unwrap();
+        for model in [0, 14, 19, 22] {
+            let actor = Character::load_model(&mut disc, &game, model).unwrap();
+            for (name, expected) in [
+                ("FIGHTIDLE", 1.3),
+                ("Fight_Ljab", 0.6),
+                ("Fight_Rcross", 19. / 30.),
+                ("Hit_L_hook", 14. / 30.),
+                ("Hit_R_hook", 14. / 30.),
+                ("KO_skid_back", 0.8),
+                ("CAR_align_RHS", 4. / 30.),
+                ("CAR_open_RHS", 34. / 30.),
+                ("CAR_getinL_RHS", 1.),
+                ("CAR_closedoorL_RHS", 22. / 30.),
+                ("CAR_getoutL_RHS", 29. / 30.),
+                ("CAR_close_RHS", 22. / 30.),
+                ("CAR_Lsit", 1. / 30.),
+                ("WEAPON_crouch", 1. / 3.),
+            ] {
+                let duration = actor.duration(name).unwrap();
+                assert!((duration - expected).abs() < 0.00001, "{model}: {name}");
+                let end = actor.local_pose(name, duration, false, true);
+                assert_eq!(end, actor.local_pose(name, duration + 2., false, true));
+                for time in [0., duration * 0.5, duration] {
+                    let locals = actor.local_pose(name, time, false, true);
+                    // Reading displacement must never make the sampler move the
+                    // actor through a wall; only the action controller may do so.
+                    for axis in [12, 13] {
+                        assert_eq!(locals[0][axis], actor.bones[0].bind[axis]);
+                    }
+                    let triangles = actor.skin(&locals);
+                    assert_eq!(triangles.len(), actor.faces.len());
+                    assert!(triangles
+                        .iter()
+                        .flat_map(|t| &t.vertices)
+                        .flat_map(|v| v.p)
+                        .all(f32::is_finite));
+                }
+                assert_eq!(
+                    actor.root_translation(name, -1.),
+                    actor.root_translation(name, 0.)
+                );
+                assert_eq!(
+                    actor.root_translation(name, f32::NAN),
+                    actor.root_translation(name, 0.)
+                );
+                assert_eq!(
+                    actor.root_translation(name, duration + 2.),
+                    actor.root_translation(name, duration)
+                );
+            }
+            assert!(actor.root_translation("not_an_animation", 0.).is_none());
+            let start = actor.root_translation("CAR_getinL_RHS", 0.).unwrap();
+            let end = actor.root_translation("CAR_getinL_RHS", 1.).unwrap();
+            for (actual, expected) in start.into_iter().zip([0., 0., -0.020202637]) {
+                assert!((actual - expected).abs() < 0.00001);
+            }
+            for (actual, expected) in end.into_iter().zip([-0.8798828, 0.46118164, -0.6640625]) {
+                assert!((actual - expected).abs() < 0.00001);
+            }
+            let crouch = actor.root_translation("WEAPON_crouch", 1.).unwrap();
+            assert!((crouch[2] + 0.62841797).abs() < 0.00001);
+            let fallen = actor.root_translation("KO_skid_back", 1.).unwrap();
+            assert!((fallen[2] + 0.88378906).abs() < 0.00001);
+            let stance = actor.local_pose("FIGHTIDLE", 0., true, true);
+            assert_eq!(
+                stance,
+                actor.local_pose(
+                    "FIGHTIDLE",
+                    actor.duration("FIGHTIDLE").unwrap(),
+                    true,
+                    true
+                )
+            );
+        }
+    }
+
+    #[test]
+    #[ignore = "Requires the user's local ISO"]
+    fn native_locomotion_clips_clamp_and_blend_without_moving_root_xy() {
+        let mut disc = Disc::open(std::path::Path::new(crate::DEFAULT_ISO)).unwrap();
+        let game = crate::leeds::inflate(&disc.read("PS2/GAME.DTZ").unwrap()).unwrap();
+        let actor = Character::load(&mut disc, &game).unwrap();
+        assert_eq!(actor.stats.clips.len(), 27);
+        for name in ["JUMP_launch", "JUMP_land", "swim_start", "swim_to_idle"] {
+            let duration = actor.duration(name).unwrap();
+            let end = actor.local_pose(name, duration, false, true);
+            let held = actor.local_pose(name, duration + 2., false, true);
+            assert_eq!(end, held, "one-shot clip must hold its final pose");
+            let start = actor.local_pose(name, 0., false, true);
+            for p in [&start, &end] {
+                for a in [12, 13] {
+                    assert_eq!(p[0][a], actor.bones[0].bind[a]);
+                }
+            }
+            assert_ne!(start, end, "native clip must animate");
+        }
+        let from = Pose {
+            clip: "swim_idle",
+            time: 0.2,
+            looping: true,
+            root_height: true,
+        };
+        let to = Pose {
+            clip: "swim_fast",
+            time: 0.4,
+            looping: true,
+            root_height: true,
+        };
+        for weight in [0., 0.5, 1.] {
+            let tris = actor.triangles_blended(to, Some((from, weight)));
+            assert_eq!(tris.len(), actor.faces.len());
+            assert!(tris
+                .iter()
+                .flat_map(|t| &t.vertices)
+                .flat_map(|v| v.p)
+                .all(f32::is_finite));
+            if weight != 0.5 {
+                let pose = if weight == 0. { from } else { to };
+                let expected = actor.skin(&actor.local_pose(
+                    pose.clip,
+                    pose.time,
+                    pose.looping,
+                    pose.root_height,
+                ));
+                for (a, b) in tris.iter().zip(expected) {
+                    for (a, b) in a.vertices.iter().zip(b.vertices) {
+                        for axis in 0..3 {
+                            assert!((a.p[axis] - b.p[axis]).abs() < 0.0001);
+                        }
+                    }
+                }
+            }
+        }
+        for (name, expected) in [("swim", 1.368557), ("swim_fast", 2.856152)] {
+            let speed = actor
+                .stats
+                .clips
+                .iter()
+                .find(|c| c.name == name)
+                .unwrap()
+                .root_planar_speed;
+            assert!((speed - expected).abs() < 0.0001);
+        }
+    }
+
+    #[test]
+    fn blend_matrix_quaternion_roundtrip_covers_half_turns() {
+        for q in [
+            [0., 0., 0., 1.],
+            [1., 0., 0., 0.],
+            [0., 1., 0., 0.],
+            [0., 0., 1., 0.],
+            [0.5, -0.5, 0.5, -0.5],
+            [0.2, 0.3, -0.7, 0.6],
+        ] {
+            let m = rotation(q, identity());
+            let back = rotation(matrix_quaternion(m), identity());
+            for i in 0..16 {
+                assert!((m[i] - back[i]).abs() < 0.00001, "index={i} q={q:?}");
+            }
+        }
+    }
+
+    #[test]
     fn slerp_uses_short_arc_and_keeps_unit_quaternion() {
         let a = [0.0, 0.0, 0.0, 1.0];
         let b = [0.0, 0.0, -1.0, 0.0];
@@ -890,11 +1363,51 @@ mod tests {
 
     #[test]
     fn malformed_native_model_does_not_decode() {
-        assert!(decode_model(&[]).is_err());
+        assert!(decode_model(&[], None).is_err());
         let mut data = vec![0; 128];
         data[..4].copy_from_slice(b"ldm\0");
         data[8..12].copy_from_slice(&128u32.to_le_bytes());
         data[0x24..0x28].copy_from_slice(&0xfffffff0u32.to_le_bytes());
-        assert!(decode_model(&data).is_err());
+        assert!(decode_model(&data, None).is_err());
+    }
+
+    #[test]
+    fn clothing_markers_select_native_slots_and_preserve_skin() {
+        let palette = [[10, 20, 30], [40, 50, 60], [70, 80, 90], [100, 110, 120]];
+        for (i, marker) in [[0, 255, 60], [255, 0, 175], [60, 0, 255], [255, 0, 60]]
+            .into_iter()
+            .enumerate()
+        {
+            assert_eq!(
+                material_color(marker, Some(&palette)),
+                palette[i].map(|v| v as f32 / 255.0)
+            );
+        }
+        assert_eq!(
+            material_color([253, 253, 253], Some(&palette)),
+            [253.0 / 255.0; 3]
+        );
+        assert_eq!(material_color([255, 255, 255], None), [1.0; 3]);
+    }
+
+    #[test]
+    fn clothing_variants_start_after_the_current_variant_byte() {
+        let mut game = vec![0; 1024];
+        let info = 0x100;
+        game[0x90..0x94].copy_from_slice(&512u32.to_le_bytes());
+        game[info + 0x47] = 2;
+        game[info + 0x48] = 1;
+        game[info + 0x49..info + 0x4d].copy_from_slice(&[5, 6, 7, 8]);
+        for i in 0..128 {
+            game[512 + i * 3..512 + i * 3 + 3].fill(i as u8);
+        }
+        assert_eq!(
+            clothing_palette(&game, info).unwrap(),
+            Some([[5; 3], [6; 3], [7; 3], [8; 3]])
+        );
+        game[info + 0x49] = 128;
+        assert!(clothing_palette(&game, info).is_err());
+        game[info + 0x47] = 17;
+        assert!(clothing_palette(&game, info).is_err());
     }
 }

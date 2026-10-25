@@ -119,7 +119,7 @@ pub fn select_collisions(world: &mut CollisionWorld, zone: usize) {
     world.set_active_levels(if zone == 2 { &[3] } else { &[1, 2] });
 }
 pub fn is_blended(instance: &Instance) -> bool {
-    matches!(instance.pass, 5 | 7)
+    matches!(instance.pass, 5 | 7) || instance.pass == crate::water::RENDER_PASS
 }
 pub fn center(instance: &Instance) -> [f32; 3] {
     if instance.sphere[..3].iter().all(|x| x.is_finite()) {
@@ -140,7 +140,9 @@ pub fn distance_squared(instance: &Instance, camera: &Camera) -> f32 {
         .sum()
 }
 pub fn instance_in_view(instance: &Instance, camera: &Camera) -> bool {
-    if !matches!(instance.pass, 3 | 4 | 5 | 7) {
+    // VCS pass 1 contains terrain that can extend above the waterline too.
+    // Excluding the entire pass leaves walkable courtyards/shore ground absent.
+    if !matches!(instance.pass, 1 | 3 | 4 | 5 | 7) && instance.pass != crate::water::RENDER_PASS {
         return false;
     }
     let center = center(instance);
@@ -199,7 +201,11 @@ mod tests {
             pitch: 0.0,
         };
         assert!(instance_in_view(&instance(20.0, 10.0, 7), &camera));
+        assert!(instance_in_view(&instance(20.0, 60.0, 1), &camera));
         assert!(is_blended(&instance(20.0, 10.0, 5)));
+        let water = instance(20.0, 200.0, crate::water::RENDER_PASS);
+        assert!(instance_in_view(&water, &camera));
+        assert!(is_blended(&water));
         assert!(!instance_in_view(&instance(20.0, 10.0, 2), &camera));
         assert!(!instance_in_view(&instance(20.0, 10.0, 6), &camera));
     }

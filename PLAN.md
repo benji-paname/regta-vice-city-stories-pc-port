@@ -16,7 +16,9 @@ Critère de passage : parcourir un petit trajet de référence, marcher, courir,
 
 ## 2. Un premier véhicule original
 
-Identifier et décoder un modèle de véhicule, ses textures, ses pièces mobiles et ses collisions depuis l'ISO. Établir un véhicule affiché correctement, puis une conduite de base, l'entrée/sortie, les roues et la caméra. Étudier séparément ce qui peut être repris des données originales et ce qui nécessite une nouvelle simulation.
+**État au 12 octobre 2026 : prototype jouable intégré et visuellement validé par Benjamin.** La Banshee est rendue, on peut y entrer et en sortir avec E, accélérer, freiner et tourner. Les détails extérieurs (bande noire, feux rouges, plaque), une collision approximative et une caméra suiveuse sont présents. Le handling PS2, les roues animées et une collision robuste restent à faire avant de considérer le jalon stable.
+
+Étudier les champs du handling dans les données originales de l'ISO, en déterminant structure et unités avant de les utiliser. Ensuite, améliorer progressivement la dynamique du véhicule, faire tourner les roues visibles, et renforcer les collisions. Ne pas attribuer de sens à un champ sur la seule base de sa valeur apparente.
 
 Critère de passage : entrer, conduire un trajet court avec accélération/freinage/virages, heurter un obstacle et sortir en retrouvant le contrôle du personnage. Tester ensuite les autres modèles ; ne pas commencer par tout le parc automobile.
 
