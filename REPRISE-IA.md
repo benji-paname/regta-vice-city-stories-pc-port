@@ -33,6 +33,8 @@ Le modèle suivant doit pouvoir reprendre à partir de ces notes sans relire tou
 - `src/vehicle.rs` : lecture du modèle, hiérarchie des pièces, textures, roues et catalogue.
 - `src/texture.rs` : décodage et coloration des textures véhicule.
 - `src/gpu.rs` : état OpenGL et passes de dessin (une correction de profondeur/rendu a résolu la carrosserie désassemblée).
+- `src/script.rs` : machine à états de missions SCM, variables globales/locales, objectifs et balises 3D.
+- `src/audio.rs` : moteur audio procédural, 8 stations de radio Vice City Stories, synthèse PCM de régime moteur.
 - `src/render.rs` et `src/main.rs` : boucle de jeu, caméra, contrôles, entrée/sortie et affichage.
 
 ## Manipulations et vérification

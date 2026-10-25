@@ -57,6 +57,8 @@ RUST_MODULE_MAP = {
     'traffic.rs': ['CTrafficManager', 'CTrafficLightsSystem', 'CEmergencySirenResponse'],
     'police.rs': ['CEmergencySirenResponse', 'CTrafficManager'],
     'save.rs': ['CWorldManager', 'CMissionScriptSystem'],
+    'script.rs': ['CMissionScriptSystem', 'CWorldManager'],
+    'audio.rs': ['CAudioEngine'],
     'population.rs': ['CPedestrianPopulation', 'CPedestrianObstacleAvoidance', 'CPedestrianPanicReaction'],
     'paths.rs': ['CLeedsPathNetwork'],
     'props.rs': ['CPropsObjectsManager'],

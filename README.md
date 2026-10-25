@@ -39,6 +39,7 @@ Portage PC natif clean-room et open-source de **Grand Theft Auto: Vice City Stor
 | **Clic Gauche** / **F** | **Tirer** / Attaquer au corps à corps | À pied |
 | **Clic Droit** / **V** | **Viser** (active le réticule ou la lunette sniper) | À pied |
 | **H** | **Activer le gyrophare d'urgence** | Véhicule / Caméra |
+| **B** | **Changer de station de radio** (8 stations Vice City) | En véhicule |
 | **E** | Monter / Sortir de la Banshee | Proche du véhicule |
 | **G** | Basculer entre marche et caméra libre | À pied |
 | **F1** | Afficher / Masquer l'aide à l'écran | En jeu |
@@ -82,10 +83,22 @@ Portage PC natif clean-room et open-source de **Grand Theft Auto: Vice City Stor
   - Phares 3D projetant des faisceaux lumineux sur la chaussée et feux arrière rouges fonctionnels.
 - **Jalon H — Sauvegarde & Restauration Rapide (F5 / F9)** :
   - Sauvegarde instantanée (<kbd>F5</kbd>) et chargement (<kbd>F9</kbd>) de l'état complet du monde et du joueur dans `VCS-Save.json` avec bandeau de confirmation à l'écran.
+- **Jalon I — Système de Script de Missions SCM & Balises Lumineuses 3D (`src/script.rs`)** :
+  - Machine à états de scénario (`MissionScriptSystem`, `ScriptThread`, `MissionObjective`, stockage mémoire 1024 globales et 32 locales).
+  - Première mission scénarisée « SOLDAT » (ordre de livraison du Sergent Martinez à Fort Baxter, validation des zones cibles, attribution de récompense $100).
+  - Rendu 3D de balise corona néon-rose pulsante (`draw_mission_corona`) et bannières grand format de début et fin de mission à l'écran (`draw_mission_hud`).
+  - Blip radar jaune carré synchronisé sur la minicarte HUD.
+- **Jalon J — Moteur Audio & Stations de Radio Vice City 1984 (`src/audio.rs`)** :
+  - Synthétiseur audio procédural et émulation des 8 stations de radio officielles de Vice City Stories (Wave 103, Flash FM, Emotion 98.3, V-Rock, Paradise FM, VCFL, Fresh FM, Radio Espantoso).
+  - Contrôle au volant avec la touche <kbd>B</kbd> : sélection de station et affichage dynamique du bandeau FM.
+  - Synthèse en temps réel du régime moteur (RPM) et sirène de police alternée.
+- **Jalon K — Dynamique de Transmission & Adhérence des Pneus (`src/driving.rs`)** :
+  - Modèle de boîte 5 vitesses `CTransmissionDynamics` avec calcul de régime et démultiplication de couple.
+  - Modèle de frottement de Pacejka `CTireFrictionModel` avec angle de dérive (slip angle) et détection des traces de ripage (skidmarks).
 - **Infrastructure & Vitrine Interactive** :
   - Site vitrine rétro-synthwave 1984 sous `docs/` (`index.html` et `progress.html`).
-  - Outil automatisé `tools/progress/progress.py` mesurant 578 / 747 routines portées (78.0% global).
-  - Script racine `Compiler.ps1 -Test` intégrant la compilation Release sous `-D warnings`, l'exécution de 138 tests unitaires passants à 100% et la synchronisation automatique des badges SVG.
+  - Outil automatisé `tools/progress/progress.py` mesurant **613 / 747 routines portées (82.4% global)**.
+  - Script racine `Compiler.ps1 -Test` intégrant la compilation Release sous `-D warnings`, l'exécution de **148 tests unitaires passants à 100%** et la synchronisation automatique des badges SVG.
 
 ---
 

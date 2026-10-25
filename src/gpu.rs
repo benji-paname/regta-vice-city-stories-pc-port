@@ -442,6 +442,7 @@ impl GpuRenderer {
         hud: &[crate::hud::Layer],
         lights: &[crate::traffic::TrafficLight],
         weapons: Option<&crate::weapons::WeaponArsenal>,
+        mission: Option<&crate::script::MissionScriptSystem>,
         global_time: f32,
     ) -> Result<()> {
         if zone >= levels.len() || zone >= self.scene_instances.len() {
@@ -525,6 +526,9 @@ impl GpuRenderer {
             if let Some(w) = weapons {
                 draw_weapons_3d(w);
             }
+            if let Some(m) = mission {
+                draw_mission_corona(m.marker_position(), m.marker_pulse);
+            }
             let mut blending = false;
             for (instance, batches) in visible {
                 if crate::scene::is_blended(instance) && !blending {
@@ -561,6 +565,9 @@ impl GpuRenderer {
             self.draw_hud(hud);
             if let Some(w) = weapons {
                 draw_crosshair_hud(w.crosshair_kind());
+            }
+            if let Some(m) = mission {
+                draw_mission_hud(m.banner_text(), m.objective_text());
             }
             draw_guide(crate::scene::label(zone), walking, driving, show_help);
             check_error("rendu")?;
@@ -1111,6 +1118,75 @@ unsafe fn text(x: f32, y: f32, line: &str, color: [f32; 3]) {
         }
     }
     glEnd();
+}
+
+unsafe fn draw_mission_corona(marker: Option<[f32; 3]>, pulse: f32) {
+    let Some(pos) = marker else { return };
+    glDisable(TEXTURE_2D);
+    glEnable(BLEND);
+    glBlendFunc(0x0302, 0x0303);
+
+    let base_z = pos[2];
+    let height = 2.4;
+    let radius = 2.8;
+    let alpha = 0.40 + 0.18 * pulse.sin();
+    let segments = 16;
+
+    glBegin(QUADS);
+    glColor4f(1.0, 0.15, 0.75, alpha);
+    for i in 0..segments {
+        let a1 = i as f32 * std::f32::consts::TAU / segments as f32;
+        let a2 = (i + 1) as f32 * std::f32::consts::TAU / segments as f32;
+        let x1 = pos[0] + a1.cos() * radius;
+        let y1 = pos[1] + a1.sin() * radius;
+        let x2 = pos[0] + a2.cos() * radius;
+        let y2 = pos[1] + a2.sin() * radius;
+
+        glVertex3f(x1, y1, base_z);
+        glVertex3f(x2, y2, base_z);
+        glVertex3f(x2, y2, base_z + height);
+        glVertex3f(x1, y1, base_z + height);
+    }
+    glEnd();
+
+    glBegin(LINES);
+    glColor4f(1.0, 0.85, 0.95, alpha + 0.2);
+    for i in 0..segments {
+        let a1 = i as f32 * std::f32::consts::TAU / segments as f32;
+        let a2 = (i + 1) as f32 * std::f32::consts::TAU / segments as f32;
+        let x1 = pos[0] + a1.cos() * radius;
+        let y1 = pos[1] + a1.sin() * radius;
+        let x2 = pos[0] + a2.cos() * radius;
+        let y2 = pos[1] + a2.sin() * radius;
+        glVertex3f(x1, y1, base_z + height);
+        glVertex3f(x2, y2, base_z + height);
+    }
+    glEnd();
+    glDisable(BLEND);
+}
+
+unsafe fn draw_mission_hud(banner: Option<&str>, objective: Option<&str>) {
+    glEnable(BLEND);
+    glBlendFunc(0x0302, 0x0303);
+    if let Some(title) = banner {
+        glColor4f(0.04, 0.04, 0.08, 0.75);
+        glBegin(QUADS);
+        let len = title.len() as f32 * 12.0 + 30.0;
+        let x = (WIDTH as f32 - len) * 0.5;
+        quad(x, 115.0, len, 32.0);
+        glEnd();
+        text(x + 15.0, 122.0, title, [1.0, 0.88, 0.15]);
+    }
+    if let Some(sub) = objective {
+        glColor4f(0.02, 0.04, 0.06, 0.70);
+        glBegin(QUADS);
+        let len = sub.len() as f32 * 12.0 + 30.0;
+        let x = (WIDTH as f32 - len) * 0.5;
+        quad(x, HEIGHT as f32 - 110.0, len, 28.0);
+        glEnd();
+        text(x + 15.0, HEIGHT as f32 - 104.0, sub, [0.85, 0.95, 1.0]);
+    }
+    glDisable(BLEND);
 }
 
 unsafe fn draw_guide(zone: &str, walking: bool, driving: bool, show_help: bool) {

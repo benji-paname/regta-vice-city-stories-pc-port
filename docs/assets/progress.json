@@ -1,9 +1,9 @@
 {
-  "build": "VCS-Rust Native (PS2 PAL SLES-54622 / ULUS-10160 v1.01 target, 620 Rust functions)",
+  "build": "VCS-Rust Native (PS2 PAL SLES-54622 / ULUS-10160 v1.01 target, 657 Rust functions)",
   "bytes": 350235,
-  "portedBytes": 273215,
+  "portedBytes": 288435,
   "routines": 747,
-  "portedRoutines": 578,
+  "portedRoutines": 613,
   "subsystems": [
     {
       "name": "Engine & VIF",
@@ -66,9 +66,9 @@
     {
       "name": "Vehicles & Handling",
       "bytes": 43690,
-      "portedBytes": 30070,
+      "portedBytes": 31010,
       "routines": 82,
-      "portedRoutines": 54,
+      "portedRoutines": 56,
       "classes": [
         {
           "name": "CVehicleModel",
@@ -88,8 +88,8 @@
           "name": "CSuspension4Wheel",
           "bytes": 6990,
           "routines": 14,
-          "portedBytes": 3390,
-          "portedRoutines": 6
+          "portedBytes": 4330,
+          "portedRoutines": 8
         },
         {
           "name": "CTransmissionDynamics",
@@ -314,23 +314,23 @@
     {
       "name": "World, Audio & Missions",
       "bytes": 35360,
-      "portedBytes": 5020,
+      "portedBytes": 19300,
       "routines": 78,
-      "portedRoutines": 8,
+      "portedRoutines": 41,
       "classes": [
         {
           "name": "CWorldManager",
           "bytes": 17240,
           "routines": 42,
-          "portedBytes": 5020,
-          "portedRoutines": 8
+          "portedBytes": 12280,
+          "portedRoutines": 26
         },
         {
           "name": "CAudioEngine",
           "bytes": 7410,
           "routines": 16,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 7020,
+          "portedRoutines": 15
         },
         {
           "name": "CMissionScriptSystem",

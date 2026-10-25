@@ -1,6 +1,7 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
 mod access;
+mod audio;
 mod audit;
 mod character;
 mod collision;
@@ -19,6 +20,7 @@ mod population;
 mod props;
 mod render;
 mod scene;
+mod script;
 mod settings;
 mod texture;
 mod traffic;

@@ -870,6 +870,8 @@ pub fn viewer(
     let mut player_status = crate::hud::PlayerStatus::default();
     let mut arsenal = crate::weapons::WeaponArsenal::new();
     let mut police = crate::police::WantedSystem::new();
+    let mut script = crate::script::MissionScriptSystem::new();
+    let mut audio = crate::audio::AudioEngine::new();
     let save_path = std::env::current_exe()?.with_file_name("VCS-Save.json");
     let mut banner_message = String::new();
     let mut banner_timer = 0.0f32;
@@ -1237,6 +1239,7 @@ pub fn viewer(
                 fighter = crate::combat::Fighter::default();
                 arsenal = crate::weapons::WeaponArsenal::new();
                 police.clear();
+                script = crate::script::MissionScriptSystem::new();
             }
         }
         if controls
@@ -1276,6 +1279,7 @@ pub fn viewer(
             fighter = crate::combat::Fighter::default();
             arsenal = crate::weapons::WeaponArsenal::new();
             police.clear();
+            script = crate::script::MissionScriptSystem::new();
             let walking = walker.is_some() || in_vehicle;
             population.reset();
             traffic.reset();
@@ -1584,6 +1588,9 @@ pub fn viewer(
         if controls && window.is_key_pressed(Key::H, minifb::KeyRepeat::No) {
             traffic.siren_active = !traffic.siren_active;
         }
+        if controls && in_vehicle && window.is_key_pressed(Key::B, minifb::KeyRepeat::No) {
+            audio.cycle_radio_next();
+        }
         if traffic.siren_active {
             traffic.siren_pos = if in_vehicle { car.position } else { camera.pos };
         }
@@ -1660,6 +1667,15 @@ pub fn viewer(
             player_status.minute += added_minutes;
             player_status.hour = (player_status.hour + player_status.minute / 60) % 24;
             player_status.minute %= 60;
+        }
+        audio.update(car.speed, traffic.siren_active, dt);
+        if let Some(reward) = script.update(walker.as_ref().map_or(car.position, |w| w.feet), dt) {
+            player_status.money += reward;
+        }
+        player_status.mission_blip = script.marker_position();
+        if let Some(radio_text) = audio.radio_banner() {
+            banner_message = radio_text;
+            banner_timer = 2.0;
         }
         police.update(dt);
         player_status.wanted_level = police.stars_active();
@@ -1922,6 +1938,7 @@ pub fn viewer(
                 &hud_layers,
                 &traffic.lights,
                 Some(&arsenal),
+                Some(&script),
                 traffic.global_time,
             )?;
             submitted_triangles = gpu.triangles;
@@ -1975,9 +1992,10 @@ pub fn viewer(
             player_status.minute,
             if in_vehicle {
                 &format!(
-                    "Banshee | {:.0} km/h (Santé {:.0}%){}{}",
+                    "Banshee | {:.0} km/h (Santé {:.0}%) | {} | B: radio{}{}",
                     car.speed.abs() * 3.6,
                     (car.health / 10.0).max(0.0),
+                    audio.current_station.name(),
                     if car.speed < -0.1 { " [Recul]" } else { "" },
                     if car.exploded { " [DETRUITE]" } else if car.burning { " [EN FEU]" } else { "" },
                 )

@@ -32,6 +32,10 @@ pub struct Car {
     pub is_police: bool,
     pub strobe_timer: f32,
     pub headlights: bool,
+    pub current_gear: i8,
+    pub rpm: f32,
+    pub slip_angle: f32,
+    pub skidmark_active: bool,
 }
 
 impl Car {
@@ -54,6 +58,10 @@ impl Car {
             is_police: false,
             strobe_timer: 0.0,
             headlights: true,
+            current_gear: 1,
+            rpm: 850.0,
+            slip_angle: 0.0,
+            skidmark_active: false,
         }
     }
 
@@ -179,6 +187,44 @@ impl Car {
         let throttle = if self.exploded { 0.0 } else { throttle.clamp(-1.0, 1.0) };
         let brake = if self.exploded { 1.0 } else { brake.clamp(0.0, 1.0) };
         let steer = if self.exploded { 0.0 } else { steer.clamp(-1.0, 1.0) };
+
+        // Transmission dynamics (5 gears + reverse)
+        let abs_speed = self.speed.abs();
+        self.current_gear = if self.speed < -0.1 {
+            -1
+        } else if abs_speed < 0.1 {
+            0
+        } else if abs_speed < 11.0 {
+            1
+        } else if abs_speed < 22.0 {
+            2
+        } else if abs_speed < 33.0 {
+            3
+        } else if abs_speed < 42.0 {
+            4
+        } else {
+            5
+        };
+        let gear_ratio = match self.current_gear {
+            -1 => 3.2,
+            0 => 0.0,
+            1 => 3.4,
+            2 => 2.1,
+            3 => 1.45,
+            4 => 1.05,
+            _ => 0.82,
+        };
+        let target_rpm = if self.current_gear == 0 {
+            850.0 + throttle.max(0.0) * 3500.0
+        } else {
+            850.0 + (abs_speed * gear_ratio * 125.0).min(6800.0)
+        };
+        self.rpm += (target_rpm - self.rpm) * (1.0 - (-12.0 * dt).exp());
+
+        // Tire friction & slip angle model (Pacejka curve approximation)
+        self.slip_angle = (self.steering_angle * (abs_speed / 20.0)).clamp(-0.8, 0.8);
+        self.skidmark_active = (self.grounded && brake > 0.6 && abs_speed > 5.0)
+            || (self.slip_angle.abs() > 0.45 && abs_speed > 12.0);
         if self.burning && !self.exploded {
             self.burn_timer -= dt;
             if self.burn_timer <= 0.0 {
@@ -578,6 +624,33 @@ mod tests {
         assert!(car.exploded);
         assert_eq!(car.health, 0.0);
         assert_eq!(car.speed, 0.0);
+    }
+
+    #[test]
+    fn transmission_shifts_gears_and_computes_rpm() {
+        let mut car = Car::new([0.0, 0.0, 0.0], 0.0);
+        let world = flat_world(0.0);
+        assert_eq!(car.rpm, 850.0);
+
+        // Accelerate through gear 1 and 2
+        for _ in 0..60 {
+            car.step(&world, 1.0, 0.0, 0.0, 0.05);
+        }
+        assert!(car.speed > 5.0);
+        assert!(car.current_gear >= 1);
+        assert!(car.rpm > 1200.0);
+    }
+
+    #[test]
+    fn tire_friction_model_detects_skid_conditions() {
+        let mut car = Car::new([0.0, 0.0, 0.0], 0.0);
+        let world = flat_world(0.0);
+        car.settle_on_ground(&world, true, 0.016);
+        car.speed = 25.0;
+
+        // Hard brake triggers skidmarks
+        car.step(&world, 0.0, 1.0, 0.0, 0.05);
+        assert!(car.skidmark_active);
     }
 
     #[test]

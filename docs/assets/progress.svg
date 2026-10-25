@@ -10,7 +10,7 @@
   </linearGradient>
 </defs>
 <rect width="1000" height="560" fill="url(#bg)"/>
-<text x="14" y="22" font-size="14" font-weight="bold" fill="url(#neon)">VCS-Rust Native Codebase Treemap: 78.0% (578 / 747 routines nativement portées)</text>
+<text x="14" y="22" font-size="14" font-weight="bold" fill="url(#neon)">VCS-Rust Native Codebase Treemap: 82.4% (613 / 747 routines nativement portées)</text>
 <rect x="5.0" y="51.0" width="146.1" height="300.7" fill="#38304c" stroke="#1e1435" stroke-width="0.8" rx="2"/>
 <rect x="5.0" y="51.0" width="146.1" height="300.7" fill="#ff2a85" opacity="0.85" rx="2"/>
 <text x="9.0" y="64.0" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">CStaticCollisionWorld</text>
@@ -91,7 +91,7 @@
 <rect x="670.3" y="147.3" width="153.7" height="82.2" fill="#10b981" opacity="0.85" rx="2"/>
 <text x="674.3" y="160.3" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">CVehicleModel</text>
 <rect x="824.0" y="51.0" width="92.0" height="100.8" fill="#38304c" stroke="#1e1435" stroke-width="0.8" rx="2"/>
-<rect x="824.0" y="51.0" width="44.6" height="100.8" fill="#10b981" opacity="0.85" rx="2"/>
+<rect x="824.0" y="51.0" width="57.0" height="100.8" fill="#10b981" opacity="0.85" rx="2"/>
 <text x="828.0" y="64.0" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">CSuspension4Wheel</text>
 <rect x="916.0" y="51.0" width="79.0" height="100.8" fill="#38304c" stroke="#1e1435" stroke-width="0.8" rx="2"/>
 <rect x="916.0" y="51.0" width="79.0" height="100.8" fill="#10b981" opacity="0.85" rx="2"/>
@@ -100,7 +100,7 @@
 <text x="828.0" y="164.8" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">CTireFrictionModel</text>
 <rect x="913.3" y="151.8" width="81.7" height="77.7" fill="#38304c" stroke="#1e1435" stroke-width="0.8" rx="2"/>
 <text x="917.3" y="164.8" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">CTransmissionDynamics</text>
-<text x="675.3" y="46.0" font-size="11" font-weight="bold" fill="#10b981">Vehicles &amp; Handling (69%)</text>
+<text x="675.3" y="46.0" font-size="11" font-weight="bold" fill="#10b981">Vehicles &amp; Handling (71%)</text>
 <rect x="670.3" y="249.5" width="86.1" height="154.1" fill="#38304c" stroke="#1e1435" stroke-width="0.8" rx="2"/>
 <rect x="670.3" y="249.5" width="86.1" height="154.1" fill="#f59e0b" opacity="0.85" rx="2"/>
 <text x="674.3" y="262.5" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">C3DBallistics</text>
@@ -118,11 +118,12 @@
 <text x="763.7" y="504.8" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">CSniperScopeView</text>
 <text x="675.3" y="244.5" font-size="11" font-weight="bold" fill="#f59e0b">Combat &amp; Weapons (54%)</text>
 <rect x="835.8" y="249.5" width="159.2" height="148.9" fill="#38304c" stroke="#1e1435" stroke-width="0.8" rx="2"/>
-<rect x="835.8" y="249.5" width="46.4" height="148.9" fill="#ec4899" opacity="0.85" rx="2"/>
+<rect x="835.8" y="249.5" width="113.4" height="148.9" fill="#ec4899" opacity="0.85" rx="2"/>
 <text x="839.8" y="262.5" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">CWorldManager</text>
 <rect x="835.8" y="398.5" width="94.1" height="156.5" fill="#38304c" stroke="#1e1435" stroke-width="0.8" rx="2"/>
 <text x="839.8" y="411.5" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">CMissionScriptSystem</text>
 <rect x="929.9" y="398.5" width="65.1" height="156.5" fill="#38304c" stroke="#1e1435" stroke-width="0.8" rx="2"/>
+<rect x="929.9" y="398.5" width="61.7" height="156.5" fill="#ec4899" opacity="0.85" rx="2"/>
 <text x="933.9" y="411.5" font-size="10" font-weight="600" fill="#ffffff" clip-path="url(#clip)">CAudioEngine</text>
-<text x="840.8" y="244.5" font-size="11" font-weight="bold" fill="#ec4899">World, Audio &amp; Missions (14%)</text>
+<text x="840.8" y="244.5" font-size="11" font-weight="bold" fill="#ec4899">World, Audio &amp; Missions (55%)</text>
 </svg>

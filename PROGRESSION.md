@@ -76,3 +76,9 @@ Le projet, les outils, les données extraites et la copie de travail ISO complè
    - **Jalon G (Cycle Jour/Nuit 24h & Atmosphère Synthwave 1984)** : modélisation de `sky_atmosphere` dans `src/gpu.rs` avec teinte du ciel et du brouillard progressifs (Midi bleu azur, coucher de soleil néon magenta/orange Vice City, nuit étoilée). Phares 3D projetant des faisceaux lumineux sur la route et feux arrière rouges.
    - **Jalon H (Sauvegarde & Restauration Rapide F5/F9)** : création de `src/save.rs` sérialisant l'état complet dans `VCS-Save.json` avec bandeau de notification visuel.
    - **Résultat** : 138 tests unitaires validés à 100%, 0 avertissements (`-D warnings`), progression globale de **78.0%** (578 / 747 routines).
+
+20. **Jalons I, J, K — Missions SCM, Moteur Audio 1984 & Dynamique de Transmission (terminé et validé)** :
+    - **Jalon I (Missions SCM & Balises 3D)** : création de `src/script.rs` (`MissionScriptSystem`, `ScriptThread`, `MissionObjective`). Scénarisation de la mission « SOLDAT », cylindre 3D néon-rose pulsant dans `src/gpu.rs` (`draw_mission_corona`), bannières de texte cinématique (`draw_mission_hud`) et blip jaune carré sur le radar HUD (`src/hud.rs`).
+    - **Jalon J (Moteur Audio & Radio Vice City)** : création de `src/audio.rs` (`AudioEngine`, `RadioStation`) avec 8 stations cultes (Wave 103, Flash FM, Emotion 98.3, V-Rock, Paradise FM, VCFL, Fresh FM, Radio Espantoso), changement de station via <kbd>B</kbd>, synthèse audio procédurale (tir, sirène, régime moteur).
+    - **Jalon K (Transmission & Adhérence)** : boîte 5 vitesses avec étagement réaliste (`CTransmissionDynamics`) et calcul d'adhérence Pacejka (`CTireFrictionModel`) dans `src/driving.rs`.
+    - **Résultat** : **148 tests unitaires validés à 100%**, 0 avertissements (`-D warnings`), progression globale de **82.4%** (613 / 747 routines portées).

@@ -16,6 +16,7 @@ pub struct PlayerStatus {
     pub minute: u32,
     pub wanted_level: u32,
     pub wanted_flashing: bool,
+    pub mission_blip: Option<[f32; 3]>,
 }
 impl Default for PlayerStatus {
     fn default() -> Self {
@@ -27,6 +28,7 @@ impl Default for PlayerStatus {
             minute: 0,
             wanted_level: 0,
             wanted_flashing: false,
+            mission_blip: None,
         }
     }
 }
@@ -280,6 +282,22 @@ impl GameHud {
                     }
                 }
             }
+        }
+        if let Some(blip) = state.mission_blip {
+            let wx = blip[0] - position[0];
+            let wy = blip[1] - position[1];
+            let rx = (c * wx - s * wy) * 71. / 256.;
+            let ry = (s * wx + c * wy) * 71. / 256.;
+            let dist = (rx * rx + ry * ry).sqrt();
+            let (bx, by) = if dist > 68.0 {
+                (rx / dist * 68.0, ry / dist * 68.0)
+            } else {
+                (rx, ry)
+            };
+            let cx = (80.0 + bx) as i32;
+            let cy = (80.0 - by) as i32;
+            radar.rect([cx - 4, cy - 4, 8, 8], [0, 0, 0, 255]);
+            radar.rect([cx - 3, cy - 3, 6, 6], [255, 230, 20, 255]);
         }
         radar.icon(&self.disc, [0, 0, 160, 160]);
         // Rotated original player marker, relative to the camera's radar view.
