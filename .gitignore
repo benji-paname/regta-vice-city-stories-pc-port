@@ -39,3 +39,7 @@ data/live-state.json
 
 # User gameplay preference
 VCS-options.json
+
+# Python caches
+__pycache__/
+*.py[cod]
