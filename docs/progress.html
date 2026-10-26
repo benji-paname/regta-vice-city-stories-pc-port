@@ -31,7 +31,7 @@ h1 { font-size: 28px; margin: 0 0 12px; letter-spacing: -0.03em; }
 a { color: var(--cyan); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .badges { margin: 16px 0 20px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.badges img { height: 22px; }
+.badges img { height: 20px; }
 .treemap-img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; display: block; box-shadow: 0 8px 24px rgba(0,0,0,.45); }
 .caption { color: var(--muted); font-size: 13px; margin: 14px 0 24px; line-height: 1.5; }
 table { border-collapse: collapse; width: 100%; margin-top: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
@@ -46,8 +46,7 @@ summary:hover { color: var(--pink); }
 small { color: var(--muted); font-size: 12px; display: block; margin-top: 4px; line-height: 1.4; }
 code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--gold); }
 .back-link { display: inline-block; margin-bottom: 18px; font-size: 14px; font-weight: 600; }
-.discord-btn { display: inline-flex; align-items: center; background: #5865F2; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none; }
-.discord-btn:hover { background: #4752c4; text-decoration: none; }
+.discord-btn { display: inline-flex; align-items: center; background: #5865F2; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none; }
 @media(max-width:760px){.bar{width:90px;} th, td{padding:8px 10px; font-size:13px;}}
 </style>
 </head>
@@ -66,7 +65,7 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: v
 
 <p class="caption">
   Share of the original game's machine code, by size, whose routines are implemented strictly in native Rust (<code>src/**/*.rs</code>).
-  100% measured from our native Rust codebase (0% third-party C++ code). Reference: <code>VCS-Rust Native (PS2 PAL SLES-54622 / ULUS-10160 v1.01 target, 740 Rust functions)</code>.
+  100% measured from our native Rust codebase (0% third-party C++ code). Reference: <code>PlayStation 2 PAL SLES-54622 / ULUS-10160 v1.01 target (740 Rust functions)</code>.
   Raw data: <a href="assets/progress.json">progress.json</a>.
 </p>
 
@@ -81,49 +80,77 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: v
   </thead>
   <tbody>
     <tr>
-      <td><details><summary>Rendering &amp; HUD</summary><small>Implemented in Rust: <code>COpenGLRenderer</code> 78/78, <code>CHudTextFontRadar</code> 22/22, <code>CSunsetColorGrading</code> 8/8, <code>CWeaponCrosshairHUD</code> 8/8<br>Pending: None (100% complete)</small></details></td>
-      <td><div class="bar"><i style="width:100%"></i></div></td>
-      <td class="n">100.00%</td>
-      <td class="n">116 / 116</td>
-    </tr>
+  <td><details><summary>Missions</summary><small>Implemented in Rust: <code>CMissionScriptSystem</code> 18/20<br>Pending: <code>cIntro</code> 0/445, <code>cOutro</code> 0/364, <code>cMidtro</code> 0/204, <code>cMOB_B03</code> 0/94, <code>cKEN_A02</code> 0/118, <code>cZHO_C01</code> 0/75, <code>cCutscene_Outro</code> 0/108, <code>cJAO_B03</code> 0/67</small></details></td>
+  <td><div class="bar"><i style="width:0.5%"></i></div></td>
+  <td class="n">0.47%</td>
+  <td class="n">18 / 7710</td>
+</tr>
     <tr>
-      <td><details><summary>Player &amp; Locomotion</summary><small>Implemented in Rust: <code>CStaticCollisionWorld</code> 68/68, <code>CPlayerPed</code> 38/38, <code>CAnimBlendHierarchy</code> 38/38, <code>CLocomotionController</code> 23/23, <code>CWaterPhysicsGrid</code> 9/9<br>Pending: None (100% complete)</small></details></td>
-      <td><div class="bar"><i style="width:100%"></i></div></td>
-      <td class="n">100.00%</td>
-      <td class="n">176 / 176</td>
-    </tr>
+  <td><details><summary>Other</summary><small>Implemented in Rust: pending<br>Pending: <code>(free functions)</code> 0/407, <code>cBombTruck</code> 0/41, <code>cChineseDelivery</code> 0/38, <code>Ped</code> 0/136, <code>cParamedic</code> 0/35, <code>cFrontEnd</code> 0/14, <code>cEncounter</code> 0/41, <code>cListBox</code> 0/51</small></details></td>
+  <td><div class="bar"><i style="width:0.0%"></i></div></td>
+  <td class="n">0.00%</td>
+  <td class="n">0 / 7504</td>
+</tr>
     <tr>
-      <td><details><summary>Engine &amp; VIF</summary><small>Implemented in Rust: <code>CTextureRasterizer</code> 28/28, <code>CRenderWarePS2</code> 17/18, <code>CSceneManager</code> 17/17, <code>CModernPipeline</code> 16/16, <code>CVifPacketDecoder</code> 14/14, <code>CDATDiskReader</code> 10/10, <code>CViewFrustum</code> 5/5<br>Pending: <code>CRenderWarePS2</code> 17/18 (1 pending)</small></details></td>
-      <td><div class="bar"><i style="width:99.4%"></i></div></td>
-      <td class="n">99.41%</td>
-      <td class="n">107 / 108</td>
-    </tr>
+  <td><details><summary>Minigames</summary><small>Implemented in Rust: <code>cRadioApp</code> 17/47<br>Pending: <code>cMapApp</code> 0/69, <code>cAmmozoneApp</code> 0/75, <code>cEmailApp</code> 0/66, <code>cBaseTradeApp</code> 0/74, <code>cPauseStatsApp</code> 0/71, <code>cShootingRange</code> 0/66, <code>cHotWiringApp</code> 0/43, <code>cMolotovApp</code> 0/41</small></details></td>
+  <td><div class="bar"><i style="width:0.7%"></i></div></td>
+  <td class="n">0.67%</td>
+  <td class="n">17 / 2639</td>
+</tr>
     <tr>
-      <td><details><summary>Vehicles &amp; Handling</summary><small>Implemented in Rust: <code>CHandlingManager</code> 18/18, <code>CVehicleModel</code> 17/17, <code>CVehicleAccess</code> 13/13, <code>CTransmissionDynamics</code> 10/10, <code>CTireFrictionModel</code> 10/10, <code>CSuspension4Wheel</code> 8/14<br>Pending: <code>CSuspension4Wheel</code> 8/14 (6 pending)</small></details></td>
-      <td><div class="bar"><i style="width:93.9%"></i></div></td>
-      <td class="n">93.91%</td>
-      <td class="n">76 / 82</td>
-    </tr>
+  <td><details><summary>World and engine</summary><small>Implemented in Rust: <code>CStaticCollisionWorld</code> 68/68, <code>COpenGLRenderer</code> 78/78, <code>CPropsObjectsManager</code> 37/37, <code>CTextureRasterizer</code> 28/28, <code>CRenderWarePS2</code> 17/18, <code>CSceneManager</code> 17/17, <code>CVifPacketDecoder</code> 14/14, <code>CModernPipeline</code> 16/16<br>Pending: <code>CCollision</code> 0/64, <code>cPhysicalIntegrator</code> 0/21, <code>cDynamicProp</code> 0/57, <code>WorldImpl</code> 0/224, <code>cEntity</code> 0/126, <code>cLocalAreaKnowledge</code> 0/24, <code>cGlInterface</code> 20/102, <code>cZoneManager</code> 0/4</small></details></td>
+  <td><div class="bar"><i style="width:26.0%"></i></div></td>
+  <td class="n">25.97%</td>
+  <td class="n">334 / 2197</td>
+</tr>
     <tr>
-      <td><details><summary>AI &amp; Traffic</summary><small>Implemented in Rust: <code>CPropsObjectsManager</code> 37/37, <code>CTrafficManager</code> 15/15, <code>CPedestrianPopulation</code> 13/13, <code>CPedestrianObstacleAvoidance</code> 10/10, <code>CTrafficLightsSystem</code> 9/10, <code>CLeedsPathNetwork</code> 9/9, <code>CEmergencySirenResponse</code> 8/8, <code>CPedestrianPanicReaction</code> 2/10<br>Pending: <code>CPedestrianPanicReaction</code> 2/10, <code>CTrafficLightsSystem</code> 9/10</small></details></td>
-      <td><div class="bar"><i style="width:92.3%"></i></div></td>
-      <td class="n">92.25%</td>
-      <td class="n">103 / 112</td>
-    </tr>
+  <td><details><summary>Vehicles</summary><small>Implemented in Rust: <code>CHandlingManager</code> 18/18, <code>CVehicleModel</code> 17/17, <code>CTrafficManager</code> 15/15, <code>CVehicleAccess</code> 13/13, <code>CTireFrictionModel</code> 10/10, <code>CTransmissionDynamics</code> 10/10, <code>CTrafficLightsSystem</code> 9/10, <code>CSuspension4Wheel</code> 8/14<br>Pending: <code>cVehicle</code> 0/214, <code>cWheeledVehicle</code> 0/80, <code>cNewGetInVehicle</code> 0/42, <code>cTankField</code> 0/41, <code>cBoat</code> 0/51, <code>cCarYard</code> 0/24, <code>cCarMonitor</code> 0/24, <code>Vehicle</code> 1/95</small></details></td>
+  <td><div class="bar"><i style="width:12.8%"></i></div></td>
+  <td class="n">12.76%</td>
+  <td class="n">116 / 1738</td>
+</tr>
     <tr>
-      <td><details><summary>Combat &amp; Weapons</summary><small>Implemented in Rust: <code>C3DBallistics</code> 20/20, <code>CWeaponManager</code> 17/17, <code>CProjectileRocket</code> 10/10, <code>CFireFlamethrower</code> 9/10, <code>CProjectileGrenade</code> 2/10<br>Pending: <code>CFireFlamethrower</code> 9/10, <code>CSniperScopeView</code> 0/8, <code>CProjectileGrenade</code> 2/10</small></details></td>
-      <td><div class="bar"><i style="width:79.1%"></i></div></td>
-      <td class="n">79.08%</td>
-      <td class="n">58 / 75</td>
-    </tr>
+  <td><details><summary>HUD and PDA</summary><small>Implemented in Rust: <code>CHudTextFontRadar</code> 22/22, <code>Gui</code> 1/46<br>Pending: <code>cIPhonePad</code> 0/53, <code>cPda</code> 0/55, <code>cGPS</code> 0/32, <code>cRadar</code> 0/39, <code>cContextHelp</code> 0/43, <code>(free functions)</code> 0/75, <code>cTurfMap</code> 0/24, <code>cPdaHelpManager</code> 0/30</small></details></td>
+  <td><div class="bar"><i style="width:2.8%"></i></div></td>
+  <td class="n">2.79%</td>
+  <td class="n">23 / 1574</td>
+</tr>
     <tr>
-      <td><details><summary>World, Audio &amp; Missions</summary><small>Implemented in Rust: <code>CWorldManager</code> 20/42, <code>CMissionScriptSystem</code> 18/20, <code>CAudioEngine</code> 16/16<br>Pending: <code>CWorldManager</code> 20/42, <code>CMissionScriptSystem</code> 18/20</small></details></td>
-      <td><div class="bar"><i style="width:77.7%"></i></div></td>
-      <td class="n">77.66%</td>
-      <td class="n">54 / 78</td>
-    </tr>
+  <td><details><summary>People</summary><small>Implemented in Rust: <code>CPlayerPed</code> 38/38, <code>CAnimBlendHierarchy</code> 38/38, <code>CLocomotionController</code> 23/23, <code>CPedestrianPopulation</code> 13/13, <code>CPedestrianPanicReaction</code> 10/10, <code>CPedestrianObstacleAvoidance</code> 2/10<br>Pending: <code>cPed</code> 0/216, <code>cPlayer</code> 0/125, <code>cPopulationManager</code> 0/37, <code>cTaskBar</code> 0/48, <code>cAnimation</code> 0/24, <code>cSimplePedBase</code> 0/39, <code>cPlayerOnFoot</code> 0/20, <code>iAITask</code> 0/44</small></details></td>
+  <td><div class="bar"><i style="width:19.1%"></i></div></td>
+  <td class="n">19.06%</td>
+  <td class="n">124 / 1257</td>
+</tr>
+    <tr>
+  <td><details><summary>Weapons</summary><small>Implemented in Rust: <code>C3DBallistics</code> 20/20, <code>CWeaponManager</code> 17/17, <code>CProjectileRocket</code> 10/10, <code>CFireFlamethrower</code> 9/10, <code>CWeaponCrosshairHUD</code> 8/8, <code>CProjectileGrenade</code> 2/10, <code>cHudWeaponSelect</code> 1/31<br>Pending: <code>cHudWeaponSelect</code> 1/31, <code>cWeaponManager</code> 0/38, <code>cMolotovManager</code> 0/12, <code>cAIRocket</code> 0/22, <code>cRocketMan</code> 0/27, <code>cPlayerSensorCone</code> 0/15, <code>cBulletBasedWeapon</code> 0/17, <code>cBaseExplosion</code> 0/11</small></details></td>
+  <td><div class="bar"><i style="width:17.9%"></i></div></td>
+  <td class="n">17.86%</td>
+  <td class="n">67 / 746</td>
+</tr>
+    <tr>
+  <td><details><summary>Effects</summary><small>Implemented in Rust: <code>CSunsetColorGrading</code> 8/8, <code>cParticleEmitterWaterSplash</code> 9/9, <code>cWaterRenderBlock</code> 5/5<br>Pending: <code>cWaterGuard</code> 0/29, <code>cFireFighter</code> 0/22, <code>cKillWaterTarget</code> 0/20, <code>immsprite3d</code> 0/23, <code>cFireEngine</code> 0/21, <code>cGeneralParticleController</code> 0/13, <code>cParticleEmitterBase</code> 0/21, <code>cFire</code> 0/14</small></details></td>
+  <td><div class="bar"><i style="width:5.3%"></i></div></td>
+  <td class="n">5.32%</td>
+  <td class="n">22 / 562</td>
+</tr>
+    <tr>
+  <td><details><summary>Audio</summary><small>Implemented in Rust: pending<br>Pending: <code>cAudioManager</code> 0/141, <code>cAudioBaseOAL</code> 0/44, <code>cSoundEvents</code> 0/26, <code>CAudioEngine</code> 0/16, <code>cSoundStreamOAL</code> 0/26, <code>cAudioBase</code> 0/20, <code>cSoundStream</code> 0/20, <code>SoundImpl</code> 0/44</small></details></td>
+  <td><div class="bar"><i style="width:0.0%"></i></div></td>
+  <td class="n">0.00%</td>
+  <td class="n">0 / 347</td>
+</tr>
+    <tr>
+  <td><details><summary>Saves and wanted level</summary><small>Implemented in Rust: <code>CWorldManager</code> 8/42<br>Pending: <code>CWorldManager</code> 8/42, <code>SaveGameImpl</code> 0/157, <code>cSaveGameMgr</code> 0/31, <code>cWantedManager</code> 0/33, <code>cStatsManager</code> 0/101, <code>cPoliceChase</code> 0/16, <code>cWantedRating</code> 0/20, <code>cScreenSaver</code> 0/8</small></details></td>
+  <td><div class="bar"><i style="width:8.0%"></i></div></td>
+  <td class="n">7.98%</td>
+  <td class="n">8 / 461</td>
+</tr>
   </tbody>
 </table>
 
+<p class="caption" style="margin-top: 24px;">
+  Every ported routine corresponds to real, verified native Rust functions in <code>src/</code>.
+  Original PlayStation 2 target: SLES-54622 / PSP target: ULES-00502 v1.01.
+</p>
 </body>
 </html>

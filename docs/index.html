@@ -72,8 +72,8 @@
           <span data-en="Compiler warnings" data-fr="Avertissements du compilateur" data-es="Advertencias del compilador">Compiler warnings</span>
         </div>
         <div class="metric">
-          <strong>690 / 747</strong>
-          <span data-en="Routines ported (93.6%)" data-fr="Routines portées (93,6%)" data-es="Rutinas portadas (93,6%)">Routines ported (93.6%)</span>
+          <strong>729 / 26,735</strong>
+          <span data-en="Routines ported (4.8%)" data-fr="Routines portées (4,8%)" data-es="Rutinas portadas (4,8%)">Routines ported (4.8%)</span>
         </div>
       </div>
       <p class="metric-note" data-en="Local validation: 26 October 2026. Tests validate covered code paths; 100% measured from our native Rust codebase." data-fr="Validation locale : 26 octobre 2026. Les tests vérifient les cas couverts ; mesuré à 100% depuis notre code source pur Rust." data-es="Validación local: 26 de octubre de 2026. Las pruebas verifican las rutas cubiertas; medido al 100% desde nuestro código Rust nativo.">Local validation: 26 October 2026. Tests validate covered code paths; 100% measured from our native Rust codebase.</p>
@@ -126,86 +126,111 @@
     </div>
   </section>
 
-  <!-- Status Section -->
-  <section id="status" class="content wrap">
-    <div class="section-top">
-      <h2 data-en="Native Rust port progress &amp; code coverage" data-fr="Avancement du port natif Rust &amp; couverture du code" data-es="Progreso del port nativo en Rust y cobertura de código">Native Rust port progress &amp; code coverage</h2>
-      <p data-en="Squarified treemap tracking implemented subsystems and routines in native Rust (100% local codebase)." data-fr="Treemap suivant les sous-systèmes et routines implémentés en pur Rust (100% code source local)." data-es="Treemap que sigue los subsistemas y rutinas implementados en Rust nativo (100% código local).">Squarified treemap tracking implemented subsystems and routines in native Rust (100% local codebase).</p>
-    </div>
+  <!-- BEGIN STATUS SECTION -->
+<section id="status" class="content wrap">
+  <div class="section-top">
+    <h2 data-en="Native Rust port progress &amp; code coverage" data-fr="Avancement du port natif Rust &amp; couverture du code" data-es="Progreso del port nativo en Rust y cobertura de código">Native Rust port progress &amp; code coverage</h2>
+    <p data-en="Squarified treemap tracking implemented subsystems and routines in native Rust (100% local codebase)." data-fr="Treemap suivant les sous-systèmes et routines implémentés en pur Rust (100% code source local)." data-es="Treemap que sigue los subsistemas y rutinas implementados en Rust nativo (100% código local).">Squarified treemap tracking implemented subsystems and routines in native Rust (100% local codebase).</p>
+  </div>
 
-    <div class="status-badges">
-      <a href="progress.html" title="View Port Progress Dashboard"><img src="assets/badge-overall.svg" alt="original code ported"></a>
-      <a href="progress.html" title="View Port Progress Dashboard"><img src="assets/badge-routines.svg" alt="routines"></a>
-    </div>
+  <div class="status-badges">
+    <a href="progress.html" title="View Port Progress Dashboard"><img src="assets/badge-overall.svg" alt="original code ported"></a>
+    <a href="progress.html" title="View Port Progress Dashboard"><img src="assets/badge-routines.svg" alt="routines"></a>
+  </div>
 
-    <div class="treemap-card">
-      <a href="progress.html" title="Click to view full routines dashboard"><img src="assets/progress.svg" alt="ReGTA VCS Port Progress Treemap" width="1000" height="560"></a>
-    </div>
+  <div class="treemap-card">
+    <a href="progress.html" title="Click to view full routines dashboard"><img src="assets/progress.svg" alt="ReGTA VCS Port Progress Treemap" width="1000" height="560"></a>
+  </div>
 
-    <p class="metric-note" data-en="Share of the original game's code, by size, implemented in native Rust (src/**/*.rs). Green is the ported part of each class. 100% measured from our Rust codebase." data-fr="Part du code original, par taille, implémentée en pur Rust (src/**/*.rs). Le vert indique la portion portée de chaque classe. Mesuré à 100% depuis notre code Rust." data-es="Porcentaje del código original, por tamaño, implementado en Rust nativo. El verde indica la parte portada de cada clase. Medido al 100% desde nuestro código Rust.">Share of the original game's code, by size, implemented in native Rust (src/**/*.rs). Green is the ported part of each class. 100% measured from our Rust codebase.</p>
+  <p class="metric-note" data-en="Share of the original game's code, by size, implemented in native Rust (src/**/*.rs). Green is the ported part of each class. 100% measured from our Rust codebase." data-fr="Part du code original, par taille, implémentée en pur Rust (src/**/*.rs). Le vert indique la portion portée de chaque classe. Mesuré à 100% depuis notre code Rust." data-es="Porcentaje del código original, por tamaño, implementado en Rust nativo. El verde indica la parte portada de cada clase. Medido al 100% desde nuestro código Rust.">Share of the original game's code, by size, implemented in native Rust (src/**/*.rs). Green is the ported part of each class. 100% measured from our Rust codebase.</p>
 
-    <div class="progress-table-wrap">
-      <table class="progress-table">
-        <thead>
-          <tr>
-            <th data-en="Subsystem" data-fr="Sous-système" data-es="Subsistema">Subsystem</th>
-            <th style="width: 140px;" data-en="Coverage" data-fr="Couverture" data-es="Cobertura">Coverage</th>
-            <th class="n" data-en="Code" data-fr="Code" data-es="Código">Code</th>
-            <th class="n" data-en="Routines" data-fr="Routines" data-es="Rutinas">Routines</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><details><summary>Rendering &amp; HUD</summary><small>Implemented in Rust: <code>COpenGLRenderer</code> 78/78, <code>CHudTextFontRadar</code> 22/22, <code>CSunsetColorGrading</code> 8/8, <code>CWeaponCrosshairHUD</code> 8/8<br>Pending: None (100% complete)</small></details></td>
-            <td><div class="bar"><i style="width:100%"></i></div></td>
-            <td class="n">100.00%</td>
-            <td class="n">116 / 116</td>
-          </tr>
-          <tr>
-            <td><details><summary>Player &amp; Locomotion</summary><small>Implemented in Rust: <code>CStaticCollisionWorld</code> 68/68, <code>CPlayerPed</code> 38/38, <code>CAnimBlendHierarchy</code> 38/38, <code>CLocomotionController</code> 23/23, <code>CWaterPhysicsGrid</code> 9/9<br>Pending: None (100% complete)</small></details></td>
-            <td><div class="bar"><i style="width:100%"></i></div></td>
-            <td class="n">100.00%</td>
-            <td class="n">176 / 176</td>
-          </tr>
-          <tr>
-            <td><details><summary>Engine &amp; VIF</summary><small>Implemented in Rust: <code>CTextureRasterizer</code> 28/28, <code>CRenderWarePS2</code> 17/18, <code>CSceneManager</code> 17/17, <code>CModernPipeline</code> 16/16, <code>CVifPacketDecoder</code> 14/14, <code>CDATDiskReader</code> 10/10, <code>CViewFrustum</code> 5/5<br>Pending: <code>CRenderWarePS2</code> 17/18 (1 pending)</small></details></td>
-            <td><div class="bar"><i style="width:99.4%"></i></div></td>
-            <td class="n">99.41%</td>
-            <td class="n">107 / 108</td>
-          </tr>
-          <tr>
-            <td><details><summary>Vehicles &amp; Handling</summary><small>Implemented in Rust: <code>CHandlingManager</code> 18/18, <code>CVehicleModel</code> 17/17, <code>CVehicleAccess</code> 13/13, <code>CTransmissionDynamics</code> 10/10, <code>CTireFrictionModel</code> 10/10, <code>CSuspension4Wheel</code> 8/14<br>Pending: <code>CSuspension4Wheel</code> 8/14 (6 pending)</small></details></td>
-            <td><div class="bar"><i style="width:93.9%"></i></div></td>
-            <td class="n">93.91%</td>
-            <td class="n">76 / 82</td>
-          </tr>
-          <tr>
-            <td><details><summary>AI &amp; Traffic</summary><small>Implemented in Rust: <code>CPropsObjectsManager</code> 37/37, <code>CTrafficManager</code> 15/15, <code>CPedestrianPopulation</code> 13/13, <code>CPedestrianObstacleAvoidance</code> 10/10, <code>CTrafficLightsSystem</code> 9/10, <code>CLeedsPathNetwork</code> 9/9, <code>CEmergencySirenResponse</code> 8/8, <code>CPedestrianPanicReaction</code> 2/10<br>Pending: <code>CPedestrianPanicReaction</code> 2/10, <code>CTrafficLightsSystem</code> 9/10</small></details></td>
-            <td><div class="bar"><i style="width:92.3%"></i></div></td>
-            <td class="n">92.25%</td>
-            <td class="n">103 / 112</td>
-          </tr>
-          <tr>
-            <td><details><summary>Combat &amp; Weapons</summary><small>Implemented in Rust: <code>C3DBallistics</code> 20/20, <code>CWeaponManager</code> 17/17, <code>CProjectileRocket</code> 10/10, <code>CFireFlamethrower</code> 9/10, <code>CProjectileGrenade</code> 2/10<br>Pending: <code>CFireFlamethrower</code> 9/10, <code>CSniperScopeView</code> 0/8, <code>CProjectileGrenade</code> 2/10</small></details></td>
-            <td><div class="bar"><i style="width:79.1%"></i></div></td>
-            <td class="n">79.08%</td>
-            <td class="n">58 / 75</td>
-          </tr>
-          <tr>
-            <td><details><summary>World, Audio &amp; Missions</summary><small>Implemented in Rust: <code>CWorldManager</code> 20/42, <code>CMissionScriptSystem</code> 18/20, <code>CAudioEngine</code> 16/16<br>Pending: <code>CWorldManager</code> 20/42, <code>CMissionScriptSystem</code> 18/20</small></details></td>
-            <td><div class="bar"><i style="width:77.7%"></i></div></td>
-            <td class="n">77.66%</td>
-            <td class="n">54 / 78</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="progress-table-wrap">
+    <table class="progress-table">
+      <thead>
+        <tr>
+          <th data-en="Subsystem" data-fr="Sous-système" data-es="Subsistema">Subsystem</th>
+          <th style="width: 140px;" data-en="Coverage" data-fr="Couverture" data-es="Cobertura">Coverage</th>
+          <th class="n" data-en="Code" data-fr="Code" data-es="Código">Code</th>
+          <th class="n" data-en="Routines" data-fr="Routines" data-es="Rutinas">Routines</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+  <td><details><summary>Missions</summary><small>Implemented in Rust: <code>CMissionScriptSystem</code> 18/20<br>Pending: <code>cIntro</code> 0/445, <code>cOutro</code> 0/364, <code>cMidtro</code> 0/204, <code>cMOB_B03</code> 0/94, <code>cKEN_A02</code> 0/118, <code>cZHO_C01</code> 0/75, <code>cCutscene_Outro</code> 0/108, <code>cJAO_B03</code> 0/67</small></details></td>
+  <td><div class="bar"><i style="width:0.5%"></i></div></td>
+  <td class="n">0.47%</td>
+  <td class="n">18 / 7710</td>
+</tr>
+        <tr>
+  <td><details><summary>Other</summary><small>Implemented in Rust: pending<br>Pending: <code>(free functions)</code> 0/407, <code>cBombTruck</code> 0/41, <code>cChineseDelivery</code> 0/38, <code>Ped</code> 0/136, <code>cParamedic</code> 0/35, <code>cFrontEnd</code> 0/14, <code>cEncounter</code> 0/41, <code>cListBox</code> 0/51</small></details></td>
+  <td><div class="bar"><i style="width:0.0%"></i></div></td>
+  <td class="n">0.00%</td>
+  <td class="n">0 / 7504</td>
+</tr>
+        <tr>
+  <td><details><summary>Minigames</summary><small>Implemented in Rust: <code>cRadioApp</code> 17/47<br>Pending: <code>cMapApp</code> 0/69, <code>cAmmozoneApp</code> 0/75, <code>cEmailApp</code> 0/66, <code>cBaseTradeApp</code> 0/74, <code>cPauseStatsApp</code> 0/71, <code>cShootingRange</code> 0/66, <code>cHotWiringApp</code> 0/43, <code>cMolotovApp</code> 0/41</small></details></td>
+  <td><div class="bar"><i style="width:0.7%"></i></div></td>
+  <td class="n">0.67%</td>
+  <td class="n">17 / 2639</td>
+</tr>
+        <tr>
+  <td><details><summary>World and engine</summary><small>Implemented in Rust: <code>CStaticCollisionWorld</code> 68/68, <code>COpenGLRenderer</code> 78/78, <code>CPropsObjectsManager</code> 37/37, <code>CTextureRasterizer</code> 28/28, <code>CRenderWarePS2</code> 17/18, <code>CSceneManager</code> 17/17, <code>CVifPacketDecoder</code> 14/14, <code>CModernPipeline</code> 16/16<br>Pending: <code>CCollision</code> 0/64, <code>cPhysicalIntegrator</code> 0/21, <code>cDynamicProp</code> 0/57, <code>WorldImpl</code> 0/224, <code>cEntity</code> 0/126, <code>cLocalAreaKnowledge</code> 0/24, <code>cGlInterface</code> 20/102, <code>cZoneManager</code> 0/4</small></details></td>
+  <td><div class="bar"><i style="width:26.0%"></i></div></td>
+  <td class="n">25.97%</td>
+  <td class="n">334 / 2197</td>
+</tr>
+        <tr>
+  <td><details><summary>Vehicles</summary><small>Implemented in Rust: <code>CHandlingManager</code> 18/18, <code>CVehicleModel</code> 17/17, <code>CTrafficManager</code> 15/15, <code>CVehicleAccess</code> 13/13, <code>CTireFrictionModel</code> 10/10, <code>CTransmissionDynamics</code> 10/10, <code>CTrafficLightsSystem</code> 9/10, <code>CSuspension4Wheel</code> 8/14<br>Pending: <code>cVehicle</code> 0/214, <code>cWheeledVehicle</code> 0/80, <code>cNewGetInVehicle</code> 0/42, <code>cTankField</code> 0/41, <code>cBoat</code> 0/51, <code>cCarYard</code> 0/24, <code>cCarMonitor</code> 0/24, <code>Vehicle</code> 1/95</small></details></td>
+  <td><div class="bar"><i style="width:12.8%"></i></div></td>
+  <td class="n">12.76%</td>
+  <td class="n">116 / 1738</td>
+</tr>
+        <tr>
+  <td><details><summary>HUD and PDA</summary><small>Implemented in Rust: <code>CHudTextFontRadar</code> 22/22, <code>Gui</code> 1/46<br>Pending: <code>cIPhonePad</code> 0/53, <code>cPda</code> 0/55, <code>cGPS</code> 0/32, <code>cRadar</code> 0/39, <code>cContextHelp</code> 0/43, <code>(free functions)</code> 0/75, <code>cTurfMap</code> 0/24, <code>cPdaHelpManager</code> 0/30</small></details></td>
+  <td><div class="bar"><i style="width:2.8%"></i></div></td>
+  <td class="n">2.79%</td>
+  <td class="n">23 / 1574</td>
+</tr>
+        <tr>
+  <td><details><summary>People</summary><small>Implemented in Rust: <code>CPlayerPed</code> 38/38, <code>CAnimBlendHierarchy</code> 38/38, <code>CLocomotionController</code> 23/23, <code>CPedestrianPopulation</code> 13/13, <code>CPedestrianPanicReaction</code> 10/10, <code>CPedestrianObstacleAvoidance</code> 2/10<br>Pending: <code>cPed</code> 0/216, <code>cPlayer</code> 0/125, <code>cPopulationManager</code> 0/37, <code>cTaskBar</code> 0/48, <code>cAnimation</code> 0/24, <code>cSimplePedBase</code> 0/39, <code>cPlayerOnFoot</code> 0/20, <code>iAITask</code> 0/44</small></details></td>
+  <td><div class="bar"><i style="width:19.1%"></i></div></td>
+  <td class="n">19.06%</td>
+  <td class="n">124 / 1257</td>
+</tr>
+        <tr>
+  <td><details><summary>Weapons</summary><small>Implemented in Rust: <code>C3DBallistics</code> 20/20, <code>CWeaponManager</code> 17/17, <code>CProjectileRocket</code> 10/10, <code>CFireFlamethrower</code> 9/10, <code>CWeaponCrosshairHUD</code> 8/8, <code>CProjectileGrenade</code> 2/10, <code>cHudWeaponSelect</code> 1/31<br>Pending: <code>cHudWeaponSelect</code> 1/31, <code>cWeaponManager</code> 0/38, <code>cMolotovManager</code> 0/12, <code>cAIRocket</code> 0/22, <code>cRocketMan</code> 0/27, <code>cPlayerSensorCone</code> 0/15, <code>cBulletBasedWeapon</code> 0/17, <code>cBaseExplosion</code> 0/11</small></details></td>
+  <td><div class="bar"><i style="width:17.9%"></i></div></td>
+  <td class="n">17.86%</td>
+  <td class="n">67 / 746</td>
+</tr>
+        <tr>
+  <td><details><summary>Effects</summary><small>Implemented in Rust: <code>CSunsetColorGrading</code> 8/8, <code>cParticleEmitterWaterSplash</code> 9/9, <code>cWaterRenderBlock</code> 5/5<br>Pending: <code>cWaterGuard</code> 0/29, <code>cFireFighter</code> 0/22, <code>cKillWaterTarget</code> 0/20, <code>immsprite3d</code> 0/23, <code>cFireEngine</code> 0/21, <code>cGeneralParticleController</code> 0/13, <code>cParticleEmitterBase</code> 0/21, <code>cFire</code> 0/14</small></details></td>
+  <td><div class="bar"><i style="width:5.3%"></i></div></td>
+  <td class="n">5.32%</td>
+  <td class="n">22 / 562</td>
+</tr>
+        <tr>
+  <td><details><summary>Audio</summary><small>Implemented in Rust: pending<br>Pending: <code>cAudioManager</code> 0/141, <code>cAudioBaseOAL</code> 0/44, <code>cSoundEvents</code> 0/26, <code>CAudioEngine</code> 0/16, <code>cSoundStreamOAL</code> 0/26, <code>cAudioBase</code> 0/20, <code>cSoundStream</code> 0/20, <code>SoundImpl</code> 0/44</small></details></td>
+  <td><div class="bar"><i style="width:0.0%"></i></div></td>
+  <td class="n">0.00%</td>
+  <td class="n">0 / 347</td>
+</tr>
+        <tr>
+  <td><details><summary>Saves and wanted level</summary><small>Implemented in Rust: <code>CWorldManager</code> 8/42<br>Pending: <code>CWorldManager</code> 8/42, <code>SaveGameImpl</code> 0/157, <code>cSaveGameMgr</code> 0/31, <code>cWantedManager</code> 0/33, <code>cStatsManager</code> 0/101, <code>cPoliceChase</code> 0/16, <code>cWantedRating</code> 0/20, <code>cScreenSaver</code> 0/8</small></details></td>
+  <td><div class="bar"><i style="width:8.0%"></i></div></td>
+  <td class="n">7.98%</td>
+  <td class="n">8 / 461</td>
+</tr>
+      </tbody>
+    </table>
+  </div>
 
-    <div class="actions" style="justify-content: flex-start; margin-top: 18px;">
-      <a class="button primary" href="progress.html" data-en="Open Full Progress Dashboard" data-fr="Ouvrir le tableau de bord complet" data-es="Abrir panel de progreso completo">Open Full Progress Dashboard &rarr;</a>
-      <a class="button" href="STATUS.md" data-en="View Verified Rust Metrics" data-fr="Voir les métriques Rust vérifiées" data-es="Ver métricas verificadas de Rust">View Verified Rust Metrics</a>
-    </div>
-  </section>
+  <div class="actions" style="justify-content: flex-start; margin-top: 18px;">
+    <a class="button primary" href="progress.html" data-en="Open Full Progress Dashboard" data-fr="Ouvrir le tableau de bord complet" data-es="Abrir panel de progreso completo">Open Full Progress Dashboard &rarr;</a>
+    <a class="button" href="STATUS.md" data-en="View Verified Rust Metrics" data-fr="Voir les métriques Rust vérifiées" data-es="Ver métricas verificadas de Rust">View Verified Rust Metrics</a>
+  </div>
+</section>
+<!-- END STATUS SECTION -->
 
   <!-- Roadmap Section -->
   <section id="roadmap" class="content wrap">

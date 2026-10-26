@@ -19,7 +19,7 @@ ReGTA VCS is an independent clean-room reverse-engineering and native-port proje
 
 > **Pre-alpha — no public playable download.** No game executable, ROM, ISO or proprietary game assets are offered for download. The local prototype is unfinished; no release date or complete gameplay parity is promised. Building from source requires the tools and personal game copy described below.
 
-The dual islands (Beach & Mainland), player locomotion, full 25-bone skeletal animations, vehicle dynamics, weapons ballistics, dynamic weather, and SCM missions already have working prototype implementations. **171 passing tests and 690 ported routines (93.6%) are progress measurements, not proof of full-game equivalence.**
+The dual islands (Beach & Mainland), player locomotion, full 25-bone skeletal animations, vehicle dynamics, weapons ballistics, dynamic weather, and SCM missions already have working prototype implementations. **171 passing tests and 729 ported routines (4.8%) are progress measurements, not proof of full-game equivalence.**
 
 **[Support on Tipeee](https://fr.tipeee.com/benji-paname/)** · [Support via PayPal](https://paypal.me/BenjiLsg) · **[Discord: benjamin060936](https://discord.com/users/601648068277960714)**  
 Support helps sustain Benji Paname's reverse engineering, native development and documentation. It does not buy the game, game assets or early access, and does not guarantee completion or a release date.
@@ -106,7 +106,7 @@ The executable is delivered directly to `VCS-Rust.exe` at the repository root. S
 |---|---|---|
 | **Passing Unit Tests** | **171 tests / 0 failures** | `Compiler.ps1 -Test` (100% deterministic synthetic fixtures) |
 | **Compiler Warnings** | **0 warnings** | Enforced via `-D warnings` in Cargo build profile |
-| **Original Code Coverage** | **93.6%** (690 / 747 routines) | Pure native Rust x86_64 in `src/` compared against reference DB |
+| **Original Code Coverage** | **4.8%** (729 / 26,735 routines) | Pure native Rust x86_64 in `src/` compared against reference DB |
 | **Active Rust Modules** | **37 modules** (17,450 lines) | Single clean source location: `src/*.rs` |
 | **Map Streaming Distance** | **5,000 meters** | Simultaneous Beach, Mainland & Starfish Island rendering |
 | **Player Locomotion** | **25-bone hierarchy with Slerp** | Quaternion interpolation: idle, walk, sprint, swim, vault |

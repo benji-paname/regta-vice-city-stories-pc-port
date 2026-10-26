@@ -20,7 +20,7 @@ The goal is native PS2 and PSP behaviour in 100% pure Rust, with zero CPU emulat
 |---|---|---|
 | **Passing Unit Tests** | **171 tests / 0 failures** | `Compiler.ps1 -Test` (100% deterministic synthetic fixtures) |
 | **Compiler Warnings** | **0 warnings** | Enforced via `-D warnings` in Cargo build profile |
-| **Original Code Coverage** | **93.6%** (690 / 747 routines) | Pure native Rust x86_64 in `src/` compared against reference DB |
+| **Original Code Coverage** | **4.8%** (729 / 26,735 routines) | Pure native Rust x86_64 in `src/` compared against reference DB |
 | **Active Rust Modules** | **37 modules** (17,450 lines) | Single clean source location: `src/*.rs` |
 | **Map Streaming Distance** | **5,000 meters** | Simultaneous Beach, Mainland & Starfish Island rendering |
 | **Player Locomotion** | **25-bone hierarchy with Slerp** | Quaternions interpolation: idle, walk, sprint, swimming, vaulting |
