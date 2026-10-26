@@ -1,5 +1,5 @@
 {
-  "build": "PlayStation 2 PAL SLES-54622 / ULUS-10160 v1.01 target",
+  "build": "PlayStation 2 PAL SLES-54622 target",
   "subsystems": [
     {
       "name": "Missions",

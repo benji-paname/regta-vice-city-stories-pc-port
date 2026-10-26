@@ -13,15 +13,12 @@ Avant toute modification :
 4. Compiler / tester le projet de manière appropriée.
 5. Préserver rigoureusement les fonctionnalités déjà acquises.
 
-## Versions de référence
+## Version de référence
 
-Référence principale comportement/données :
-- GTA Vice City Stories — PSP
+Référence unique comportement/données :
+- GTA Vice City Stories — PlayStation 2 PAL (`SLES-54622` / `SLES_546.22`)
 
-Référence secondaire :
-- GTA Vice City Stories — PS2 (ISO PAL; copie de travail sur `C:`)
-
-L'utilisateur possède des copies légitimes des deux versions.
+L'utilisateur possède une copie légitime de la version PlayStation 2.
 
 ## Droits d'auteur et assets
 
@@ -64,9 +61,6 @@ L'utilisateur possède des copies légitimes des deux versions.
 
 - Valeurs +0x60 vérifiées dans GAME.DTZ : Banshee/Cheetah/Stinger 0,00320; Admiral 0,00364 (champ multiplié par 2500 dans la routine). Conserver comme valeurs brutes; aucun nom/unité prouvé.
 
-- Référence interversion : consulter `PSP-PORT-RECHERCHE.md` pour le projet PSP sur PC `vancevcs/VCSPC` et ses notes de reverse engineering. Ses adresses sont celles du jeu PSP US `ULUS10160`; ne pas les appliquer à l'ISO PS2 PAL. Les offsets relatifs/équations sont des pistes à recouper avec le MIPS PS2; le `TimeStep` PSP de caméra n'identifie pas le scalaire physique PS2.
-
-- Pour la comparaison PSP/PS2, utiliser en priorité `PSP-PORT-RECHERCHE.md`: PSPRecomp offre le corpus AOT VCS (PSP US `ULUS-10160`) comme seconde représentation du code; repérer les mêmes équations côté SLES PS2 PAL, jamais reprendre les adresses PSP ou importer le code généré. VCSPC/PPSSPP sert de référence complémentaire pour outils et observations runtime.
-- Résultat PSPRecomp du 12 octobre : les 234 unités AOT ont été inspectées; constantes float directes PS2 `2500.0`, `0.00320`, `0.00364` absentes, ce qui ne permet pas de conclure sur une équation équivalente. Les références de PC PSP vont jusqu'à `0x08CB2400`; ne pas borner la recherche à `0x08B70000` sous prétexte de la doc VCSPC. Le mapping d'une routine de conduite PSP reste à faire. Suivre `PSP-PORT-RECHERCHE.md`; aucune adresse PSP dans le code PS2, aucun code AOT tiers copié.
+- Cible 100% PlayStation 2 : le projet cible exclusivement la version PlayStation 2 PAL (`SLES-54622`). Toutes les adresses, routines, structures et équations physiques proviennent du binaire MIPS PS2 `SLES_546.22` et des données PS2 de l'ISO.
 - `Compiler.ps1` met à jour l'unique exécutable de jeu `VCS-Rust.exe`; les tests ne tournent que si explicitement demandés avec `-Test`. Les exécutables divers dans `target/` sont des artefacts Cargo et ne sont pas des versions du jeu. Ne pas lancer de tests spontanément.
 - Les roues ont déjà une animation de roulis et de braquage avant via `Vehicle::animated_triangles` dans `src/vehicle.rs`, alimentée par `Car::wheel_angle` et `Car::steering_angle`; vérifier cette chaîne avant de proposer une réimplémentation.

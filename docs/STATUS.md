@@ -10,7 +10,7 @@
 
 Date: 2026-10-26. Release milestone: **0.3.0-alpha**.
 
-The goal is native PS2 and PSP behaviour in 100% pure Rust, with zero CPU emulation (no MIPS interpreter, no PCSX2/PPSSPP core) in the runtime. The current implementation contains PS2-verified resource interpretation, physics systems, and real-time 3D OpenGL rendering. It is an independent clean-room recompilation.
+The goal is native PS2 behaviour in 100% pure Rust, with zero CPU emulation (no MIPS interpreter, no PCSX2 core) in the runtime. The current implementation contains PS2-verified resource interpretation, physics systems, and real-time 3D OpenGL rendering. It is an independent clean-room recompilation.
 
 ---
 
@@ -36,7 +36,7 @@ The goal is native PS2 and PSP behaviour in 100% pure Rust, with zero CPU emulat
 
 | Modules | Evidence and current limits |
 | --- | --- |
-| `iso.rs`, `leeds.rs`, `texture.rs`, `scene.rs` | Reads the user's PS2 disc (`SLES-54622`) and PSP disc (`ULES-00502`), decodes VIF packets, parses Leeds textures, and streams 3D models with 5 km draw distance. |
+| `iso.rs`, `leeds.rs`, `texture.rs`, `scene.rs` | Reads the user's PS2 disc (`SLES-54622`), decodes VIF packets, parses Leeds textures, and streams 3D models with 5 km draw distance. |
 | `collision.rs`, `paths.rs`, `props.rs` | Static collision mesh decoded from original tables, road navigation nodes, and prop object managers. |
 | `player.rs`, `character.rs`, `locomotion.rs`, `water.rs` | Full 25-bone character skeleton with short-arc Slerp quaternion interpolation. Idle, walk, run, swim with water buoyancy, jump, and vault. |
 | `vehicle.rs`, `driving.rs`, `transmission.rs`, `tires.rs` | Banshee 3D model with 4 independent corner raycast suspensions, mass transfer roll & pitch, 5-speed automatic gearbox, and Pacejka tire friction model with skidmarks. |

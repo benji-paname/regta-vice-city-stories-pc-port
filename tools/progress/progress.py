@@ -103,7 +103,7 @@ def measure_rust(reference=None, source_dir=SOURCE_DIR):
     total_rust_fns = sum(rust_fn_counts.values())
 
     result = {
-        'build': f'PlayStation 2 PAL SLES-54622 / ULUS-10160 v1.01 target ({total_rust_fns} Rust functions)',
+        'build': f'PlayStation 2 PAL SLES-54622 ({total_rust_fns} Rust functions)',
         'bytes': 0,
         'portedBytes': 0,
         'routines': 0,
@@ -529,7 +529,7 @@ code {{ font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: 
 
 <p class="caption" style="margin-top: 24px;">
   Every ported routine corresponds to real, verified native Rust functions in <code>src/</code>.
-  Original PlayStation 2 target: SLES-54622 / PSP target: ULES-00502 v1.01.
+  Original PlayStation 2 target: SLES-54622 PAL.
 </p>
 </body>
 </html>

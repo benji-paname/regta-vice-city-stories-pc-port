@@ -1,5 +1,5 @@
 """Builds the comprehensive reference database for Grand Theft Auto: Vice City Stories
-(PS2 PAL SLES-54622 / PSP ULES-00502 v1.01).
+(PS2 PAL SLES-54622).
 
 Indexes all 11 core subsystems across the full game (26,000+ routines, ~6.8 MB),
 mirroring the exact scope and engineering transparency of ReGTA Chinatown Wars.
@@ -91,7 +91,7 @@ for s in ctw_ref['subsystems']:
     new_subsystems.append(new_sub)
 
 new_ref = {
-    'build': 'PlayStation 2 PAL SLES-54622 / ULUS-10160 v1.01 target',
+    'build': 'PlayStation 2 PAL SLES-54622 target',
     'subsystems': new_subsystems
 }
 

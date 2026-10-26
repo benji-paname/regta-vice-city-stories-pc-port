@@ -1,5 +1,5 @@
 {
-  "build": "PlayStation 2 PAL SLES-54622 / ULUS-10160 v1.01 target (740 Rust functions)",
+  "build": "PlayStation 2 PAL SLES-54622 (740 Rust functions)",
   "bytes": 6819707,
   "portedBytes": 328735,
   "routines": 26735,

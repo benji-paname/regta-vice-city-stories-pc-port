@@ -4,7 +4,7 @@
 
 # ReGTA VCS — PC Recomp
 
-**A native PC future for Vice City Stories (PS2 & PSP).**  
+**A native PC future for Vice City Stories (PlayStation 2).**  
 **by Benji Paname**
 
 [![Version](https://img.shields.io/badge/milestone-0.3.0--alpha-orange)](CHANGELOG.md)
@@ -15,7 +15,7 @@
 [![License](https://img.shields.io/badge/license-GPL--3.0--only-blue)](LICENSE)
 [![Discord](https://img.shields.io/badge/Discord-benjamin060936-5865F2?logo=discord&logoColor=white)](https://discord.com/users/601648068277960714)
 
-ReGTA VCS is an independent clean-room reverse-engineering and native-port project for **Grand Theft Auto: Vice City Stories**, targeting the PlayStation 2 release **SLES-54622** and PSP release **ULES-00502 v1.01**. The goal is to rebuild the Vice City Stories experience in 100% pure Rust for Windows x64, reading game data from the user's own legally obtained disc image without a CPU emulator in the runtime.
+ReGTA VCS is an independent clean-room reverse-engineering and native-port project for **Grand Theft Auto: Vice City Stories**, targeting the PlayStation 2 PAL release **SLES-54622**. The goal is to rebuild the Vice City Stories experience in 100% pure Rust for Windows x64, reading game data from the user's own legally obtained disc image without a CPU emulator in the runtime.
 
 > **Pre-alpha — no public playable download.** No game executable, ROM, ISO or proprietary game assets are offered for download. The local prototype is unfinished; no release date or complete gameplay parity is promised. Building from source requires the tools and personal game copy described below.
 
@@ -40,12 +40,12 @@ Support helps sustain Benji Paname's reverse engineering, native development and
 
 - Visual validation of the 6 dynamic weather states and 3D rain streaks in continuous gameplay sessions.
 - Expand story missions execution engine across Boss contacts with cutscene camera staging.
-- Continue PS2/PSP physics comparisons, transmission tuning, and vehicle collision refinement.
+- Continue physics comparisons, transmission tuning, and vehicle collision refinement.
 - Broaden compatibility testing and documentation before considering a public playable release.
 
 ## Build and run
 
-Requirements: Windows x64, a Rust toolchain with a matching Windows linker, and a legally obtained personal ISO of the supported game release (PS2 PAL `SLES-54622` or PSP `ULES-00502`).
+Requirements: Windows x64, a Rust toolchain with a matching Windows linker, and a legally obtained personal ISO of the supported game release (PlayStation 2 PAL SLES-54622).
 
 From the repository root, in PowerShell:
 
@@ -98,7 +98,7 @@ The executable is delivered directly to `VCS-Rust.exe` at the repository root. S
 ## 📊 Verifiable Progress & Implementation Map
 
 > [!NOTE]
-> **Progress Measurement Policy**: ReGTA VCS is an independent native pure Rust port targeting the PlayStation 2 PAL release (**SLES-54622**) and PSP release (**ULES-00502 v1.01**). All metrics below are **100% measured from our native Rust codebase** (`src/`) compared against the official routine reference database (`progress/reference.json`).
+> **Progress Measurement Policy**: ReGTA VCS is an independent native pure Rust port targeting the PlayStation 2 PAL release (**SLES-54622**). All metrics below are **100% measured from our native Rust codebase** (`src/`) compared against the official routine reference database (`progress/reference.json`).
 
 ### 🎯 Key Verified Metrics (Local Codebase)
 
@@ -145,7 +145,7 @@ Contributions are optional. They do not purchase the game, provide game assets o
 
 Source code: **GPL-3.0-only**. See [LICENSE](LICENSE) for license terms.
 
-This repository contains no ISO, decrypted PS2/PSP executable, extracted game archive, texture pack or audio asset. Supply your own supported game copy; do not submit proprietary resources in issues or pull requests.
+This repository contains no ISO, decrypted PS2 executable, extracted game archive, texture pack or audio asset. Supply your own supported game copy; do not submit proprietary resources in issues or pull requests.
 
 This is an independent fan research project, not affiliated with or endorsed by Rockstar Games or Take-Two Interactive. Game assets and trademarks remain the property of their respective owners.
 

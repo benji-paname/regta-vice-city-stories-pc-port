@@ -375,7 +375,7 @@ fn unswizzle_indices(source: &[u8], width: usize, height: usize) -> Result<Vec<u
 }
 
 fn unswizzle_rgba(source: &[u8], width: usize, height: usize) -> Result<Vec<u8>> {
-    // VCS's rare 32-bit rasters retain the PSP-style 16-byte by 8-row layout.
+    // VCS's rare 32-bit rasters retain a 16-byte by 8-row layout.
     let stride = width * 4;
     if stride < 16 || height < 8 {
         return Err("Unsupported undersized swizzled RGBA texture".into());
