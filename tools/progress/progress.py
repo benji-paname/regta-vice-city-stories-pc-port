@@ -75,12 +75,9 @@ RUST_MODULE_MAP = {
 }
 
 GREEN = '#3fa34d'
-PINK = '#ff2a85'
-CYAN = '#00f0ff'
-PURPLE = '#7928ca'
-GREY = '#38304c'
-DARK = '#0f081d'
-INK = '#f5f0ff'
+GREY = '#4d5257'
+DARK = '#16191c'
+INK = '#e6e8ea'
 FONT = 'Verdana,DejaVu Sans,sans-serif'
 
 
@@ -243,38 +240,25 @@ def squarify(sizes, x, y, w, h):
 
 
 def treemap(result, width=1000, height=560):
-    head = 32
+    head = 26
     pct = percent(result)
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" font-family="{FONT}">',
-        f'<defs>',
-        f'  <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">',
-        f'    <stop offset="0%" stop-color="#140628"/>',
-        f'    <stop offset="100%" stop-color="#0a0314"/>',
-        f'  </linearGradient>',
-        f'  <linearGradient id="neon" x1="0%" y1="0%" x2="100%" y2="0%">',
-        f'    <stop offset="0%" stop-color="{PINK}"/>',
-        f'    <stop offset="100%" stop-color="{CYAN}"/>',
-        f'  </linearGradient>',
-        f'</defs>',
-        f'<rect width="{width}" height="{height}" fill="url(#bg)"/>',
-        f'<text x="14" y="22" font-size="14" font-weight="bold" fill="url(#neon)">ReGTA VCS Port Progress Map: {pct:.2f}% '
-        f'({result["portedRoutines"]} / {result["routines"]} routines)</text>'
+        f'<rect width="{width}" height="{height}" fill="{DARK}"/>',
+        f'<text x="8" y="18" font-size="13" fill="{INK}">Original game code ported in Rust: {pct:.2f}% '
+        f'({result["portedRoutines"]} / {result["routines"]} routines, by code size)</text>'
     ]
     subs = sorted(result['subsystems'], key=lambda s: -s['bytes'])
-    boxes = squarify([s['bytes'] for s in subs], 4, head, width - 8, height - head - 4)
+    boxes = squarify([s['bytes'] for s in subs], 2, head, width - 4, height - head - 2)
 
-    palette = ['#ff2a85', '#00f0ff', '#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#38bdf8', '#818cf8', '#fb7185', '#c084fc']
-
-    for idx, (sub, box) in enumerate(zip(subs, boxes)):
+    for sub, box in zip(subs, boxes):
         if not box:
             continue
         sx, sy, sw, sh = box
-        label = 18 if sh > 45 else 0
-        theme_color = palette[idx % len(palette)]
+        label = 15 if sh > 40 else 0
         classes = sorted(sub['classes'], key=lambda c: -c['bytes'])
-        cutoff = sub['bytes'] * 0.003
+        cutoff = sub['bytes'] * 0.002
         big = [c for c in classes if c['bytes'] >= cutoff]
         small = [c for c in classes if c['bytes'] < cutoff]
         if small:
@@ -291,30 +275,34 @@ def treemap(result, width=1000, height=560):
             done = c['portedBytes'] / c['bytes'] if c['bytes'] else 0
             parts.append(
                 f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" fill="{GREY}" '
-                f'stroke="#1e1435" stroke-width="0.8" rx="2"/>'
+                f'stroke="{DARK}" stroke-width="0.6"/>'
             )
             if done > 0:
-                cw = w * done
+                fh = h * done
                 parts.append(
-                    f'<rect x="{x:.1f}" y="{y:.1f}" width="{cw:.1f}" height="{h:.1f}" fill="{theme_color}" '
-                    f'opacity="0.85" rx="2"/>'
+                    f'<rect x="{x:.1f}" y="{y + h - fh:.1f}" width="{w:.1f}" height="{fh:.1f}" '
+                    f'fill="{GREEN}" stroke="{DARK}" stroke-width="0.6"/>'
                 )
-            if w > 48 and h > 18 and c['name']:
-                clean_name = html.escape(c['name'])
+            if c['name'] and w > 5.6 * len(c['name']) + 6 and h > 14:
                 parts.append(
-                    f'<text x="{x + 4:.1f}" y="{y + 13:.1f}" font-size="10" font-weight="600" fill="#ffffff" '
-                    f'clip-path="url(#clip)">{clean_name}</text>'
+                    f'<text x="{x + 3:.1f}" y="{y + 11:.1f}" font-size="9" fill="{INK}">'
+                    f'{html.escape(c["name"])}</text>'
                 )
-
-        if label > 0 and sw > 40:
-            sub_pct = percent(sub)
+        parts.append(
+            f'<rect x="{sx:.1f}" y="{sy:.1f}" width="{sw:.1f}" height="{sh:.1f}" fill="none" '
+            f'stroke="{INK}" stroke-opacity="0.55" stroke-width="1.2"/>'
+        )
+        title = f'{sub["name"]} {percent(sub):.1f}%'
+        if label and sw < 7.4 * len(title) + 8:
+            title = f'{percent(sub):.1f}%'
+        if label and sw >= 7.4 * len(title) + 8:
             parts.append(
-                f'<text x="{sx + 6:.1f}" y="{sy + 14:.1f}" font-size="11" font-weight="bold" fill="{theme_color}">'
-                f'{html.escape(sub["name"])} ({sub_pct:.1f}%)</text>'
+                f'<text x="{sx + 4:.1f}" y="{sy + 12:.1f}" font-size="11" font-weight="bold" '
+                f'fill="{INK}">{html.escape(title)}</text>'
             )
 
     parts.append('</svg>')
-    return '\n'.join(parts)
+    return '\n'.join(parts) + '\n'
 
 
 def badge_colour(p):
