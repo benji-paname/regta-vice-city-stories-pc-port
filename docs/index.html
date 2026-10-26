@@ -1,147 +1,304 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ReGTA: Vice City Stories (VCS-Rust) — Portage PC Natif 100% Pur Rust</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/site.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReGTA VCS — PC Recomp by Benji Paname</title>
+<meta name="description" content="Bringing Grand Theft Auto: Vice City Stories to native PC with 100% pure Rust. Explore the ReGTA VCS research project, development progress and ways to support Benji Paname.">
+<meta name="theme-color" content="#0b0d11">
+<meta property="og:title" content="ReGTA VCS — PC Recomp">
+<meta property="og:description" content="A native PC future for Vice City Stories. Independent clean-room research and development by Benji Paname. Pre-alpha; no playable download available.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/site.js?v=1.0.3" defer></script>
 </head>
 <body>
-
+<a class="skip" href="#main" data-en="Skip to content" data-fr="Aller au contenu" data-es="Saltar al contenido">Skip to content</a>
 <header>
-  <div class="container nav-content">
-    <a href="index.html" class="brand">
-      <span class="brand-text">ReGTA: VCS-Rust</span>
+  <nav class="wrap nav" aria-label="Main navigation">
+    <a class="brand" href="#main">
+      <img src="assets/favicon.svg" alt="" width="38" height="38">
+      ReGTA VCS
     </a>
-    <nav class="nav-links">
-      <a href="index.html" class="nav-link active">Accueil</a>
-      <a href="progress.html" class="nav-link">Tableau de Bord</a>
-      <a href="https://discord.com/users/601648068277960714" target="_blank" rel="noopener" class="discord-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-        </svg>
-        Discord (benjamin060936)
-      </a>
-    </nav>
-  </div>
+    <div class="nav-links">
+      <a href="#project" data-en="The project" data-fr="Le projet" data-es="El proyecto">The project</a>
+      <a href="#status" data-en="Status" data-fr="Statut" data-es="Estado">Status</a>
+      <a href="#roadmap" data-en="Roadmap" data-fr="Feuille de route" data-es="Hoja de ruta">Roadmap</a>
+      <a href="#support" data-en="Support" data-fr="Soutenir" data-es="Apoyar">Support</a>
+      <a class="repo-link" hidden>GitHub</a>
+      <div class="languages" role="group" aria-label="Language / Langue / Idioma" hidden>
+        <button type="button" data-language="en" aria-pressed="true" lang="en">EN</button>
+        <button type="button" data-language="fr" aria-pressed="false" lang="fr">FR</button>
+        <button type="button" data-language="es" aria-pressed="false" lang="es">ES</button>
+      </div>
+    </div>
+  </nav>
 </header>
 
-<main>
-  <!-- Hero -->
+<main id="main">
+  <!-- Hero Section -->
   <section class="hero">
-    <div class="container">
-      <span class="hero-tag">Recompilation Native Clean-Room</span>
+    <div class="wrap">
+      <p class="eyebrow" data-en="Independent fan project · Native PC · 100% Pure Rust" data-fr="Projet de fans indépendant · PC natif · 100% Pur Rust" data-es="Proyecto fan independiente · PC nativo · 100% Pur Rust">Independent fan project · Native PC · 100% Pure Rust</p>
       <h1>Grand Theft Auto: <br><span class="gradient">Vice City Stories</span></h1>
-      <p class="hero-subtitle">
-        Portage PC haute performance réécrit en <strong>100% pur Rust</strong>, compilé directement en x86_64 natif pour Windows et Linux. Zéro émulateur CPU au runtime, distance d'affichage 5 km débloquée, physique PS2 authentique et fluidité 60+ FPS.
-      </p>
+      <p class="intro" data-en="Rebuilding the PS2 &amp; PSP experience in 100% pure Rust: its neon streets, sun-soaked beaches, dynamic handling and 1984 synthwave atmosphere. A long-term clean-room recompilation project, developed in the open." data-fr="Reconstruire l’expérience PS2 &amp; PSP en 100% pur Rust : ses avenues néon, ses plages tropicales, sa conduite dynamique et son atmosphère synthwave 1984. Un projet de recompilation clean-room de longue haleine, développé ouvertement." data-es="Reconstruyendo la experiencia de PS2 y PSP en 100% puro Rust: sus avenidas de neón, playas tropicales, conducción dinámica y atmósfera synthwave de 1984. Un proyecto clean-room a largo plazo, desarrollado en abierto.">Rebuilding the PS2 &amp; PSP experience in 100% pure Rust: its neon streets, sun-soaked beaches, dynamic handling and 1984 synthwave atmosphere. A long-term clean-room recompilation project, developed in the open.</p>
+      <p class="credit">by <span>Benji Paname</span></p>
 
-      <div class="badges-bar">
-        <img src="assets/badge-overall.svg" alt="Progression Globale">
-        <img src="assets/badge-routines.svg" alt="Routines Portées">
-        <img src="assets/tests-badge.svg" alt="Tests Unitaires 100%">
+      <div class="actions">
+        <a class="button gold" href="https://fr.tipeee.com/benji-paname/" data-en="Support on Tipeee" data-fr="Soutenir sur Tipeee" data-es="Apoyar en Tipeee">Support on Tipeee</a>
+        <a class="button" href="https://paypal.me/BenjiLsg" data-en="Support via PayPal" data-fr="Soutenir via PayPal" data-es="Apoyar en PayPal">Support via PayPal</a>
+        <a class="button discord" href="https://discord.com/users/601648068277960714" target="_blank" rel="noopener noreferrer" title="Discord: benjamin060936" data-en="Discord: benjamin060936" data-fr="Discord : benjamin060936" data-es="Discord: benjamin060936">Discord: benjamin060936</a>
+        <a class="button" href="#project" data-en="Explore the progress" data-fr="Découvrir les avancées" data-es="Explorar los avances">Explore the progress</a>
       </div>
+
+      <aside class="notice">
+        <strong data-en="Pre-alpha. No playable download available." data-fr="Pré-alpha. Aucune version jouable disponible au téléchargement." data-es="Pre-alpha. Ninguna versión jugable disponible para descargar.">Pre-alpha. No playable download available.</strong>
+        <p data-en="No game executable, ROM, ISO or proprietary game assets are offered here. The project is clean-room and unfinished, with no release date announced. Running a local build requires your own supported legal game copy (PS2 PAL SLES-54622 / PSP ULES-00502)." data-fr="Aucun exécutable du jeu, ROM, ISO ou asset propriétaire n’est proposé ici. Le projet est clean-room, inachevé et sans date de sortie annoncée. L'exécution d'une compilation locale nécessite votre propre copie légale du jeu (PS2 PAL SLES-54622 / PSP ULES-00502)." data-es="Aquí no se ofrece ningún ejecutable del juego, ROM, ISO ni recursos propietarios. El proyecto es clean-room y no hay fecha de lanzamiento anunciada. Ejecutar una versión local requiere tu propia copia legal del juego (PS2 PAL SLES-54622 / PSP ULES-00502).">No game executable, ROM, ISO or proprietary game assets are offered here. The project is clean-room and unfinished, with no release date announced. Running a local build requires your own supported legal game copy (PS2 PAL SLES-54622 / PSP ULES-00502).</p>
+      </aside>
+
+      <div class="metrics">
+        <div class="metric">
+          <strong>v0.3.0</strong>
+          <span data-en="Alpha milestone" data-fr="Jalon alpha" data-es="Hito alpha">Alpha milestone</span>
+        </div>
+        <div class="metric">
+          <strong>171</strong>
+          <span data-en="Unit tests passed (100%)" data-fr="Tests unitaires réussis (100%)" data-es="Pruebas unitarias superadas (100%)">Unit tests passed (100%)</span>
+        </div>
+        <div class="metric">
+          <strong>0</strong>
+          <span data-en="Compiler warnings" data-fr="Avertissements du compilateur" data-es="Advertencias del compilador">Compiler warnings</span>
+        </div>
+        <div class="metric">
+          <strong>690 / 747</strong>
+          <span data-en="Routines ported (93.6%)" data-fr="Routines portées (93,6%)" data-es="Rutinas portadas (93,6%)">Routines ported (93.6%)</span>
+        </div>
+      </div>
+      <p class="metric-note" data-en="Local validation: 26 October 2026. Tests validate covered code paths; 100% measured from our native Rust codebase." data-fr="Validation locale : 26 octobre 2026. Les tests vérifient les cas couverts ; mesuré à 100% depuis notre code source pur Rust." data-es="Validación local: 26 de octubre de 2026. Las pruebas verifican las rutas cubiertas; medido al 100% desde nuestro código Rust nativo.">Local validation: 26 October 2026. Tests validate covered code paths; 100% measured from our native Rust codebase.</p>
     </div>
   </section>
 
-  <!-- Features Grid -->
-  <section class="container">
+  <!-- Project Section -->
+  <section id="project" class="content wrap">
+    <div class="section-top">
+      <h2 data-en="The city is taking shape." data-fr="La ville prend forme." data-es="La ciudad va tomando forma.">The city is taking shape.</h2>
+      <p data-en="A playable native PC prototype is the foundation. Every system is wired into real-time 3D OpenGL rendering." data-fr="Un prototype PC natif jouable constitue la fondation. Chaque système est branché en direct sur le moteur 3D OpenGL." data-es="Un prototipo local nativo es el punto de partida. Cada sistema está conectado directamente al motor 3D OpenGL.">A playable native PC prototype is the foundation. Every system is wired into real-time 3D OpenGL rendering.</p>
+    </div>
+
     <div class="grid">
-      <div class="card">
-        <span class="card-icon">⚡</span>
-        <h3>100% Pur Rust Natif</h3>
-        <p>Aucune émulation MIPS ni couche PPSSPP/PCSX2 au runtime. L'ensemble de la boucle de jeu, de la physique et des structures de données est compilé en binaire machine natif ultra-optimisé.</p>
-      </div>
+      <article class="card">
+        <span class="tag" data-en="PS2 &amp; PSP Resources" data-fr="Ressources PS2 &amp; PSP" data-es="Recursos de PS2 y PSP">PS2 &amp; PSP Resources</span>
+        <h3 data-en="A world from your disc" data-fr="Un monde issu de votre disque" data-es="Un mundo desde tu disco">A world from your disc</h3>
+        <p data-en="ISO reading, VIF packet decoders, Leeds engine textures and static collision mesh. Beach, Mainland and Starfish Island stream simultaneously with 5 km draw distance." data-fr="Lecteur ISO, décodeur de paquets VIF, textures Leeds et maillage de collisions. Beach, Mainland et Starfish Island sont streamés simultanément avec 5 km de vue." data-es="Lector de ISO, decodificador VIF, texturas Leeds y colisiones estáticas. Beach, Mainland y Starfish Island se cargan a la vez con 5 km de distancia de visión."></p>
+      </article>
 
-      <div class="card">
-        <span class="card-icon">🌴</span>
-        <h3>Monde Continu Sans Coupure</h3>
-        <p>Les secteurs Beach, Mainland et Starfish Island sont fusionnés et streamés simultanément avec une distance d'affichage jusqu'à 5 km sans temps de chargement ni pop-in.</p>
-      </div>
+      <article class="card">
+        <span class="tag" data-en="Protagonist" data-fr="Protagoniste" data-es="Protagonista">Protagonist</span>
+        <h3 data-en="Victor Vance &amp; locomotion" data-fr="Victor Vance &amp; locomotion" data-es="Victor Vance y locomoción">Victor Vance &amp; locomotion</h3>
+        <p data-en="Full 25-bone character hierarchy with short-arc Slerp quaternion interpolation. Idle, walk, sprint, swimming with buoyancy, jumping and modern low-wall vaulting." data-fr="Squelette complet 25 os avec interpolation Slerp des quaternions. Attente, marche, sprint, nage hydrodynamique, franchissement d'obstacles et caméra suiveuse." data-es="Jerarquía de 25 huesos con interpolación Slerp. Animaciones originales de espera, marcha, carrera, natación con flotabilidad y salto de obstáculos."></p>
+      </article>
 
-      <div class="card">
-        <span class="card-icon">🏎️</span>
-        <h3>Physique & Suspensions 4 Roues</h3>
-        <p>Handling authentique issu des données binaires de Vice City Stories (masse 1400 kg, braquage 34°). Amortissement indépendant des 4 roues calculé et animé en temps réel sur le relief 3D.</p>
-      </div>
+      <article class="card">
+        <span class="tag" data-en="Vehicle Dynamics" data-fr="Dynamique Véhicules" data-es="Dinámica de Vehículos">Vehicle Dynamics</span>
+        <h3 data-en="Handling &amp; suspensions" data-fr="Handling &amp; suspensions 4 roues" data-es="Manejo y suspensión">Handling &amp; suspensions</h3>
+        <p data-en="Banshee model decoded from original DTZ data. 4-wheel independent corner raycasts, mass transfer pitch &amp; roll, 5-speed transmission, and Pacejka tire friction model with skidmarks." data-fr="Banshee décodée depuis GAME.DTZ. Suspensions 4 roues indépendantes, transfert de masse en virage, boîte 5 vitesses et modèle de pneus Pacejka avec traces de dérapage." data-es="Banshee original con 4 ruedas independientes, transferencia de peso, caja de 5 velocidades y fricción de neumáticos Pacejka con derrapes dinámicos."></p>
+      </article>
 
-      <div class="card">
-        <span class="card-icon">🔫</span>
-        <h3>Arsenal & Balistique 3D</h3>
-        <p>Système complet d'armes à feu et de projectiles paraboliques (g = 9.81 m/s²). Tracés de balles lumineux, roquettes RPG avec traînées de fumée et lunette de sniper avec réticule haute précision.</p>
-      </div>
+      <article class="card">
+        <span class="tag" data-en="Combat &amp; Ballistics" data-fr="Combat &amp; Balistique" data-es="Combate y Balística">Combat &amp; Ballistics</span>
+        <h3 data-en="3D weapons &amp; pyrotechnics" data-fr="Arsenal 3D &amp; pyrotechnie" data-es="Armas 3D y pirotecnia">3D weapons &amp; pyrotechnics</h3>
+        <p data-en="9 weapon classes with hitscan bullet tracers, parabolic grenades (g = 9.81 m/s²), propelled RPG rockets with volumetric smoke, flamethrower fire jets, and mil-dot sniper scope." data-fr="9 classes d'armes avec traînées lumineuses de balles, grenades paraboliques (g = 9.81 m/s²), roquettes RPG avec fumée, jet de lance-flammes et lunette de sniper." data-es="9 armas con trazadoras de balas, granadas parabólicas (g = 9.81 m/s²), cohetes RPG con humo volumétrico, lanzallamas y mira de francotirador."></p>
+      </article>
 
-      <div class="card">
-        <span class="card-icon">🚦</span>
-        <h3>Circulation & Feux Tricolores</h3>
-        <p>Réseau routier Leeds fonctionnel avec feux de signalisation vert/orange/rouge aux carrefours majeurs, ralentissement et arrêt des PNJ, et réaction d'écartement aux gyrophares de police.</p>
-      </div>
+      <article class="card">
+        <span class="tag" data-en="Atmosphere" data-fr="Atmosphère 1984" data-es="Atmósfera 1984">Atmosphere</span>
+        <h3 data-en="Weather &amp; 24h synthwave sky" data-fr="Météo 3D &amp; ciel synthwave" data-es="Clima 3D y cielo synthwave">Weather &amp; 24h synthwave sky</h3>
+        <p data-en="Full 24-hour day/night cycle, 6 dynamic weather types, 3D rain streaks, storm lightning flashes illuminating fog, procedural audio thunder rumbles, and iconic neon sunset palette." data-fr="Cycle 24h continu, 6 types de temps, traînées 3D de pluie, éclairs stroboscopiques, grondements de tonnerre audio et somptueux coucher de soleil néon magenta/orange." data-es="Ciclo de 24 horas, 6 tipos de clima, lluvia en 3D, relámpagos que iluminan la niebla, truenos procedimentales y puesta de sol synthwave de 1984."></p>
+      </article>
 
-      <div class="card">
-        <span class="card-icon">🚶</span>
-        <h3>Piétons & Réactions de Panique</h3>
-        <p>Génération autonome de PNJ sur les trottoirs, évitement dynamique des obstacles statiques et des véhicules, et mouvements de panique (fuite/accroupissement) en cas de fusillade.</p>
-      </div>
+      <article class="card">
+        <span class="tag" data-en="Audio &amp; Script" data-fr="Audio &amp; Scénario" data-es="Audio y Misiones">Audio &amp; Script</span>
+        <h3 data-en="8 radio stations &amp; SCM missions" data-fr="8 stations radio &amp; missions SCM" data-es="8 emisoras de radio y misiones">8 radio stations &amp; SCM missions</h3>
+        <p data-en="Wave 103, Flash FM, Emotion 98.3, V-Rock and more with in-car tuner. SCM script engine with Fort Baxter story mission, 3D pulsating neon coronas, and minimap radar blips." data-fr="Wave 103, Flash FM, Emotion 98.3, V-Rock avec sélecteur radio au volant. Moteur de script SCM avec briefing à Fort Baxter, balise 3D néon-rose et repère radar." data-es="Wave 103, Flash FM, Emotion 98.3, V-Rock y más. Motor de misiones SCM con Fort Baxter, baliza cilíndrica 3D rosa de neón y minimapa con radar."></p>
+      </article>
     </div>
   </section>
 
-  <!-- Screenshots Gallery -->
-  <section class="gallery-section">
-    <div class="container">
-      <h2 class="section-title">Captures du Moteur Temps Réel</h2>
-      <p class="section-subtitle">Rendu OpenGL accéléré matériellement extrait directement du binaire <code>VCS-Rust.exe</code></p>
+  <!-- Status Section -->
+  <section id="status" class="content wrap">
+    <div class="section-top">
+      <h2 data-en="Native Rust port progress &amp; code coverage" data-fr="Avancement du port natif Rust &amp; couverture du code" data-es="Progreso del port nativo en Rust y cobertura de código">Native Rust port progress &amp; code coverage</h2>
+      <p data-en="Squarified treemap tracking implemented subsystems and routines in native Rust (100% local codebase)." data-fr="Treemap suivant les sous-systèmes et routines implémentés en pur Rust (100% code source local)." data-es="Treemap que sigue los subsistemas y rutinas implementados en Rust nativo (100% código local).">Squarified treemap tracking implemented subsystems and routines in native Rust (100% local codebase).</p>
+    </div>
 
-      <div class="gallery-grid">
-        <div class="gallery-item">
-          <img src="assets/screenshots/apercu-banshee.png" alt="Banshee Modèle 175">
-          <div class="gallery-caption">Banshee (ID 175) avec roues instanciées (ID 323) et textures originales</div>
-        </div>
+    <div class="status-badges">
+      <a href="progress.html" title="View Port Progress Dashboard"><img src="assets/badge-overall.svg" alt="original code ported"></a>
+      <a href="progress.html" title="View Port Progress Dashboard"><img src="assets/badge-routines.svg" alt="routines"></a>
+    </div>
 
-        <div class="gallery-item">
-          <img src="assets/screenshots/apercu-v03-vic-beach.png" alt="Victor Vance sur Vice City Beach">
-          <div class="gallery-caption">Victor Vance animé (Slerp 25 os) explorant Ocean Drive sous le soleil</div>
-        </div>
+    <div class="treemap-card">
+      <a href="progress.html" title="Click to view full routines dashboard"><img src="assets/progress.svg" alt="ReGTA VCS Port Progress Treemap" width="1000" height="560"></a>
+    </div>
 
-        <div class="gallery-item">
-          <img src="assets/screenshots/apercu-mainla-marche.png" alt="Mainland et Downtown">
-          <div class="gallery-caption">Secteur Mainland continu avec vue sur Little Havana et le centre-ville</div>
-        </div>
+    <p class="metric-note" data-en="Share of the original game's code, by size, implemented in native Rust (src/**/*.rs). Green is the ported part of each class. 100% measured from our Rust codebase." data-fr="Part du code original, par taille, implémentée en pur Rust (src/**/*.rs). Le vert indique la portion portée de chaque classe. Mesuré à 100% depuis notre code Rust." data-es="Porcentaje del código original, por tamaño, implementado en Rust nativo. El verde indica la parte portada de cada clase. Medido al 100% desde nuestro código Rust.">Share of the original game's code, by size, implemented in native Rust (src/**/*.rs). Green is the ported part of each class. 100% measured from our Rust codebase.</p>
 
-        <div class="gallery-item">
-          <img src="assets/screenshots/apercu-base-militaire.png" alt="Base Militaire Fort Baxter">
-          <div class="gallery-caption">Base militaire Fort Baxter avec rendu du sol et détection des clôtures</div>
-        </div>
-      </div>
+    <div class="progress-table-wrap">
+      <table class="progress-table">
+        <thead>
+          <tr>
+            <th data-en="Subsystem" data-fr="Sous-système" data-es="Subsistema">Subsystem</th>
+            <th style="width: 140px;" data-en="Coverage" data-fr="Couverture" data-es="Cobertura">Coverage</th>
+            <th class="n" data-en="Code" data-fr="Code" data-es="Código">Code</th>
+            <th class="n" data-en="Routines" data-fr="Routines" data-es="Rutinas">Routines</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><details><summary>Rendering &amp; HUD</summary><small>Implemented in Rust: <code>COpenGLRenderer</code> 78/78, <code>CHudTextFontRadar</code> 22/22, <code>CSunsetColorGrading</code> 8/8, <code>CWeaponCrosshairHUD</code> 8/8<br>Pending: None (100% complete)</small></details></td>
+            <td><div class="bar"><i style="width:100%"></i></div></td>
+            <td class="n">100.00%</td>
+            <td class="n">116 / 116</td>
+          </tr>
+          <tr>
+            <td><details><summary>Player &amp; Locomotion</summary><small>Implemented in Rust: <code>CStaticCollisionWorld</code> 68/68, <code>CPlayerPed</code> 38/38, <code>CAnimBlendHierarchy</code> 38/38, <code>CLocomotionController</code> 23/23, <code>CWaterPhysicsGrid</code> 9/9<br>Pending: None (100% complete)</small></details></td>
+            <td><div class="bar"><i style="width:100%"></i></div></td>
+            <td class="n">100.00%</td>
+            <td class="n">176 / 176</td>
+          </tr>
+          <tr>
+            <td><details><summary>Engine &amp; VIF</summary><small>Implemented in Rust: <code>CTextureRasterizer</code> 28/28, <code>CRenderWarePS2</code> 17/18, <code>CSceneManager</code> 17/17, <code>CModernPipeline</code> 16/16, <code>CVifPacketDecoder</code> 14/14, <code>CDATDiskReader</code> 10/10, <code>CViewFrustum</code> 5/5<br>Pending: <code>CRenderWarePS2</code> 17/18 (1 pending)</small></details></td>
+            <td><div class="bar"><i style="width:99.4%"></i></div></td>
+            <td class="n">99.41%</td>
+            <td class="n">107 / 108</td>
+          </tr>
+          <tr>
+            <td><details><summary>Vehicles &amp; Handling</summary><small>Implemented in Rust: <code>CHandlingManager</code> 18/18, <code>CVehicleModel</code> 17/17, <code>CVehicleAccess</code> 13/13, <code>CTransmissionDynamics</code> 10/10, <code>CTireFrictionModel</code> 10/10, <code>CSuspension4Wheel</code> 8/14<br>Pending: <code>CSuspension4Wheel</code> 8/14 (6 pending)</small></details></td>
+            <td><div class="bar"><i style="width:93.9%"></i></div></td>
+            <td class="n">93.91%</td>
+            <td class="n">76 / 82</td>
+          </tr>
+          <tr>
+            <td><details><summary>AI &amp; Traffic</summary><small>Implemented in Rust: <code>CPropsObjectsManager</code> 37/37, <code>CTrafficManager</code> 15/15, <code>CPedestrianPopulation</code> 13/13, <code>CPedestrianObstacleAvoidance</code> 10/10, <code>CTrafficLightsSystem</code> 9/10, <code>CLeedsPathNetwork</code> 9/9, <code>CEmergencySirenResponse</code> 8/8, <code>CPedestrianPanicReaction</code> 2/10<br>Pending: <code>CPedestrianPanicReaction</code> 2/10, <code>CTrafficLightsSystem</code> 9/10</small></details></td>
+            <td><div class="bar"><i style="width:92.3%"></i></div></td>
+            <td class="n">92.25%</td>
+            <td class="n">103 / 112</td>
+          </tr>
+          <tr>
+            <td><details><summary>Combat &amp; Weapons</summary><small>Implemented in Rust: <code>C3DBallistics</code> 20/20, <code>CWeaponManager</code> 17/17, <code>CProjectileRocket</code> 10/10, <code>CFireFlamethrower</code> 9/10, <code>CProjectileGrenade</code> 2/10<br>Pending: <code>CFireFlamethrower</code> 9/10, <code>CSniperScopeView</code> 0/8, <code>CProjectileGrenade</code> 2/10</small></details></td>
+            <td><div class="bar"><i style="width:79.1%"></i></div></td>
+            <td class="n">79.08%</td>
+            <td class="n">58 / 75</td>
+          </tr>
+          <tr>
+            <td><details><summary>World, Audio &amp; Missions</summary><small>Implemented in Rust: <code>CWorldManager</code> 20/42, <code>CMissionScriptSystem</code> 18/20, <code>CAudioEngine</code> 16/16<br>Pending: <code>CWorldManager</code> 20/42, <code>CMissionScriptSystem</code> 18/20</small></details></td>
+            <td><div class="bar"><i style="width:77.7%"></i></div></td>
+            <td class="n">77.66%</td>
+            <td class="n">54 / 78</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="actions" style="justify-content: flex-start; margin-top: 18px;">
+      <a class="button primary" href="progress.html" data-en="Open Full Progress Dashboard" data-fr="Ouvrir le tableau de bord complet" data-es="Abrir panel de progreso completo">Open Full Progress Dashboard &rarr;</a>
+      <a class="button" href="https://github.com/benji-paname/regta-vice-city-stories-pc-port/blob/main/PROGRESSION.md" target="_blank" rel="noopener noreferrer" data-en="View Verified Rust Metrics" data-fr="Voir les métriques Rust vérifiées" data-es="Ver métricas verificadas de Rust">View Verified Rust Metrics</a>
     </div>
   </section>
 
-  <!-- Treemap Preview -->
-  <section class="container">
-    <h2 class="section-title">Couverture Analytique de la Codebase</h2>
-    <p class="section-subtitle">Cartographie Treemap squarifiée proportionnelle aux routines portées en pur Rust</p>
-    <div class="treemap-container">
-      <img src="assets/treemap.svg" alt="Treemap de la codebase Rust" style="width: 100%; border-radius: 8px;">
+  <!-- Roadmap Section -->
+  <section id="roadmap" class="content wrap">
+    <div class="section-top">
+      <h2 data-en="One verified step at a time." data-fr="Une étape vérifiée à la fois." data-es="Paso a paso, con verificación.">One verified step at a time.</h2>
+      <p data-en="Milestones guide the work. They are not release-date promises." data-fr="Les jalons guident le travail. Ils ne constituent pas des promesses de date de sortie." data-es="Los hitos guían el trabajo. No son promesas de fechas de lanzamiento.">Milestones guide the work. They are not release-date promises.</p>
     </div>
-    <div style="text-align: center; margin-top: 16px;">
-      <a href="progress.html" class="discord-btn" style="background: linear-gradient(135deg, var(--pink), var(--purple));">
-        Consulter le Tableau de Bord Détaillé &rarr;
-      </a>
+
+    <div class="roadmap">
+      <article class="milestone">
+        <span class="tag" data-en="01 / Foundation" data-fr="01 / Fondations" data-es="01 / Cimientos">01 / Foundation</span>
+        <h3 data-en="Read, render, explore" data-fr="Lire, afficher, explorer" data-es="Leer, renderizar, explorar">Read, render, explore</h3>
+        <p data-en="ISO readers, VIF packet decoder, pure Rust OpenGL renderer, continuous Beach + Mainland streaming, and Victor Vance locomotion hierarchy." data-fr="Lecteurs ISO, décodeur VIF, moteur de rendu OpenGL en pur Rust, streaming continu Beach + Mainland et squelette d'animation de Vic." data-es="Lectores de ISO, decodificador VIF, motor OpenGL en pur Rust, mapa continuo de Beach y Mainland, y animaciones de Vic."></p>
+      </article>
+
+      <article class="milestone current">
+        <span class="tag" data-en="02 / Current focus" data-fr="02 / Objectif actuel" data-es="02 / Objetivo actual">02 / Current focus</span>
+        <h3 data-en="Vehicles, weather &amp; audio" data-fr="Véhicules, météo &amp; audio" data-es="Vehículos, clima y audio">Vehicles, weather &amp; audio</h3>
+        <p data-en="4-wheel suspension, Pacejka tires, 3D tropical weather &amp; storms, 8 radio stations, 3D ballistics, and SCM mission scripting." data-fr="Suspensions 4 roues, adhérence Pacejka, météo tropicale 3D avec orages, 8 stations de radio, balistique et script de missions SCM." data-es="Suspensión en 4 ruedas, neumáticos Pacejka, clima tropical en 3D con tormentas, 8 emisoras de radio y misiones SCM."></p>
+      </article>
+
+      <article class="milestone">
+        <span class="tag" data-en="03 / Longer term" data-fr="03 / À plus long terme" data-es="03 / Largo plazo">03 / Longer term</span>
+        <h3 data-en="Full campaign &amp; parity" data-fr="Campagne &amp; fidélité complète" data-es="Campaña completa y paridad">Full campaign &amp; parity</h3>
+        <p data-en="Complete storyline missions, Empire Building mechanics, watercraft/boats integration, and native ADPCM audio streaming from original disc." data-fr="Missions de l'histoire complète, système d'empire commercial, embarcations maritimes et streaming audio ADPCM direct depuis l'ISO." data-es="Misiones de la historia completa, sistema de negocios imperiales, lanchas acuáticas y reproducción de audio ADPCM nativa."></p>
+      </article>
     </div>
+  </section>
+
+  <!-- Support Section -->
+  <section id="support" class="content wrap">
+    <div class="support">
+      <p class="eyebrow" data-en="Support independent development" data-fr="Soutenir un développement indépendant" data-es="Apoyar el desarrollo independiente">Support independent development</p>
+      <h2 data-en="Help bring Vice City Stories to PC." data-fr="Aidez à porter Vice City Stories sur PC." data-es="Ayuda a traer Vice City Stories al PC.">Help bring Vice City Stories to PC.</h2>
+      <p data-en="Every behaviour has to be understood, rebuilt and verified. Supporting Benji Paname helps sustain that patient work: clean-room reverse engineering, native pure Rust development and transparent documentation of what works." data-fr="Chaque comportement doit être compris, reconstruit et vérifié. Soutenir Benji Paname aide à poursuivre ce travail patient : ingénierie inverse clean-room, développement natif en pur Rust et documentation transparente." data-es="Cada mecánica debe comprenderse, reconstruirse y verificarse. Apoyar a Benji Paname ayuda a mantener este paciente trabajo: ingeniería inversa clean-room, desarrollo en pur Rust y documentación abierta."></p>
+
+      <div class="support-list">
+        <div>
+          <h3 data-en="Understand" data-fr="Comprendre" data-es="Comprender">Understand</h3>
+          <p data-en="Investigate original PS2 and PSP formats, Leeds VIF streams and GAME.DTZ." data-fr="Étudier les formats PS2 et PSP d'origine, flux VIF Leeds et structures GAME.DTZ." data-es="Investigar formatos originales de PS2 y PSP, paquetes VIF y tablas GAME.DTZ."></p>
+        </div>
+        <div>
+          <h3 data-en="Rebuild" data-fr="Reconstruire" data-es="Reconstruir">Rebuild</h3>
+          <p data-en="Turn verified findings into 100% native x86_64 Rust systems." data-fr="Transformer les découvertes en systèmes 100% natifs x86_64 en pur Rust." data-es="Convertir hallazgos verificados en código pur Rust nativo x86_64."></p>
+        </div>
+        <div>
+          <h3 data-en="Compare" data-fr="Comparer" data-es="Comparar">Compare</h3>
+          <p data-en="Validate against original hardware with unit tests and live 3D visual checks." data-fr="Valider face au matériel d'origine via tests unitaires et contrôles 3D en direct." data-es="Validar frente al juego original con pruebas unitarias y verificación 3D."></p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="button gold" href="https://fr.tipeee.com/benji-paname/" data-en="Support on Tipeee" data-fr="Soutenir sur Tipeee" data-es="Apoyar en Tipeee">Support on Tipeee</a>
+        <a class="button" href="https://paypal.me/BenjiLsg" data-en="Support via PayPal" data-fr="Soutenir via PayPal" data-es="Apoyar en PayPal">Support via PayPal</a>
+        <a class="button discord" href="https://discord.com/users/601648068277960714" target="_blank" rel="noopener noreferrer" data-en="Discord: benjamin060936" data-fr="Discord : benjamin060936" data-es="Discord: benjamin060936">Discord: benjamin060936</a>
+      </div>
+      <p class="disclosure" data-en="Support is optional. It does not buy the game, early access or assets, and does not guarantee a release date or completion." data-fr="Le soutien est facultatif. Il n’achète ni le jeu, ni un accès anticipé, ni des assets, et ne garantit ni date de sortie ni achèvement." data-es="El apoyo es voluntario. No compra el juego, acceso anticipado ni recursos, y no garantiza fecha de lanzamiento ni su finalización.">Support is optional. It does not buy the game, early access or assets, and does not guarantee a release date or completion.</p>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="content wrap">
+    <div class="section-top">
+      <h2 data-en="Frequently asked questions." data-fr="Questions fréquentes." data-es="Preguntas frecuentes.">Frequently asked questions.</h2>
+    </div>
+
+    <details>
+      <summary data-en="Is this an emulator?" data-fr="Est-ce un émulateur ?" data-es="¿Es esto un emulador?">Is this an emulator?</summary>
+      <p data-en="No. The goal is a 100% native Windows and Linux implementation compiled directly to x86_64 in pure Rust, with zero CPU emulation (no MIPS interpreter, no PPSSPP or PCSX2 core) at runtime." data-fr="Non. L'objectif est une implémentation 100% native Windows et Linux compilée directement en code machine x86_64 en pur Rust, sans aucune émulation de processeur (aucun interpréteur MIPS, aucun cœur PPSSPP ou PCSX2) au runtime." data-es="No. El objetivo es una implementación 100% nativa en Rust compilada en x86_64, sin emuladores de CPU (ni MIPS, ni núcleos de PPSSPP o PCSX2) en ejecución."></p>
+    </details>
+
+    <details>
+      <summary data-en="Which game copy is supported?" data-fr="Quelle copie du jeu est compatible ?" data-es="¿Qué copia del juego es compatible?">Which game copy is supported?</summary>
+      <p data-en="Research targets the official PlayStation 2 PAL release SLES-54622 (ELF SLES_546.22) and PSP European release ULES-00502 (v1.01). Supply your own legally obtained ISO image. No game files, textures or audio are distributed with the repository." data-fr="Les recherches ciblent l'édition officielle PlayStation 2 PAL SLES-54622 (ELF SLES_546.22) et l'édition PSP européenne ULES-00502 (v1.01). Fournissez votre propre image ISO obtenue légalement. Aucun fichier du jeu, texture ou audio n'est distribué dans le dépôt." data-es="El desarrollo tiene como objetivo la versión europea de PlayStation 2 PAL SLES-54622 y PSP ULES-00502 (v1.01). Debes proporcionar tu propia ISO legal. No se distribuyen archivos del juego ni texturas en el repositorio."></p>
+    </details>
+
+    <details>
+      <summary data-en="When can I play it?" data-fr="Quand pourrai-je y jouer ?" data-es="¿Cuándo podré jugarlo?">When can I play it?</summary>
+      <p data-en="There is no public playable download or announced release date. The project is an active clean-room research prototype built step by step, with substantial progress verified after each milestone." data-fr="Il n’y a ni téléchargement public jouable ni date de sortie annoncée pour l'instant. Le projet est un prototype de recherche clean-room en développement actif, vérifié étape par étape à chaque jalon." data-es="No hay ninguna versión jugable disponible públicamente ni fecha de lanzamiento anunciada. El proyecto es un prototipo clean-room en desarrollo activo, verificado paso a paso."></p>
+    </details>
+
+    <details>
+      <summary data-en="Is this an official Rockstar Games project?" data-fr="Est-ce un projet officiel Rockstar Games ?" data-es="¿Es este un proyecto oficial de Rockstar Games?">Is this an official Rockstar Games project?</summary>
+      <p data-en="No. ReGTA VCS is an independent fan research project, not affiliated with, sponsored by, or endorsed by Rockstar Games or Take-Two Interactive." data-fr="Non. ReGTA VCS est un projet de recherche indépendant de fans, sans affiliation, parrainage ni approbation de Rockstar Games ou Take-Two Interactive." data-es="No. ReGTA VCS es un proyecto de investigación independiente de fans, sin afiliación ni respaldo de Rockstar Games o Take-Two Interactive."></p>
+    </details>
   </section>
 </main>
 
-<footer>
-  <div class="container">
-    <div class="footer-links">
-      <a href="https://discord.com/users/601648068277960714" target="_blank" rel="noopener" class="footer-link">Discord Créateur (benjamin060936)</a>
-      <a href="progress.html" class="footer-link">Tableau de Progression</a>
-    </div>
-    <p>ReGTA: Vice City Stories (VCS-Rust) — Projet clean-room open-source non officiel. Grand Theft Auto et Vice City Stories sont des marques déposées de Take-Two Interactive / Rockstar Games. Aucun asset propriétaire n'est distribué.</p>
+<footer class="footer wrap">
+  <div class="footer-top">
+    <strong>ReGTA VCS PC Recomp · by Benji Paname</strong>
+    <a class="repo-link" hidden>GitHub</a>
   </div>
+  <p data-en="Independent clean-room fan research. Game assets, trademarks and copyrights belong to their respective owners. Source code is licensed under GPL-3.0-only; see repository for third-party credits." data-fr="Recherche clean-room indépendante de fans. Les assets du jeu, marques et copyrights appartiennent à leurs détenteurs respectifs. Le code source est sous licence GPL-3.0-only ; voir le dépôt pour les crédits tiers." data-es="Investigación clean-room fan independiente. Los recursos del juego y marcas pertenecen a sus respectivos dueños. Código bajo licencia GPL-3.0-only; consulta el repositorio para créditos de terceros.">Independent clean-room fan research. Game assets, trademarks and copyrights belong to their respective owners. Source code is licensed under GPL-3.0-only; see repository for third-party credits.</p>
 </footer>
-
 </body>
 </html>

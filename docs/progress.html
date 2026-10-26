@@ -1,255 +1,129 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tableau de Bord de Progression — ReGTA: VCS-Rust</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/site.css">
-  <style>
-    .metric-hero {
-      background: linear-gradient(135deg, rgba(255, 42, 133, 0.1), rgba(0, 240, 255, 0.1));
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 36px;
-      margin: 30px 0 40px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 24px;
-      text-align: center;
-    }
-    .metric-val {
-      font-size: 2.8rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--pink), var(--cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      line-height: 1.1;
-      margin-bottom: 6px;
-    }
-    .metric-lbl {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 600;
-    }
-    .subsystem-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px;
-      margin-bottom: 20px;
-    }
-    .subsystem-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .subsystem-name {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #fff;
-    }
-    .subsystem-pct {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--cyan);
-    }
-    .progress-bar-bg {
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      height: 12px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      border-radius: 8px;
-      background: linear-gradient(90deg, var(--pink), var(--cyan));
-      transition: width 0.6s ease;
-    }
-    .class-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.88rem;
-      margin-top: 10px;
-    }
-    .class-table th {
-      text-align: left;
-      color: var(--text-muted);
-      padding: 8px 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      font-weight: 600;
-    }
-    .class-table td {
-      padding: 8px 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
-    }
-    .status-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-    .status-done {
-      background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
-      border: 1px solid #10b981;
-    }
-    .status-partial {
-      background: rgba(245, 158, 11, 0.2);
-      color: #f59e0b;
-      border: 1px solid #f59e0b;
-    }
-    .status-pending {
-      background: rgba(107, 114, 128, 0.2);
-      color: #9ca3af;
-      border: 1px solid #4b5563;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReGTA VCS — Native Rust Port Progress</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0b0d11;
+  --panel: #14171d;
+  --line: #2c3038;
+  --ink: #f3f1ea;
+  --muted: #b1b4bb;
+  --pink: #ff2a85;
+  --cyan: #00f0ff;
+  --gold: #f2c35b;
+  --green: #3fa34d;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.55 system-ui, -apple-system, sans-serif;
+  margin: 0 auto;
+  max-width: 1040px;
+  padding: 24px 20px 60px;
+}
+header { margin-bottom: 24px; }
+h1 { font-size: 28px; margin: 0 0 12px; letter-spacing: -0.03em; }
+a { color: var(--cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.badges { margin: 16px 0 20px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.badges img { height: 22px; }
+.treemap-img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; display: block; box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+.caption { color: var(--muted); font-size: 13px; margin: 14px 0 24px; line-height: 1.5; }
+table { border-collapse: collapse; width: 100%; margin-top: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+th, td { border-bottom: 1px solid var(--line); padding: 10px 14px; text-align: left; font-size: 14px; }
+th { background: #1c2027; font-weight: 700; color: var(--ink); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+td.n { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.bar { background: #3a3f47; height: 8px; width: 140px; border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; }
+.bar i { background: var(--green); display: block; height: 8px; }
+details { margin: 2px 0; }
+summary { cursor: pointer; font-weight: 600; color: var(--ink); outline: none; }
+summary:hover { color: var(--pink); }
+small { color: var(--muted); font-size: 12px; display: block; margin-top: 4px; line-height: 1.4; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--gold); }
+.back-link { display: inline-block; margin-bottom: 18px; font-size: 14px; font-weight: 600; }
+.discord-btn { display: inline-flex; align-items: center; background: #5865F2; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none; }
+.discord-btn:hover { background: #4752c4; text-decoration: none; }
+@media(max-width:760px){.bar{width:90px;} th, td{padding:8px 10px; font-size:13px;}}
+</style>
 </head>
 <body>
-
+<a href="index.html" class="back-link">&larr; Back to ReGTA VCS Home</a>
 <header>
-  <div class="container nav-content">
-    <a href="index.html" class="brand">
-      <span class="brand-text">ReGTA: VCS-Rust</span>
-    </a>
-    <nav class="nav-links">
-      <a href="index.html" class="nav-link">Accueil</a>
-      <a href="progress.html" class="nav-link active">Tableau de Bord</a>
-      <a href="https://discord.com/users/601648068277960714" target="_blank" rel="noopener" class="discord-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-        </svg>
-        Discord
-      </a>
-    </nav>
+  <h1>ReGTA VCS — Native Rust Port Progress</h1>
+  <div class="badges">
+    <img src="assets/badge-overall.svg" alt="original code ported">
+    <img src="assets/badge-routines.svg" alt="routines">
+    <a class="discord-btn" href="https://discord.com/users/601648068277960714" target="_blank" rel="noopener noreferrer">Discord: benjamin060936</a>
   </div>
 </header>
 
-<main class="container">
-  <div style="text-align: center; margin-top: 40px;">
-    <h1 style="font-size: 2.8rem; font-weight: 900; text-transform: uppercase;">
-      Tableau de Bord <span style="background: linear-gradient(135deg, var(--pink), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Analytique</span>
-    </h1>
-    <p style="color: var(--text-muted); max-width: 650px; margin: 10px auto 0;">
-      Mesure rigoureuse et automatisée du portage 100% pur Rust basé sur l'analyse des routines de Vice City Stories.
-    </p>
-  </div>
+<img src="assets/progress.svg" alt="ReGTA VCS Progress Map" class="treemap-img">
 
-  <div class="metric-hero" id="metrics-hero">
-    <div>
-      <div class="metric-val" id="val-pct">--%</div>
-      <div class="metric-lbl">Complétion Globale</div>
-    </div>
-    <div>
-      <div class="metric-val" id="val-routines">-- / --</div>
-      <div class="metric-lbl">Routines Portées</div>
-    </div>
-    <div>
-      <div class="metric-val" id="val-tests">100%</div>
-      <div class="metric-lbl">Tests Validés (117)</div>
-    </div>
-    <div>
-      <div class="metric-val" id="val-subs">7</div>
-      <div class="metric-lbl">Sous-Systèmes Actifs</div>
-    </div>
-  </div>
+<p class="caption">
+  Share of the original game's machine code, by size, whose routines are implemented strictly in native Rust (<code>src/**/*.rs</code>).
+  100% measured from our native Rust codebase (0% third-party C++ code). Reference: <code>VCS-Rust Native (PS2 PAL SLES-54622 / ULUS-10160 v1.01 target, 740 Rust functions)</code>.
+  Raw data: <a href="assets/progress.json">progress.json</a>.
+</p>
 
-  <!-- Treemap -->
-  <h2 style="font-size: 1.8rem; margin-bottom: 8px;">Cartographie Treemap Squarifiée</h2>
-  <p style="color: var(--text-muted); margin-bottom: 20px;">Surfaces proportionnelles au volume binaire des fonctions originales</p>
-  <div class="treemap-container">
-    <img src="assets/treemap.svg" alt="Treemap de la codebase" style="width: 100%;">
-  </div>
-
-  <!-- Subsystems Breakdown -->
-  <h2 style="font-size: 1.8rem; margin: 40px 0 20px;">Détail par Sous-Système</h2>
-  <div id="subsystems-container">
-    <!-- Populated by JavaScript -->
-  </div>
-</main>
-
-<footer>
-  <div class="container">
-    <p>ReGTA: Vice City Stories (VCS-Rust) — Créateur : Benjamin ("benji-paname") &middot; Discord : <code>benjamin060936</code></p>
-  </div>
-</footer>
-
-<script>
-fetch('assets/progress.json')
-  .then(res => res.json())
-  .then(data => {
-    const pct = (100 * data.portedBytes / data.bytes).toFixed(1);
-    document.getElementById('val-pct').textContent = pct + '%';
-    document.getElementById('val-routines').textContent = `${data.portedRoutines} / ${data.routines}`;
-    document.getElementById('val-subs').textContent = data.subsystems.length;
-
-    const container = document.getElementById('subsystems-container');
-    container.innerHTML = '';
-
-    data.subsystems.forEach(sub => {
-      const subPct = (100 * sub.portedBytes / sub.bytes).toFixed(1);
-      const card = document.createElement('div');
-      card.className = 'subsystem-card';
-
-      let rows = '';
-      sub.classes.forEach(cls => {
-        const clsPct = cls.bytes ? Math.round(100 * cls.portedBytes / cls.bytes) : 0;
-        let badgeClass = 'status-pending';
-        let badgeLabel = 'En attente';
-        if (clsPct === 100) {
-          badgeClass = 'status-done';
-          badgeLabel = '100% Porté';
-        } else if (clsPct > 0) {
-          badgeClass = 'status-partial';
-          badgeLabel = `${clsPct}% Portiel`;
-        }
-
-        rows += `<tr>
-          <td style="font-weight: 600;"><code>${cls.name}</code></td>
-          <td>${cls.portedRoutines} / ${cls.routines} routines</td>
-          <td>${(cls.portedBytes / 1024).toFixed(1)} / ${(cls.bytes / 1024).toFixed(1)} Ko</td>
-          <td><span class="status-badge ${badgeClass}">${badgeLabel}</span></td>
-        </tr>`;
-      });
-
-      card.innerHTML = `
-        <div class="subsystem-header">
-          <span class="subsystem-name">${sub.name}</span>
-          <span class="subsystem-pct">${subPct}% (${sub.portedRoutines}/${sub.routines})</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" style="width: ${subPct}%;"></div>
-        </div>
-        <table class="class-table">
-          <thead>
-            <tr>
-              <th>Classe / Module Original</th>
-              <th>Routines</th>
-              <th>Poids Code</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-          </tbody>
-        </table>
-      `;
-      container.appendChild(card);
-    });
-  })
-  .catch(err => {
-    console.error('Erreur chargement progress.json:', err);
-  });
-</script>
+<table>
+  <thead>
+    <tr>
+      <th>Subsystem</th>
+      <th style="width: 150px;">Progress</th>
+      <th class="n">Code</th>
+      <th class="n">Routines</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><details><summary>Rendering &amp; HUD</summary><small>Implemented in Rust: <code>COpenGLRenderer</code> 78/78, <code>CHudTextFontRadar</code> 22/22, <code>CSunsetColorGrading</code> 8/8, <code>CWeaponCrosshairHUD</code> 8/8<br>Pending: None (100% complete)</small></details></td>
+      <td><div class="bar"><i style="width:100%"></i></div></td>
+      <td class="n">100.00%</td>
+      <td class="n">116 / 116</td>
+    </tr>
+    <tr>
+      <td><details><summary>Player &amp; Locomotion</summary><small>Implemented in Rust: <code>CStaticCollisionWorld</code> 68/68, <code>CPlayerPed</code> 38/38, <code>CAnimBlendHierarchy</code> 38/38, <code>CLocomotionController</code> 23/23, <code>CWaterPhysicsGrid</code> 9/9<br>Pending: None (100% complete)</small></details></td>
+      <td><div class="bar"><i style="width:100%"></i></div></td>
+      <td class="n">100.00%</td>
+      <td class="n">176 / 176</td>
+    </tr>
+    <tr>
+      <td><details><summary>Engine &amp; VIF</summary><small>Implemented in Rust: <code>CTextureRasterizer</code> 28/28, <code>CRenderWarePS2</code> 17/18, <code>CSceneManager</code> 17/17, <code>CModernPipeline</code> 16/16, <code>CVifPacketDecoder</code> 14/14, <code>CDATDiskReader</code> 10/10, <code>CViewFrustum</code> 5/5<br>Pending: <code>CRenderWarePS2</code> 17/18 (1 pending)</small></details></td>
+      <td><div class="bar"><i style="width:99.4%"></i></div></td>
+      <td class="n">99.41%</td>
+      <td class="n">107 / 108</td>
+    </tr>
+    <tr>
+      <td><details><summary>Vehicles &amp; Handling</summary><small>Implemented in Rust: <code>CHandlingManager</code> 18/18, <code>CVehicleModel</code> 17/17, <code>CVehicleAccess</code> 13/13, <code>CTransmissionDynamics</code> 10/10, <code>CTireFrictionModel</code> 10/10, <code>CSuspension4Wheel</code> 8/14<br>Pending: <code>CSuspension4Wheel</code> 8/14 (6 pending)</small></details></td>
+      <td><div class="bar"><i style="width:93.9%"></i></div></td>
+      <td class="n">93.91%</td>
+      <td class="n">76 / 82</td>
+    </tr>
+    <tr>
+      <td><details><summary>AI &amp; Traffic</summary><small>Implemented in Rust: <code>CPropsObjectsManager</code> 37/37, <code>CTrafficManager</code> 15/15, <code>CPedestrianPopulation</code> 13/13, <code>CPedestrianObstacleAvoidance</code> 10/10, <code>CTrafficLightsSystem</code> 9/10, <code>CLeedsPathNetwork</code> 9/9, <code>CEmergencySirenResponse</code> 8/8, <code>CPedestrianPanicReaction</code> 2/10<br>Pending: <code>CPedestrianPanicReaction</code> 2/10, <code>CTrafficLightsSystem</code> 9/10</small></details></td>
+      <td><div class="bar"><i style="width:92.3%"></i></div></td>
+      <td class="n">92.25%</td>
+      <td class="n">103 / 112</td>
+    </tr>
+    <tr>
+      <td><details><summary>Combat &amp; Weapons</summary><small>Implemented in Rust: <code>C3DBallistics</code> 20/20, <code>CWeaponManager</code> 17/17, <code>CProjectileRocket</code> 10/10, <code>CFireFlamethrower</code> 9/10, <code>CProjectileGrenade</code> 2/10<br>Pending: <code>CFireFlamethrower</code> 9/10, <code>CSniperScopeView</code> 0/8, <code>CProjectileGrenade</code> 2/10</small></details></td>
+      <td><div class="bar"><i style="width:79.1%"></i></div></td>
+      <td class="n">79.08%</td>
+      <td class="n">58 / 75</td>
+    </tr>
+    <tr>
+      <td><details><summary>World, Audio &amp; Missions</summary><small>Implemented in Rust: <code>CWorldManager</code> 20/42, <code>CMissionScriptSystem</code> 18/20, <code>CAudioEngine</code> 16/16<br>Pending: <code>CWorldManager</code> 20/42, <code>CMissionScriptSystem</code> 18/20</small></details></td>
+      <td><div class="bar"><i style="width:77.7%"></i></div></td>
+      <td class="n">77.66%</td>
+      <td class="n">54 / 78</td>
+    </tr>
+  </tbody>
+</table>
 
 </body>
 </html>
