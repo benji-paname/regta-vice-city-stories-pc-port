@@ -1,9 +1,9 @@
 {
-  "build": "VCS-Rust Native (PS2 PAL SLES-54622 / ULUS-10160 v1.01 target, 657 Rust functions)",
+  "build": "VCS-Rust Native (PS2 PAL SLES-54622 / ULUS-10160 v1.01 target, 740 Rust functions)",
   "bytes": 350235,
-  "portedBytes": 288435,
+  "portedBytes": 327645,
   "routines": 747,
-  "portedRoutines": 613,
+  "portedRoutines": 690,
   "subsystems": [
     {
       "name": "Engine & VIF",
@@ -66,9 +66,9 @@
     {
       "name": "Vehicles & Handling",
       "bytes": 43690,
-      "portedBytes": 31010,
+      "portedBytes": 41030,
       "routines": 82,
-      "portedRoutines": 56,
+      "portedRoutines": 76,
       "classes": [
         {
           "name": "CVehicleModel",
@@ -95,15 +95,15 @@
           "name": "CTransmissionDynamics",
           "bytes": 4790,
           "routines": 10,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 4790,
+          "portedRoutines": 10
         },
         {
           "name": "CTireFrictionModel",
           "bytes": 5230,
           "routines": 10,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 5230,
+          "portedRoutines": 10
         },
         {
           "name": "CVehicleAccess",
@@ -161,9 +161,9 @@
     {
       "name": "Combat & Weapons",
       "bytes": 36280,
-      "portedBytes": 19450,
+      "portedBytes": 28690,
       "routines": 75,
-      "portedRoutines": 39,
+      "portedRoutines": 58,
       "classes": [
         {
           "name": "CWeaponManager",
@@ -190,15 +190,15 @@
           "name": "CProjectileRocket",
           "bytes": 4970,
           "routines": 10,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 4970,
+          "portedRoutines": 10
         },
         {
           "name": "CFireFlamethrower",
           "bytes": 4750,
           "routines": 10,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 4270,
+          "portedRoutines": 9
         },
         {
           "name": "CSniperScopeView",
@@ -212,9 +212,9 @@
     {
       "name": "AI & Traffic",
       "bytes": 53580,
-      "portedBytes": 44300,
+      "portedBytes": 49430,
       "routines": 112,
-      "portedRoutines": 93,
+      "portedRoutines": 103,
       "classes": [
         {
           "name": "CTrafficManager",
@@ -248,15 +248,15 @@
           "name": "CPedestrianObstacleAvoidance",
           "bytes": 5090,
           "routines": 10,
-          "portedBytes": 1150,
-          "portedRoutines": 2
+          "portedBytes": 5090,
+          "portedRoutines": 10
         },
         {
           "name": "CPedestrianPanicReaction",
           "bytes": 4860,
           "routines": 10,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 1190,
+          "portedRoutines": 2
         },
         {
           "name": "CLeedsPathNetwork",
@@ -277,9 +277,9 @@
     {
       "name": "Rendering & HUD",
       "bytes": 47440,
-      "portedBytes": 40780,
+      "portedBytes": 47440,
       "routines": 116,
-      "portedRoutines": 101,
+      "portedRoutines": 116,
       "classes": [
         {
           "name": "COpenGLRenderer",
@@ -299,45 +299,45 @@
           "name": "CSunsetColorGrading",
           "bytes": 3500,
           "routines": 8,
-          "portedBytes": 480,
-          "portedRoutines": 1
+          "portedBytes": 3500,
+          "portedRoutines": 8
         },
         {
           "name": "CWeaponCrosshairHUD",
           "bytes": 3640,
           "routines": 8,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 3640,
+          "portedRoutines": 8
         }
       ]
     },
     {
       "name": "World, Audio & Missions",
       "bytes": 35360,
-      "portedBytes": 19300,
+      "portedBytes": 27460,
       "routines": 78,
-      "portedRoutines": 41,
+      "portedRoutines": 54,
       "classes": [
         {
           "name": "CWorldManager",
           "bytes": 17240,
           "routines": 42,
-          "portedBytes": 12280,
-          "portedRoutines": 26
+          "portedBytes": 10090,
+          "portedRoutines": 20
         },
         {
           "name": "CAudioEngine",
           "bytes": 7410,
           "routines": 16,
-          "portedBytes": 7020,
-          "portedRoutines": 15
+          "portedBytes": 7410,
+          "portedRoutines": 16
         },
         {
           "name": "CMissionScriptSystem",
           "bytes": 10710,
           "routines": 20,
-          "portedBytes": 0,
-          "portedRoutines": 0
+          "portedBytes": 9960,
+          "portedRoutines": 18
         }
       ]
     }

@@ -443,6 +443,7 @@ impl GpuRenderer {
         lights: &[crate::traffic::TrafficLight],
         weapons: Option<&crate::weapons::WeaponArsenal>,
         mission: Option<&crate::script::MissionScriptSystem>,
+        weather: Option<&crate::weather::WeatherSystem>,
         global_time: f32,
     ) -> Result<()> {
         if zone >= levels.len() || zone >= self.scene_instances.len() {
@@ -457,13 +458,16 @@ impl GpuRenderer {
                 return Err("OpenGL: contexte de rendu perdu".into());
             }
             let hour = (12.0 + global_time * (24.0 / 600.0)).rem_euclid(24.0);
-            let (_, mid, _, _fog) = sky_atmosphere(hour);
+            let (base_top, base_mid, base_bot, base_fog) = sky_atmosphere(hour);
+            let (top, mid, bot, _fog) = weather.map_or((base_top, base_mid, base_bot, base_fog), |w| {
+                w.modulate_atmosphere(base_top, base_mid, base_bot, base_fog)
+            });
             glViewport(0, 0, width, height);
             glDepthMask(1);
             glClearColor(mid[0], mid[1], mid[2], 1.0);
             glClear(0x00004000 | 0x00000100); // COLOR, DEPTH
             ortho();
-            background(hour);
+            background_weather(top, mid, bot, hour, weather);
             glMatrixMode(PROJECTION);
             glLoadIdentity();
             let near = crate::render::CAMERA_NEAR as f64;
@@ -558,6 +562,9 @@ impl GpuRenderer {
                     self.triangles += batch.triangles;
                 }
                 glPopMatrix();
+            }
+            if let Some(w) = weather {
+                draw_weather_rain(w);
             }
             glDepthMask(1);
             glDisable(BLEND);
@@ -948,8 +955,13 @@ pub fn sky_atmosphere(hour: f32) -> ([f32; 3], [f32; 3], [f32; 3], [f32; 4]) {
     }
 }
 
-unsafe fn background(hour: f32) {
-    let (top, mid, bot, _) = sky_atmosphere(hour);
+unsafe fn background_weather(
+    top: [f32; 3],
+    mid: [f32; 3],
+    bot: [f32; 3],
+    hour: f32,
+    weather: Option<&crate::weather::WeatherSystem>,
+) {
     glDisable(BLEND);
     glBegin(QUADS);
     glColor3f(top[0], top[1], top[2]);
@@ -964,7 +976,8 @@ unsafe fn background(hour: f32) {
     glVertex2f(WIDTH as f32, HEIGHT as f32);
     glVertex2f(0.0, HEIGHT as f32);
     glEnd();
-    if hour >= 21.5 || hour < 5.0 {
+    let is_raining = weather.map_or(false, |w| w.is_raining());
+    if (hour >= 21.5 || hour < 5.0) && !is_raining {
         glBegin(0x0000); // GL_POINTS
         glColor4f(1.0, 1.0, 1.0, 0.85);
         for i in 0..48 {
@@ -974,6 +987,27 @@ unsafe fn background(hour: f32) {
         }
         glEnd();
     }
+}
+
+unsafe fn draw_weather_rain(weather: &crate::weather::WeatherSystem) {
+    if weather.rain_streaks.is_empty() {
+        return;
+    }
+    glDisable(TEXTURE_2D);
+    glEnable(BLEND);
+    glBlendFunc(0x0302, 0x0303); // SRC_ALPHA, ONE_MINUS_SRC_ALPHA
+    // glLineWidth(1.5);
+    glBegin(LINES);
+    for s in &weather.rain_streaks {
+        glColor4f(0.85, 0.92, 1.0, s.alpha);
+        glVertex3f(s.position[0], s.position[1], s.position[2]);
+        glVertex3f(
+            s.position[0] - s.velocity[0] * 0.02 * s.length,
+            s.position[1] - s.velocity[1] * 0.02 * s.length,
+            s.position[2] - s.velocity[2] * 0.02 * s.length,
+        );
+    }
+    glEnd();
 }
 
 unsafe fn draw_vehicle_effects(vehicles: &[VehicleFrame<'_>], global_time: f32, hour: f32) {

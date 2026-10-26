@@ -3061,13 +3061,19 @@
       "xv_vehiclegrunge_sl"
     ],
     "texture_names": [
-      "tyres",
-      "xv_vcs_licenseplates_cs",
       "banshee868bit_sl",
+      "tyres",
+      "xv_vehiclegrunge_sl",
       "xv_vehiclegeneric_sl",
-      "xv_vehiclegrunge_sl"
+      "xv_vcs_licenseplates_cs"
     ],
     "textures": [
+      {
+        "has_alpha": false,
+        "height": 128,
+        "name": "banshee868bit_sl",
+        "width": 128
+      },
       {
         "has_alpha": false,
         "height": 64,
@@ -3076,14 +3082,8 @@
       },
       {
         "has_alpha": false,
-        "height": 64,
-        "name": "xv_vcs_licenseplates_cs",
-        "width": 128
-      },
-      {
-        "has_alpha": false,
         "height": 128,
-        "name": "banshee868bit_sl",
+        "name": "xv_vehiclegrunge_sl",
         "width": 128
       },
       {
@@ -3094,8 +3094,8 @@
       },
       {
         "has_alpha": false,
-        "height": 128,
-        "name": "xv_vehiclegrunge_sl",
+        "height": 64,
+        "name": "xv_vcs_licenseplates_cs",
         "width": 128
       }
     ],

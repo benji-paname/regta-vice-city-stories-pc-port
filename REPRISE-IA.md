@@ -34,7 +34,13 @@ Le modèle suivant doit pouvoir reprendre à partir de ces notes sans relire tou
 - `src/texture.rs` : décodage et coloration des textures véhicule.
 - `src/gpu.rs` : état OpenGL et passes de dessin (une correction de profondeur/rendu a résolu la carrosserie désassemblée).
 - `src/script.rs` : machine à états de missions SCM, variables globales/locales, objectifs et balises 3D.
-- `src/audio.rs` : moteur audio procédural, 8 stations de radio Vice City Stories, synthèse PCM de régime moteur.
+- `src/audio.rs` : moteur audio procédural, 8 stations de radio Vice City Stories, synthèse PCM de régime moteur, coups de feu et tonnerre.
+- `src/weather.rs` : météo dynamique 6 climats, traînées 3D de pluie tropicale, éclairs stroboscopiques, brouillard volumétrique.
+- `src/projectiles.rs` : roquettes RPG propulsées, panaches de fumée, jet de flammes avec convection, optiques sniper avec apnée.
+- `src/transmission.rs` : boîte 5 vitesses, calcul du régime moteur RPM, démultiplication de couple et points de passage.
+- `src/tires.rs` : modèle de friction de Pacejka, calcul du slip angle, détection de dérapage et traces de ripage (skidmarks).
+- `src/panic.rs` : calcul des vecteurs de fuite piétonne face aux explosions, fusillades et véhicules menaçants.
+- `src/crosshair.rs` : réticules adaptatifs d'armement HUD (croix, chevrotine, verrouillage roquette, mil-dots sniper).
 - `src/render.rs` et `src/main.rs` : boucle de jeu, caméra, contrôles, entrée/sortie et affichage.
 
 ## Manipulations et vérification

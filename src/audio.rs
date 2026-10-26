@@ -150,6 +150,20 @@ impl AudioEngine {
         }
         &self.audio_buffer
     }
+
+    pub fn synthesize_thunder(&mut self, samples: usize) -> &[i16] {
+        self.audio_buffer.clear();
+        for i in 0..samples {
+            let t = i as f32 / samples as f32;
+            let envelope = (1.0 - t).powi(2) * (t * 20.0).min(1.0);
+            let low_rumble = (t * 32.0 * std::f32::consts::TAU).sin() * 0.6
+                + (t * 18.0 * std::f32::consts::TAU).sin() * 0.4;
+            let crackle = ((i * 1664525 + 1013904223) & 0x7fff) as f32 / 32768.0 * 2.0 - 1.0;
+            let sample = (low_rumble * 0.75 + crackle * 0.25) * envelope * 28000.0;
+            self.audio_buffer.push(sample.clamp(-32767.0, 32767.0) as i16);
+        }
+        &self.audio_buffer
+    }
 }
 
 #[cfg(test)]
@@ -197,5 +211,14 @@ mod tests {
         assert_eq!(samples.len(), 128);
         let energy: i64 = samples.iter().map(|&s| (s as i64).abs()).sum();
         assert!(energy > 10000, "Gunshot audio must have substantial sound energy");
+    }
+
+    #[test]
+    fn thunder_audio_synthesis_produces_low_frequency_rumble() {
+        let mut audio = AudioEngine::new();
+        let samples = audio.synthesize_thunder(256);
+        assert_eq!(samples.len(), 256);
+        let energy: i64 = samples.iter().map(|&s| (s as i64).abs()).sum();
+        assert!(energy > 20000, "Thunder audio must have massive low-frequency rumble energy");
     }
 }

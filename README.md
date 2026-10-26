@@ -40,6 +40,7 @@ Portage PC natif clean-room et open-source de **Grand Theft Auto: Vice City Stor
 | **Clic Droit** / **V** | **Viser** (active le réticule ou la lunette sniper) | À pied |
 | **H** | **Activer le gyrophare d'urgence** | Véhicule / Caméra |
 | **B** | **Changer de station de radio** (8 stations Vice City) | En véhicule |
+| **K** | **Changer la météo** (Soleil, Nuageux, Pluie, Orage, Brume, Sunset) | Partout |
 | **E** | Monter / Sortir de la Banshee | Proche du véhicule |
 | **G** | Basculer entre marche et caméra libre | À pied |
 | **F1** | Afficher / Masquer l'aide à l'écran | En jeu |
@@ -92,13 +93,28 @@ Portage PC natif clean-room et open-source de **Grand Theft Auto: Vice City Stor
   - Synthétiseur audio procédural et émulation des 8 stations de radio officielles de Vice City Stories (Wave 103, Flash FM, Emotion 98.3, V-Rock, Paradise FM, VCFL, Fresh FM, Radio Espantoso).
   - Contrôle au volant avec la touche <kbd>B</kbd> : sélection de station et affichage dynamique du bandeau FM.
   - Synthèse en temps réel du régime moteur (RPM) et sirène de police alternée.
-- **Jalon K — Dynamique de Transmission & Adhérence des Pneus (`src/driving.rs`)** :
+- **Jalon K — Dynamique de Transmission & Adhérence des Pneus (`src/transmission.rs`, `src/tires.rs`)** :
   - Modèle de boîte 5 vitesses `CTransmissionDynamics` avec calcul de régime et démultiplication de couple.
   - Modèle de frottement de Pacejka `CTireFrictionModel` avec angle de dérive (slip angle) et détection des traces de ripage (skidmarks).
+- **Jalon L — Météo Dynamique, Orages Tropicaux, Éclairs & Pluie 3D (`src/weather.rs`, `src/gpu.rs`)** :
+  - Simulation complète des 6 climats de Vice City : Plein Soleil, Nuageux, Pluie Tropicale, Orage Tropical violent, Brume Maritime, et Coucher de Soleil 1984.
+  - Traînées de pluie 3D (`RainStreak3D`) orientées dynamiquement selon les vecteurs de vent et la vélocité du joueur/véhicule.
+  - Système d'éclairs stroboscopiques traversant le ciel et illuminant violemment le brouillard OpenGL en blanc pur, couplé à la synthèse sonore procédurale de grondements de tonnerre (`synthesize_thunder`).
+  - Modulation en direct de la friction de la chaussée (asphalte mouillé diminuant l'adhérence). Touche <kbd>K</kbd> pour changer la météo à volonté.
+- **Jalon M — Balistique Spécialisée, Roquettes RPG & Lance-Flammes 3D (`src/projectiles.rs`)** :
+  - `CProjectileRocket` : Roquettes autopropulsées avec phase d'accélération continue (jusqu'à 85 m/s), émission dense de fumée volumétrique et explosion de zone (8,5m de rayon).
+  - `CFireFlamethrower` : Jet thermique de 35 particules de feu expansives par seconde avec dynamique convective ascendante et propagation incendiaire.
+  - `CSniperScopeView` : Télémétrie optique, zoom réglable (4x à 12x), balancement naturel de respiration en courbe de Lissajous et apnée de stabilisation.
+- **Jalon N — Transmission 5 Vitesses & Adhérence Pacejka Dédiées (`src/transmission.rs`, `src/tires.rs`)** :
+  - Architecture indépendante de transmission automatique à 5 rapports étagés avec découplage d'embrayage lors des passages de vitesse.
+  - Calcul d'adhérence selon l'ellipse de frottement de Pacejka (effort longitudinal $F_x$ et transversal $F_y$) et gestion de l'échauffement de gomme.
+- **Jalon O — Réticules HUD Dédiés & Réaction de Panique Piétonne (`src/crosshair.rs`, `src/panic.rs`)** :
+  - `CWeaponCrosshairHUD` : Réticules 2D adaptatifs avec dispersion dynamique (cross standard, cercle de chevrotine, visée verrouillée RPG et réticule sniper mil-dot vert fluo).
+  - `CPedestrianPanicReaction` : Évaluation vectorielle des menaces (détonations, fusillades, bolides fonçant sur le trottoir) et fuite ordonnée ou panique désordonnée à 240% de vitesse.
 - **Infrastructure & Vitrine Interactive** :
   - Site vitrine rétro-synthwave 1984 sous `docs/` (`index.html` et `progress.html`).
-  - Outil automatisé `tools/progress/progress.py` mesurant **613 / 747 routines portées (82.4% global)**.
-  - Script racine `Compiler.ps1 -Test` intégrant la compilation Release sous `-D warnings`, l'exécution de **148 tests unitaires passants à 100%** et la synchronisation automatique des badges SVG.
+  - Outil automatisé `tools/progress/progress.py` mesurant **690 / 747 routines portées (93.6% global)**.
+  - Script racine `Compiler.ps1 -Test` intégrant la compilation Release sous `-D warnings`, l'exécution de **171 tests unitaires passants à 100%** et la synchronisation automatique des badges SVG.
 
 ---
 

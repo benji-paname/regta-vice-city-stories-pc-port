@@ -872,6 +872,7 @@ pub fn viewer(
     let mut police = crate::police::WantedSystem::new();
     let mut script = crate::script::MissionScriptSystem::new();
     let mut audio = crate::audio::AudioEngine::new();
+    let mut weather = crate::weather::WeatherSystem::new();
     let save_path = std::env::current_exe()?.with_file_name("VCS-Save.json");
     let mut banner_message = String::new();
     let mut banner_timer = 0.0f32;
@@ -1240,6 +1241,7 @@ pub fn viewer(
                 arsenal = crate::weapons::WeaponArsenal::new();
                 police.clear();
                 script = crate::script::MissionScriptSystem::new();
+                weather = crate::weather::WeatherSystem::new();
             }
         }
         if controls
@@ -1280,6 +1282,7 @@ pub fn viewer(
             arsenal = crate::weapons::WeaponArsenal::new();
             police.clear();
             script = crate::script::MissionScriptSystem::new();
+            weather = crate::weather::WeatherSystem::new();
             let walking = walker.is_some() || in_vehicle;
             population.reset();
             traffic.reset();
@@ -1591,6 +1594,11 @@ pub fn viewer(
         if controls && in_vehicle && window.is_key_pressed(Key::B, minifb::KeyRepeat::No) {
             audio.cycle_radio_next();
         }
+        if controls && window.is_key_pressed(Key::K, minifb::KeyRepeat::No) {
+            weather.cycle_next();
+            banner_message = format!("METEO : {}", weather.current.name());
+            banner_timer = 2.5;
+        }
         if traffic.siren_active {
             traffic.siren_pos = if in_vehicle { car.position } else { camera.pos };
         }
@@ -1669,6 +1677,10 @@ pub fn viewer(
             player_status.minute %= 60;
         }
         audio.update(car.speed, traffic.siren_active, dt);
+        let thunder = weather.update(walker.as_ref().map_or(car.position, |w| w.feet), dt);
+        if thunder {
+            audio.synthesize_thunder(2048);
+        }
         if let Some(reward) = script.update(walker.as_ref().map_or(car.position, |w| w.feet), dt) {
             player_status.money += reward;
         }
@@ -1939,6 +1951,7 @@ pub fn viewer(
                 &traffic.lights,
                 Some(&arsenal),
                 Some(&script),
+                Some(&weather),
                 traffic.global_time,
             )?;
             submitted_triangles = gpu.triangles;
@@ -2010,7 +2023,7 @@ pub fn viewer(
             },
             arsenal.current.name(),
             wanted_stars,
-            title_banner,
+            &format!("{} | {}", weather.current.name(), title_banner),
         ));
         ticks += 1;
         if let Some(path) = live_report
