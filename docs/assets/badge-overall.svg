@@ -1,20 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="130" height="20" role="img" aria-label="progression: 93.6%">
-  <linearGradient id="b" x2="0" y2="100%">
-    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
-    <stop offset="1" stop-opacity=".1"/>
-  </linearGradient>
-  <clipPath id="r">
-    <rect width="130" height="20" rx="3" fill="#fff"/>
-  </clipPath>
-  <g clip-path="url(#r)">
-    <rect width="84" height="20" fill="#1b122c"/>
-    <rect x="84" width="46" height="20" fill="#ff2a85"/>
-    <rect width="130" height="20" fill="url(#b)"/>
-  </g>
-  <g fill="#fff" text-anchor="middle" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11">
-    <text x="42.0" y="14" fill="#010101" fill-opacity=".3">progression</text>
-    <text x="42.0" y="14">progression</text>
-    <text x="107.0" y="14" fill="#010101" fill-opacity=".3">93.6%</text>
-    <text x="107.0" y="14">93.6%</text>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="206" height="20" role="img" aria-label="original code ported: 93.55%">
+<rect width="152" height="20" fill="#555"/>
+<rect x="152" width="54" height="20" fill="#3fa34d"/>
+<g fill="#fff" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11" text-anchor="middle">
+<text x="76.0" y="14">original code ported</text>
+<text x="179.0" y="14">93.55%</text>
+</g></svg>

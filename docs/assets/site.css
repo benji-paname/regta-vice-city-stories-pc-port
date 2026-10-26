@@ -43,6 +43,7 @@ header { position: sticky; top: 0; z-index: 5; border-bottom: 1px solid var(--li
 /* Hero */
 .hero { padding: 62px 0 38px; text-align: center; background: radial-gradient(ellipse at 50% 24%, rgba(255, 42, 133, 0.18), transparent 65%); }
 .eyebrow { color: var(--cyan); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; margin: 0 0 18px; }
+.main-logo { display: block; width: min(660px, 100%); height: auto; margin: 0 auto 20px; }
 .hero h1 { font-size: clamp(28px, 4vw, 48px); line-height: 1.16; letter-spacing: -0.045em; margin: 0 0 18px; }
 .hero h1 .gradient { background: linear-gradient(135deg, #ff2a85 0%, #ff8fab 50%, #00f0ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .intro { max-width: 730px; margin: 0 auto; color: var(--muted); font-size: clamp(16px, 2vw, 19px); }

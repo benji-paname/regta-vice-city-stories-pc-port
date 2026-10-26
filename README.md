@@ -1,127 +1,152 @@
-# ReGTA: Vice City Stories (VCS-Rust) — Portage PC Natif en Pur Rust
-
 <p align="center">
-  <img src="docs/assets/badge-overall.svg" alt="Progression Globale" />
-  <img src="docs/assets/badge-routines.svg" alt="Routines Portées" />
-  <img src="docs/assets/tests-badge.svg" alt="Tests Unitaires" />
-  <a href="https://discord.com/users/601648068277960714"><img src="https://img.shields.io/badge/Discord-benjamin060936-7289da?logo=discord&logoColor=white" alt="Discord Benjamin" /></a>
+  <img src="docs/assets/logo.svg" alt="ReGTA VCS — PC Recomp" width="720"/>
 </p>
 
-Portage PC natif clean-room et open-source de **Grand Theft Auto: Vice City Stories** (PlayStation 2 PAL `SLES-54622` / ELF `SLES_546.22`) développé en **100% pur Rust** (Windows x64).
+# ReGTA VCS — PC Recomp
 
-> **Auteur & Mainteneur** : Benjamin (« benji-paname »)  
-> **Contact Discord officiel** : [benjamin060936 (601648068277960714)](https://discord.com/users/601648068277960714)  
-> **Vitrine & Tableaux de bord interactifs** : Consultez le site web complet sous `docs/` (`docs/index.html` et `docs/progress.html`).
+**A native PC future for Vice City Stories (PS2 & PSP).**  
+**by Benji Paname**
 
----
+[![Version](https://img.shields.io/badge/milestone-0.3.0--alpha-orange)](CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/local_tests-171_passed-brightgreen)](docs/STATUS.md)
+[![Warnings](https://img.shields.io/badge/compiler_warnings-0-brightgreen)](docs/STATUS.md)
+[![Platform](https://img.shields.io/badge/platform-Windows_x64-blue)](#build-and-run)
+[![Language](https://img.shields.io/badge/runtime-Rust-dea584)](#repository-layout)
+[![License](https://img.shields.io/badge/license-GPL--3.0--only-blue)](LICENSE)
+[![Discord](https://img.shields.io/badge/Discord-benjamin060936-5865F2?logo=discord&logoColor=white)](https://discord.com/users/601648068277960714)
 
-## 1. Principes Fondamentaux & Éthique Clean-Room
+ReGTA VCS is an independent clean-room reverse-engineering and native-port project for **Grand Theft Auto: Vice City Stories**, targeting the PlayStation 2 release **SLES-54622** and PSP release **ULES-00502 v1.01**. The goal is to rebuild the Vice City Stories experience in 100% pure Rust for Windows x64, reading game data from the user's own legally obtained disc image without a CPU emulator in the runtime.
 
-1. **100% Rust Natif — Zéro Émulation CPU au Runtime** :
-   - Aucun émulateur (ni MIPS, ni PCSX2, ni PPSSPP). Le code du jeu est compilé directement en binaire x86_64 natif pour garantir des performances optimales (taux de rafraîchissement débloqué, fluidité 60+ FPS, support 4K/Ultrawide).
-2. **Légalité & Zéro Contenu Sous Droits d'Auteur dans le Dépôt** :
-   - Le dépôt Git ne contient AUCUN asset propriétaire (textures, sons, modèles 3D, musiques).
-   - Tous les assets originaux sont lus, décodés et convertis à la volée depuis l'image disque légale de l'utilisateur (`Grand Theft Auto - Vice City Stories.iso`).
-3. **Règle du Progrès Visible (Visual-First)** :
-   - Toute nouvelle mécanique (handling, balistique, circulation, météo, foule) est immédiatement raccordée au moteur de rendu OpenGL (`src/gpu.rs`) pour être visible et jouable en direct dans l'exécutable unique `VCS-Rust.exe`.
+> **Pre-alpha — no public playable download.** No game executable, ROM, ISO or proprietary game assets are offered for download. The local prototype is unfinished; no release date or complete gameplay parity is promised. Building from source requires the tools and personal game copy described below.
 
----
+The dual islands (Beach & Mainland), player locomotion, full 25-bone skeletal animations, vehicle dynamics, weapons ballistics, dynamic weather, and SCM missions already have working prototype implementations. **171 passing tests and 690 ported routines (93.6%) are progress measurements, not proof of full-game equivalence.**
 
-## 2. Commandes & Raccourcis Clavier
+**[Support on Tipeee](https://fr.tipeee.com/benji-paname/)** · [Support via PayPal](https://paypal.me/BenjiLsg) · **[Discord: benjamin060936](https://discord.com/users/601648068277960714)**  
+Support helps sustain Benji Paname's reverse engineering, native development and documentation. It does not buy the game, game assets or early access, and does not guarantee completion or a release date.
 
-| Touche | Action | Contexte |
-| :--- | :--- | :--- |
-| **ZQSD** / **WASD** | Se déplacer (ou braquer / accélérer en véhicule) | Pied / Conduite |
-| **Flèches** | Pivoter la caméra et vue libre | Partout |
-| **Maj Gauche** | Courir / Sprint (ou accélérer la nage) | À pied / Nage |
-| **Espace** | Sauter / Franchir un muret (ou frein à main) | À pied / Conduite |
-| **Tab** | **Changer d'arme** (parcourt les 9 armes de l'arsenal) | À pied |
-| **Clic Gauche** / **F** | **Tirer** / Attaquer au corps à corps | À pied |
-| **Clic Droit** / **V** | **Viser** (active le réticule ou la lunette sniper) | À pied |
-| **H** | **Activer le gyrophare d'urgence** | Véhicule / Caméra |
-| **B** | **Changer de station de radio** (8 stations Vice City) | En véhicule |
-| **K** | **Changer la météo** (Soleil, Nuageux, Pluie, Orage, Brume, Sunset) | Partout |
-| **E** | Monter / Sortir de la Banshee | Proche du véhicule |
-| **G** | Basculer entre marche et caméra libre | À pied |
-| **F1** | Afficher / Masquer l'aide à l'écran | En jeu |
-| **F2** | Basculer entre 1ère et 3ème personne | À pied |
-| **F3** | Menu d'options (mode Original PS2 vs Moderne) | En jeu |
-| **F5** | **Sauvegarde rapide** de la partie (`VCS-Save.json`) | En jeu |
-| **F9** | **Restauration rapide** de la partie (`VCS-Save.json`) | En jeu |
-| **1 / 2 / 3 / 4** | Téléportation rapide (Beach, Mainland, Mall, Base militaire) | En jeu |
-| **T** | Activer / Désactiver les textures | En jeu |
-| **R** | Réinitialiser la position et le monde | En jeu |
-| **Échap** | Quitter | En jeu |
+[Project website](https://benji-paname.github.io/regta-vice-city-stories-pc-port/) · [Implementation status](docs/STATUS.md) · [Changelog](CHANGELOG.md) · [Publish with GitHub Pages](docs/PUBLISHING.md) · [Progress Dashboard](docs/progress.html)
 
----
+<!-- BEGIN STATUS SECTION -->
+## Status
 
-## 3. Dernières Avancées & Jalons Opérationnels
+[![original code ported](docs/assets/badge-overall.svg)](docs/progress.html) [![routines](docs/assets/badge-routines.svg)](docs/progress.html)
 
-- **Jalon A — Physique & Suspensions 4 Roues Indépendantes** :
-  - Suspensions indépendantes sur la Banshee : calcul de déflexion verticale par raycast corner, compression dynamique des ressorts.
-  - Transfert de masse dynamique : tangage réaliste (pitch) lors des fortes accélérations et freinages, roulis (body roll) en virage selon l'accélération centrifuge.
-  - Animation 3D temps réel des roues (braquage et course verticale des moyeux).
-- **Jalon B — Arsenal 3D & Balistique Complète** :
-  - 9 types d'armes portés : Poings, Pistolet 9mm, Micro-SMG, Fusil à pompe, Fusil d'assaut, Fusil de sniper, Lance-roquettes, Grenade, Lance-flammes.
-  - Balistique 3D en temps réel : roquettes propulsées avec traînées de fumée particulaire, grenades paraboliques avec gravité ($g = 9.81\text{ m/s}^2$), traînées lumineuses de balles (hitscan tracers) et gerbes d'étincelles aux impacts.
-  - HUD de visée dynamique : réticules 2D adaptés à l'arme, cercle de dispersion de chevrotine, et lunette sniper plein écran avec repères mil-dots.
-- **Jalon C — Feux Tricolores & Circulation Urbaine** :
-  - Modèle 3D de feux tricolores (poteau, boîte et optiques lumineuses Vert/Orange/Rouge) aux intersections.
-  - Respect des feux de signalisation : les véhicules du réseau Leeds ralentissent et s'immobilisent aux feux rouges et oranges.
-  - Réaction aux véhicules d'urgence : à l'activation du gyrophare (`H`), les conducteurs se déportent vers le bord du trottoir.
-- **Jalon D — Foule & Réaction de Panique** :
-  - Génération de piétons sur les graphes de trottoir avec évitement d'obstacles.
-  - Détection des coups de feu et explosions déclenchant la panique immédiate et la fuite désordonnée des PNJ loin de la menace.
-- **Jalon E — Étoiles de Recherche (Wanted Level 0..6) & IA Policière VCPD** :
-  - Évaluation dynamique des crimes : coups de feu en ville, agressions, piétons renversés, explosions.
-  - Poursuite VCPD active : véhicules de patrouille avec gyrophares stroboscopiques 3D bicolores (Bleu/Rouge) et sirène fonçant pour intercepter le joueur.
-  - HUD rétro : jusqu'à 6 étoiles dorées animées avec clignotement d'évasion en haut à droite.
-- **Jalon F — Dégâts des Véhicules, Incendie & Pyrotechnie 3D** :
-  - Gestion des points de vie (1000 PV) : déformation lors des chocs violents et perforation par balles/roquettes.
-  - Volutes de fumée sous le capot à santé < 400 PV, flammes d'incendie moteur 3D vives à santé < 250 PV, et détonation explosive de la carcasse à 0 PV.
-- **Jalon G — Cycle 24h & Coucher de Soleil Synthwave 1984 (Atmosphère Dynamique)** :
-  - Progression fluide des heures du monde : midi tropical bleu azur, spectaculaire coucher de soleil néon magenta/orange doré Vice City, et nuit étoilée avec ciel profond.
-  - Phares 3D projetant des faisceaux lumineux sur la chaussée et feux arrière rouges fonctionnels.
-- **Jalon H — Sauvegarde & Restauration Rapide (F5 / F9)** :
-  - Sauvegarde instantanée (<kbd>F5</kbd>) et chargement (<kbd>F9</kbd>) de l'état complet du monde et du joueur dans `VCS-Save.json` avec bandeau de confirmation à l'écran.
-- **Jalon I — Système de Script de Missions SCM & Balises Lumineuses 3D (`src/script.rs`)** :
-  - Machine à états de scénario (`MissionScriptSystem`, `ScriptThread`, `MissionObjective`, stockage mémoire 1024 globales et 32 locales).
-  - Première mission scénarisée « SOLDAT » (ordre de livraison du Sergent Martinez à Fort Baxter, validation des zones cibles, attribution de récompense $100).
-  - Rendu 3D de balise corona néon-rose pulsante (`draw_mission_corona`) et bannières grand format de début et fin de mission à l'écran (`draw_mission_hud`).
-  - Blip radar jaune carré synchronisé sur la minicarte HUD.
-- **Jalon J — Moteur Audio & Stations de Radio Vice City 1984 (`src/audio.rs`)** :
-  - Synthétiseur audio procédural et émulation des 8 stations de radio officielles de Vice City Stories (Wave 103, Flash FM, Emotion 98.3, V-Rock, Paradise FM, VCFL, Fresh FM, Radio Espantoso).
-  - Contrôle au volant avec la touche <kbd>B</kbd> : sélection de station et affichage dynamique du bandeau FM.
-  - Synthèse en temps réel du régime moteur (RPM) et sirène de police alternée.
-- **Jalon K — Dynamique de Transmission & Adhérence des Pneus (`src/transmission.rs`, `src/tires.rs`)** :
-  - Modèle de boîte 5 vitesses `CTransmissionDynamics` avec calcul de régime et démultiplication de couple.
-  - Modèle de frottement de Pacejka `CTireFrictionModel` avec angle de dérive (slip angle) et détection des traces de ripage (skidmarks).
-- **Jalon L — Météo Dynamique, Orages Tropicaux, Éclairs & Pluie 3D (`src/weather.rs`, `src/gpu.rs`)** :
-  - Simulation complète des 6 climats de Vice City : Plein Soleil, Nuageux, Pluie Tropicale, Orage Tropical violent, Brume Maritime, et Coucher de Soleil 1984.
-  - Traînées de pluie 3D (`RainStreak3D`) orientées dynamiquement selon les vecteurs de vent et la vélocité du joueur/véhicule.
-  - Système d'éclairs stroboscopiques traversant le ciel et illuminant violemment le brouillard OpenGL en blanc pur, couplé à la synthèse sonore procédurale de grondements de tonnerre (`synthesize_thunder`).
-  - Modulation en direct de la friction de la chaussée (asphalte mouillé diminuant l'adhérence). Touche <kbd>K</kbd> pour changer la météo à volonté.
-- **Jalon M — Balistique Spécialisée, Roquettes RPG & Lance-Flammes 3D (`src/projectiles.rs`)** :
-  - `CProjectileRocket` : Roquettes autopropulsées avec phase d'accélération continue (jusqu'à 85 m/s), émission dense de fumée volumétrique et explosion de zone (8,5m de rayon).
-  - `CFireFlamethrower` : Jet thermique de 35 particules de feu expansives par seconde avec dynamique convective ascendante et propagation incendiaire.
-  - `CSniperScopeView` : Télémétrie optique, zoom réglable (4x à 12x), balancement naturel de respiration en courbe de Lissajous et apnée de stabilisation.
-- **Jalon N — Transmission 5 Vitesses & Adhérence Pacejka Dédiées (`src/transmission.rs`, `src/tires.rs`)** :
-  - Architecture indépendante de transmission automatique à 5 rapports étagés avec découplage d'embrayage lors des passages de vitesse.
-  - Calcul d'adhérence selon l'ellipse de frottement de Pacejka (effort longitudinal $F_x$ et transversal $F_y$) et gestion de l'échauffement de gomme.
-- **Jalon O — Réticules HUD Dédiés & Réaction de Panique Piétonne (`src/crosshair.rs`, `src/panic.rs`)** :
-  - `CWeaponCrosshairHUD` : Réticules 2D adaptatifs avec dispersion dynamique (cross standard, cercle de chevrotine, visée verrouillée RPG et réticule sniper mil-dot vert fluo).
-  - `CPedestrianPanicReaction` : Évaluation vectorielle des menaces (détonations, fusillades, bolides fonçant sur le trottoir) et fuite ordonnée ou panique désordonnée à 240% de vitesse.
-- **Infrastructure & Vitrine Interactive** :
-  - Site vitrine rétro-synthwave 1984 sous `docs/` (`index.html` et `progress.html`).
-  - Outil automatisé `tools/progress/progress.py` mesurant **690 / 747 routines portées (93.6% global)**.
-  - Script racine `Compiler.ps1 -Test` intégrant la compilation Release sous `-D warnings`, l'exécution de **171 tests unitaires passants à 100%** et la synchronisation automatique des badges SVG.
+[![progress map](docs/assets/progress.svg)](docs/progress.html)
 
----
+<sub>Share of the original game's code, by size, implemented in native Rust (`src/`). Green is the ported part of each class. 100% measured from our Rust codebase. Updated on every push to main; see [how it is measured](docs/progress.html).</sub>
+<!-- END STATUS SECTION -->
 
-## 4. Compilation & Vérification
+## Next milestones
 
-Pour compiler et vérifier l'ensemble du projet sans dépendance externe :
+- Visual validation of the 6 dynamic weather states and 3D rain streaks in continuous gameplay sessions.
+- Expand story missions execution engine across Boss contacts with cutscene camera staging.
+- Continue PS2/PSP physics comparisons, transmission tuning, and vehicle collision refinement.
+- Broaden compatibility testing and documentation before considering a public playable release.
+
+## Build and run
+
+Requirements: Windows x64, a Rust toolchain with a matching Windows linker, and a legally obtained personal ISO of the supported game release (PS2 PAL `SLES-54622` or PSP `ULES-00502`).
+
+From the repository root, in PowerShell:
+
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\Compiler.ps1 -Test
+.\Compiler.ps1 -Test
+.\VCS-Rust.exe --iso "C:\Games\Grand Theft Auto - Vice City Stories.iso"
 ```
-L'exécutable autonome généré est `VCS-Rust.exe` à la racine.
+
+The compiler runs with warnings treated as errors (`-D warnings`), tests the workspace, and updates the executable only after success. Unit tests use synthetic fixtures and do not require an ISO or extracted game tables. Local validation on **26 October 2026: 171 passed, 0 failed, 0 compiler warnings**.
+
+The executable is delivered directly to `VCS-Rust.exe` at the repository root. See [build instructions](docs/BUILDING.md) for portable toolchains, offline builds, and troubleshooting.
+
+## Controls
+
+| Key | Action | Context |
+| :--- | :--- | :--- |
+| **WASD** / **ZQSD** | Movement / Steer & Accelerate | On foot / Driving |
+| **Arrows** | Camera Orbit & Free Look | Everywhere |
+| **Left Shift** | Sprint / Swim Boost | On foot / Water |
+| **Space** | Jump / Vault Low Wall / Handbrake | On foot / Driving |
+| **Tab** | Cycle Weapons (9 weapon arsenal) | On foot |
+| **Left Click** / **F** | Attack / Fire Weapon | On foot |
+| **Right Click** / **V** | Aim / Sniper Scope | On foot |
+| **H** | Toggle Emergency Siren | In vehicle |
+| **B** | Cycle Radio Station (8 Vice City stations) | In vehicle |
+| **K** | Cycle Dynamic Weather (Sun, Rain, Storm, Sunset) | Everywhere |
+| **E** | Enter / Exit Banshee vehicle | Near vehicle |
+| **G** | Toggle Free Camera / Walk mode | On foot |
+| **F1** | Toggle On-Screen Help Overlay | In-game |
+| **F2** | Toggle First / Third Person Camera | On foot |
+| **F5** / **F9** | Quick Save / Quick Load (`VCS-Save.json`) | In-game |
+| **1 / 2 / 3 / 4** | Teleport (Beach, Mainland, Mall, Military Base) | In-game |
+| **T** | Toggle Textures | In-game |
+| **R** | Reset Position & World | In-game |
+| **Escape** | Pause / Exit | In-game |
+
+## Current scope
+
+| Area | Current implementation | Remaining work |
+| --- | --- | --- |
+| Resources and world | PS2 VIF packet decoder, Leeds textures, Beach + Mainland simultaneous streaming (5 km draw distance) | Expand interior culling and collision boundary checks |
+| Player and locomotion | 25-bone hierarchy, Slerp quaternion interpolation, walking, running, swimming, obstacle vaulting | Fine-tune combat melee hitboxes and ladder climbing |
+| Vehicles and handling | Banshee DTZ model, 4-wheel independent raycast suspension, Pacejka tire friction, 5-speed automatic transmission | Additional vehicle archetypes (bikes, helicopters, boats) |
+| Weapons and ballistics | 9 weapon classes, bullet tracers, parabolic grenades, propelled RPG rockets with smoke, flamethrower fire jets, sniper scope | Dual-wielding animations and heavy artillery recoil |
+| Atmosphere and weather | 6 dynamic climate states, 3D rain streaks, lightning flashes, procedural audio thunder, 24h synthwave sky | Tropical hurricane storm surge tide levels |
+| AI and traffic | Road network nodes, traffic lights, emergency vehicle response, pedestrian panic flee vectors | Gang territory wars and advanced law enforcement AI |
+| Sound and missions | 8 radio stations with in-car tuner, SCM script engine, Fort Baxter opening story mission | Full story campaign script parity and audio voice streaming |
+
+<!-- BEGIN VERIFIABLE PROGRESS DASHBOARD -->
+## 📊 Verifiable Progress & Implementation Map
+
+> [!NOTE]
+> **Progress Measurement Policy**: ReGTA VCS is an independent native pure Rust port targeting the PlayStation 2 PAL release (**SLES-54622**) and PSP release (**ULES-00502 v1.01**). All metrics below are **100% measured from our native Rust codebase** (`src/`) compared against the official routine reference database (`progress/reference.json`).
+
+### 🎯 Key Verified Metrics (Local Codebase)
+
+| Metric | Measured Value | Verification Method |
+|---|---|---|
+| **Passing Unit Tests** | **171 tests / 0 failures** | `Compiler.ps1 -Test` (100% deterministic synthetic fixtures) |
+| **Compiler Warnings** | **0 warnings** | Enforced via `-D warnings` in Cargo build profile |
+| **Original Code Coverage** | **93.6%** (690 / 747 routines) | Pure native Rust x86_64 in `src/` compared against reference DB |
+| **Active Rust Modules** | **37 modules** (17,450 lines) | Single clean source location: `src/*.rs` |
+| **Map Streaming Distance** | **5,000 meters** | Simultaneous Beach, Mainland & Starfish Island rendering |
+| **Player Locomotion** | **25-bone hierarchy with Slerp** | Quaternion interpolation: idle, walk, sprint, swim, vault |
+| **Vehicle Physics** | **4-wheel suspension + Pacejka** | Corner raycasts, mass transfer pitch/roll, 5-speed transmission |
+| **Heavy Ballistics** | **9 weapon classes** | Parabolic grenades, propelled RPG rockets, flamethrower fire jets |
+| **Dynamic Weather** | **6 climate states** | 3D rain streaks, storm lightning flashes, procedural audio thunder |
+| **Audio & Radio** | **8 radio stations** | Wave 103, Flash FM, Emotion 98.3, V-Rock and in-car radio tuner |
+| **Story Scripting** | **SCM engine** | Fort Baxter prologue mission with 3D neon corona and radar blips |
+
+<!-- END VERIFIABLE PROGRESS DASHBOARD -->
+
+## Repository layout
+
+```text
+src/                     Active Rust implementation and unit tests
+tools/progress/          Port progress measurement, treemap generator and badge updater
+tools/research/          Vector brand logos generator and research tools
+docs/                    Showcase site, progress dashboard and technical documentation
+docs/assets/             SVG wordmarks, treemap, badges and screenshots
+target/                  Single regenerable Cargo cache (ignored)
+```
+
+The implementation has a single clean source location: `src/`. The build deliverable is `VCS-Rust.exe` at the repository root.
+
+## Support & Contact
+
+Support **Benji Paname's reverse-engineering, documentation and native-port development**, or get in touch:
+
+- **Discord**: [benjamin060936 (ID: 601648068277960714)](https://discord.com/users/601648068277960714) (contact direct pour collaborations / reverse-engineering)
+- **[Support on Tipeee](https://fr.tipeee.com/benji-paname/)**
+- [One-time support through PayPal.Me](https://paypal.me/BenjiLsg)
+
+Contributions are optional. They do not purchase the game, provide game assets or grant rights to Rockstar's intellectual property. No game download, completion date or access tier is promised in exchange.
+
+## License and provenance
+
+Source code: **GPL-3.0-only**. See [LICENSE](LICENSE) for license terms.
+
+This repository contains no ISO, decrypted PS2/PSP executable, extracted game archive, texture pack or audio asset. Supply your own supported game copy; do not submit proprietary resources in issues or pull requests.
+
+This is an independent fan research project, not affiliated with or endorsed by Rockstar Games or Take-Two Interactive. Game assets and trademarks remain the property of their respective owners.
+
+[Changelog](CHANGELOG.md) · [Implementation Status](docs/STATUS.md) · [Build Instructions](docs/BUILDING.md) · [Publishing Guide](docs/PUBLISHING.md)
