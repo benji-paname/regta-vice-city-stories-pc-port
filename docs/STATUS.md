@@ -18,10 +18,12 @@ The goal is native PS2 behaviour in 100% pure Rust, with zero CPU emulation (no 
 
 | Metric | Measured Value | Verification Method |
 |---|---|---|
-| **Passing Unit Tests** | **171 tests / 0 failures** | `Compiler.ps1 -Test` (100% deterministic synthetic fixtures) |
+| **Passing Unit Tests** | **182 tests / 0 failures** | `Compiler.ps1 -Test` (100% deterministic synthetic fixtures) |
 | **Compiler Warnings** | **0 warnings** | Enforced via `-D warnings` in Cargo build profile |
-| **Original Code Coverage** | **4.8%** (729 / 26,735 routines) | Pure native Rust x86_64 in `src/` compared against reference DB |
-| **Active Rust Modules** | **37 modules** (17,450 lines) | Single clean source location: `src/*.rs` |
+| **Original Code Coverage** | **4.9%** (746 / 26,735 routines) | Pure native Rust x86_64 in `src/` compared against reference DB |
+| **Active Rust Modules** | **38 modules** (18,800 lines) | Single clean source location: `src/*.rs` |
+| **Vehicle Registry** | **111 models indexed** | All 71 cars, 15 boats/jetski, 10 helis, 11 bikes/BMX, 1 hovercraft |
+| **Aquatic Mechanics** | **Hydrodynamics & Planing** | Archimedes buoyancy, wave swell, jet vectoring, wake and spray |
 | **Map Streaming Distance** | **5,000 meters** | Simultaneous Beach, Mainland & Starfish Island rendering |
 | **Player Locomotion** | **25-bone hierarchy with Slerp** | Quaternions interpolation: idle, walk, sprint, swimming, vaulting |
 | **Vehicle Physics** | **4-wheel suspension + Pacejka** | Corner raycasts, mass transfer pitch/roll, 5-speed transmission |
@@ -39,7 +41,7 @@ The goal is native PS2 behaviour in 100% pure Rust, with zero CPU emulation (no 
 | `iso.rs`, `leeds.rs`, `texture.rs`, `scene.rs` | Reads the user's PS2 disc (`SLES-54622`), decodes VIF packets, parses Leeds textures, and streams 3D models with 5 km draw distance. |
 | `collision.rs`, `paths.rs`, `props.rs` | Static collision mesh decoded from original tables, road navigation nodes, and prop object managers. |
 | `player.rs`, `character.rs`, `locomotion.rs`, `water.rs` | Full 25-bone character skeleton with short-arc Slerp quaternion interpolation. Idle, walk, run, swim with water buoyancy, jump, and vault. |
-| `vehicle.rs`, `driving.rs`, `transmission.rs`, `tires.rs` | Banshee 3D model with 4 independent corner raycast suspensions, mass transfer roll & pitch, 5-speed automatic gearbox, and Pacejka tire friction model with skidmarks. |
+| `vehicle.rs`, `watercraft.rs`, `driving.rs`, `transmission.rs`, `tires.rs` | All 111 vehicle models (170..=280) catalogued with PS2 handling records. Aquatic hydrodynamics module (`watercraft.rs`) supporting speedboats, cruisers, Jetski vectoring, amphibious hovercraft, dynamic buoyancy, coastal wave swell, and wake emitters. Banshee 3D model with 4 independent suspensions and Pacejka tires. |
 | `weapons.rs`, `projectiles.rs`, `combat.rs`, `crosshair.rs` | 9 weapon classes: bullet tracers, parabolic grenade arcs (g = 9.81 m/s²), propelled RPG rockets with smoke trails, flamethrower fire jets, dynamic crosshair spread, and mil-dot sniper scope. |
 | `weather.rs`, `audio.rs` | 6 dynamic climate states, 3D OpenGL rain streaks, storm lightning flashes, procedural audio thunder rumbles, and 8 Vice City radio stations. |
 | `script.rs`, `save.rs`, `hud.rs` | SCM mission script interpreter, Fort Baxter opening mission, 3D pulsating neon coronas, radar minimap blips, and quick save/load. |

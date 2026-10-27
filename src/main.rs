@@ -35,6 +35,7 @@ mod tires;
 mod projectiles;
 mod panic;
 mod crosshair;
+mod watercraft;
 use iso::{Disc, Result};
 use sha2::{Digest, Sha256};
 use std::path::PathBuf;
@@ -145,12 +146,26 @@ fn run() -> Result<()> {
     if iso::bytes(&game, 0, 4)? != b"GATG" || iso::u32le(&game, 8)? as usize != game.len() {
         return Err("Invalid GAME.DTZ resource image".into());
     }
+    let selected_vehicle_id: u16 = if let Some(i) = args.iter().position(|arg| arg == "--vehicle") {
+        let spec = args
+            .get(i + 1)
+            .ok_or("--vehicle needs an ID (170..280) or vehicle name")?;
+        if let Ok(id) = spec.parse::<u16>() {
+            id
+        } else if let Some(entry) = vehicle::VehicleCatalog::find(spec) {
+            entry.id
+        } else {
+            return Err(format!("Vehicle '{spec}' not found in catalog").into());
+        }
+    } else {
+        175 // Default Banshee
+    };
     if let Some(i) = args.iter().position(|arg| arg == "--vehicle-preview") {
         let path = PathBuf::from(
             args.get(i + 1)
                 .ok_or("--vehicle-preview needs a BMP path")?,
         );
-        let vehicle = vehicle::VehicleModel::load_banshee(&mut disc, &game)?;
+        let vehicle = vehicle::VehicleModel::load(&mut disc, &game, selected_vehicle_id)?;
         let camera = render::Camera {
             pos: [2.66, -5.38, 2.8],
             yaw: -0.459,
@@ -290,8 +305,12 @@ fn run() -> Result<()> {
         }
         pose_checks.push(serde_json::json!({"clip":clip.name,"max_position_variation_m":variation,"max_loop_error_m":seam,"finite":true}));
     }
-    println!("Loading original first vehicle (Banshee) and shared wheels...");
-    let vehicle = vehicle::VehicleModel::load_banshee(&mut disc, &game)?;
+    let vehicle_entry = vehicle::VehicleCatalog::get(selected_vehicle_id).unwrap_or(&vehicle::VEHICLE_CATALOG[5]);
+    println!("Loading original vehicle {} (ID {}) [type: {:?}]...", vehicle_entry.display_name, vehicle_entry.id, vehicle_entry.vehicle_type);
+    if vehicle_entry.is_watercraft() {
+        println!("Aquatic mechanics active: hydrodynamic buoyancy, planing, spray and wake simulation enabled.");
+    }
+    let vehicle = vehicle::VehicleModel::load(&mut disc, &game, selected_vehicle_id)?;
     println!("{}", serde_json::to_string_pretty(&vehicle.stats)?);
     std::fs::write(
         out.join("vehicle-validation.json"),

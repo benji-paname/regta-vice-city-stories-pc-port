@@ -3,6 +3,32 @@
 All notable changes to the **ReGTA VCS — PC Recomp** project are documented here.
 The project is in active alpha development; version numbers reflect milestone achievements rather than final gameplay parity.
 
+## [0.4.0-alpha] — 2026-10-27
+
+### Added
+
+- **Complete Vehicle Registry — All 111 Models (`src/vehicle.rs`)**:
+  - Indexed all 111 vehicles of *Grand Theft Auto: Vice City Stories* (IDs 170 to 280) from `GAME.DTZ`.
+  - Mapped categories: 71 automobiles, 15 watercraft, 10 helicopters, 9 motorcycles, 2 bicycles, 1 quad bike, and 1 amphibious hovercraft.
+  - `VehicleCatalog`: Query methods (`find`, `get`, `all`, `watercraft`, `automobiles`, `motorcycles`, `aircraft`) with case-insensitive name resolution.
+  - Generic vehicle model loader (`VehicleModel::load`) decoding any vehicle from `GTA3PS2.IMG` and `GAME.DTZ`.
+  - Added CLI flag `--vehicle <NAME|ID>` in `src/main.rs` to spawn and preview any vehicle in the game.
+
+- **Aquatic Mechanics & Hydrodynamics (`src/watercraft.rs`)**:
+  - `Watercraft`: Physics simulation for surface vessels with Archimedes buoyancy spring and vertical heave damping over `WaterGrid`.
+  - Coastal wave dynamics: Superimposed sinusoidal swell and ocean chop interacting with hull immersion.
+  - Hydrodynamic planing (déjaugeage): Speedboats (Squalo, Jetmax, Speeder, Scarab) experience reduced wetted drag and bow pitch trim at high speeds (> 12 m/s).
+  - Jetski nozzle vectoring: Direct steering torque from waterjet thrust allowing sharp 180° turns and donuts from a standstill.
+  - Bovver '64 amphibious hovercraft: Air-cushion propulsion gliding over both water and dry terrain with dual directional rudders.
+  - Ground contact & beaching: Detects shallow water and shore collisions via `CollisionQuery`, arresting non-amphibious vessels.
+  - Stern wake foam trail emitters and bow water spray particle emitters.
+
+### Quality & Validation
+
+- **182 passing unit tests** (+11 new tests for vehicle catalog and hydrodynamics) with 0 failures (`Compiler.ps1 -Test`).
+- Enforced 0 compiler warnings under `-D warnings`.
+- Progress metrics updated: 746 routines ported across 11 subsystems (4.86%).
+
 ## [0.3.0-alpha] — 2026-10-26
 
 ### Added

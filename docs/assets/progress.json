@@ -1,9 +1,9 @@
 {
-  "build": "PlayStation 2 PAL SLES-54622 (740 Rust functions)",
+  "build": "PlayStation 2 PAL SLES-54622 (775 Rust functions)",
   "bytes": 6819707,
-  "portedBytes": 328735,
+  "portedBytes": 331179,
   "routines": 26735,
-  "portedRoutines": 729,
+  "portedRoutines": 746,
   "subsystems": [
     {
       "name": "Missions",
@@ -4020,9 +4020,9 @@
     {
       "name": "Vehicles",
       "bytes": 456646,
-      "portedBytes": 58266,
+      "portedBytes": 60710,
       "routines": 1738,
-      "portedRoutines": 116,
+      "portedRoutines": 133,
       "classes": [
         {
           "name": "CVehicleModel",
@@ -4112,8 +4112,8 @@
           "name": "Vehicle",
           "bytes": 9860,
           "routines": 95,
-          "portedBytes": 36,
-          "portedRoutines": 1
+          "portedBytes": 2480,
+          "portedRoutines": 18
         },
         {
           "name": "VehicleType",

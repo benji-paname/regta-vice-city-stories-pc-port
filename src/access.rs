@@ -54,13 +54,16 @@ fn point(car: &Car, x: f32, y: f32, z: f32) -> [f32; 3] {
 impl Access {
     pub fn seated_position(actor: &Character, model: &VehicleModel, car: &Car) -> [f32; 3] {
         let side = -1.;
-        let door = model.doors.iter().find(|d| d.side == side).unwrap();
-        let y = model.triangles[door.triangle_range.clone()]
-            .iter()
-            .flat_map(|t| &t.vertices)
-            .map(|v| v.p[1])
-            .fold(f32::INFINITY, f32::min)
-            + 0.05;
+        let y = if let Some(door) = model.doors.iter().find(|d| d.side == side) {
+            model.triangles[door.triangle_range.clone()]
+                .iter()
+                .flat_map(|t| &t.vertices)
+                .map(|v| v.p[1])
+                .fold(f32::INFINITY, f32::min)
+                + 0.05
+        } else {
+            0.0
+        };
         let root = actor.root_translation("CAR_closedoorL_RHS", 99.).unwrap();
         point(
             car,

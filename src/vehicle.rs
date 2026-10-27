@@ -11,34 +11,39 @@ use std::collections::{HashMap, HashSet};
 type Matrix = [f32; 16];
 pub const VEHICLE_TEXTURE_BASE: u16 = 50000;
 
-fn banshee_paint_color(game: &[u8]) -> Result<[u8; 3]> {
-    // ResourceImage::modelInfoPtrs and colourTable in this PS2 PAL image.
+fn vehicle_paint_color(game: &[u8], model_id: u16) -> Result<[u8; 3]> {
     let model_infos = u32le(game, 0x3c)? as usize;
-    let model_info = u32le(game, model_infos + 175 * 4)? as usize;
+    let model_info_addr = model_infos + model_id as usize * 4;
+    if model_info_addr + 4 > game.len() {
+        return Ok([255, 255, 255]);
+    }
+    let model_info = u32le(game, model_info_addr)? as usize;
     let colour_table = u32le(game, 0x90)? as usize;
-    let colour_count = *bytes(game, model_info + 0x161, 1)?.first().unwrap() as usize;
+    if model_info == 0 || model_info >= game.len() || colour_table >= game.len() {
+        return Ok([255, 255, 255]);
+    }
+    let count_byte = bytes(game, model_info + 0x161, 1)?;
+    let colour_count = *count_byte.first().unwrap_or(&0) as usize;
     if colour_count == 0 || colour_count > 8 {
-        return Err("Banshee has an invalid vehicle colour list".into());
+        return Ok([255, 255, 255]);
     }
     let colours = bytes(game, model_info + 0x163, colour_count * 2)?;
     let palette = bytes(game, colour_table, 256 * 3)?;
 
-    // Use the lightest documented Banshee palette entry, matching the white
-    // car shown in the user's reference image.
     let mut selected = None;
     for pair in colours.chunks_exact(2) {
         let primary_id = pair[0] as usize;
         let primary_at = (128 + primary_id) * 3;
-        let rgb = bytes(palette, primary_at, 3)?;
-        let luminance = 0.2126 * rgb[0] as f32 + 0.7152 * rgb[1] as f32 + 0.0722 * rgb[2] as f32;
-        if selected.is_none_or(|(_, best)| luminance > best) {
-            selected = Some(([rgb[0], rgb[1], rgb[2]], luminance));
+        if let Ok(rgb) = bytes(palette, primary_at, 3) {
+            let luminance = 0.2126 * rgb[0] as f32 + 0.7152 * rgb[1] as f32 + 0.0722 * rgb[2] as f32;
+            if selected.is_none_or(|(_, best)| luminance > best) {
+                selected = Some(([rgb[0], rgb[1], rgb[2]], luminance));
+            }
         }
     }
-    selected
-        .map(|(rgb, _)| rgb)
-        .ok_or_else(|| "Banshee has no usable paint colour".into())
+    Ok(selected.map(|(rgb, _)| rgb).unwrap_or([255, 255, 255]))
 }
+
 
 #[derive(Serialize, Clone, Debug)]
 pub struct VehicleStats {
@@ -431,8 +436,248 @@ fn load_embedded_generic_txd(game: &[u8]) -> Result<HashMap<String, Texture>> {
     Ok(out)
 }
 
+
+/// Vehicle types supported in GTA Vice City Stories.
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize)]
+pub enum VehicleType {
+    /// Standard 4-wheeled automobiles, trucks, vans, and tracked tanks
+    Automobile,
+    /// Surface watercraft (speedboats, cruisers, yachts, cutters, dinghies)
+    Boat,
+    /// Personal watercraft with jet nozzle vectoring (Jetski)
+    Jetski,
+    /// Rotary aircraft (Maverick, Little Willie, Sea Sparrow, Hunter)
+    Helicopter,
+    /// Fixed-wing aircraft and air-cushioned hovercraft (Biplane, Bovver '64)
+    PlaneOrHover,
+    /// Two-wheeled motorized cycles (Sanchez, PCJ-600, Faggio, Angel, Freeway)
+    Motorcycle,
+    /// Pedal bicycles (BMX, BMX Gold)
+    Bicycle,
+    /// Four-wheeled all-terrain quad cycle
+    QuadBike,
+}
+
+/// Metadata and technical parameters for a vehicle model entry in GAME.DTZ.
+#[allow(dead_code)]
+#[derive(Clone, Debug, Serialize)]
+pub struct VehicleCatalogEntry {
+    pub id: u16,
+    pub game_name: &'static str,
+    pub display_name: &'static str,
+    pub vehicle_type: VehicleType,
+    pub wheel_model_id: u16,
+    pub wheel_scale: f32,
+    pub wheel_scale_rear: f32,
+    pub txd_id: u16,
+    pub handling_address: usize,
+}
+
+#[allow(dead_code)]
+impl VehicleCatalogEntry {
+    #[inline]
+    pub fn is_watercraft(&self) -> bool {
+        matches!(self.vehicle_type, VehicleType::Boat | VehicleType::Jetski)
+            || self.game_name == "HOVER"
+            || self.game_name == "SKIMMER"
+            || self.game_name == "SEASPAR"
+    }
+
+    #[inline]
+    pub fn is_aircraft(&self) -> bool {
+        matches!(self.vehicle_type, VehicleType::Helicopter | VehicleType::PlaneOrHover)
+    }
+
+    #[inline]
+    pub fn is_two_wheeler(&self) -> bool {
+        matches!(self.vehicle_type, VehicleType::Motorcycle | VehicleType::Bicycle)
+    }
+
+    #[inline]
+    pub fn is_amphibious(&self) -> bool {
+        self.game_name == "HOVER" || self.game_name == "SKIMMER" || self.game_name == "SEASPAR"
+    }
+
+    #[inline]
+    pub fn has_wheels(&self) -> bool {
+        self.wheel_model_id != 65535 && self.wheel_model_id != 0
+    }
+}
+
+/// Query and catalog lookup interface for all 111 Vice City Stories vehicles.
+#[allow(dead_code)]
+pub struct VehicleCatalog;
+
+#[allow(dead_code)]
+impl VehicleCatalog {
+    /// Returns the complete immutable array of all 111 vehicles.
+    pub fn all() -> &'static [VehicleCatalogEntry] {
+        VEHICLE_CATALOG
+    }
+
+    /// Lookup a vehicle by model ID (170..=280).
+    pub fn get(id: u16) -> Option<&'static VehicleCatalogEntry> {
+        VEHICLE_CATALOG.iter().find(|e| e.id == id)
+    }
+
+    /// Case-insensitive search by game name (e.g. "BANSHEE", "SQUALO") or display name ("Squalo Speedboat").
+    pub fn find(name: &str) -> Option<&'static VehicleCatalogEntry> {
+        let trimmed = name.trim();
+        let upper = trimmed.to_uppercase();
+        VEHICLE_CATALOG.iter().find(|e| {
+            e.game_name == upper
+                || e.display_name.eq_ignore_ascii_case(trimmed)
+        })
+    }
+
+    /// Returns all surface watercraft and amphibious vessels.
+    pub fn watercraft() -> Vec<&'static VehicleCatalogEntry> {
+        VEHICLE_CATALOG.iter().filter(|e| e.is_watercraft()).collect()
+    }
+
+    /// Returns all 4-wheeled road automobiles, trucks, and heavy vehicles.
+    pub fn automobiles() -> Vec<&'static VehicleCatalogEntry> {
+        VEHICLE_CATALOG
+            .iter()
+            .filter(|e| e.vehicle_type == VehicleType::Automobile)
+            .collect()
+    }
+
+    /// Returns all motorcycles, mopeds, and bicycles.
+    pub fn motorcycles() -> Vec<&'static VehicleCatalogEntry> {
+        VEHICLE_CATALOG.iter().filter(|e| e.is_two_wheeler()).collect()
+    }
+
+    /// Returns all helicopters and airplanes.
+    pub fn aircraft() -> Vec<&'static VehicleCatalogEntry> {
+        VEHICLE_CATALOG.iter().filter(|e| e.is_aircraft()).collect()
+    }
+}
+
+pub const VEHICLE_CATALOG: &[VehicleCatalogEntry] = &[
+    VehicleCatalogEntry { id: 170, game_name: "6WEELAT", display_name: "6-Wheel ATV", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 166, handling_address: 0x4c52a0 },
+    VehicleCatalogEntry { id: 171, game_name: "ADMIRAL", display_name: "Admiral", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 167, handling_address: 0x4c5380 },
+    VehicleCatalogEntry { id: 172, game_name: "CHEETAH", display_name: "Cheetah", vehicle_type: VehicleType::Automobile, wheel_model_id: 323, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 168, handling_address: 0x4c5460 },
+    VehicleCatalogEntry { id: 173, game_name: "AUTOGYR", display_name: "Little Willie Autogyro", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.64, txd_id: 169, handling_address: 0x4c5540 },
+    VehicleCatalogEntry { id: 174, game_name: "BAGGAGE", display_name: "Baggage Handler", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.60, wheel_scale_rear: 0.60, txd_id: 170, handling_address: 0x4c5620 },
+    VehicleCatalogEntry { id: 175, game_name: "BANSHEE", display_name: "Banshee", vehicle_type: VehicleType::Automobile, wheel_model_id: 323, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 171, handling_address: 0x4c5700 },
+    VehicleCatalogEntry { id: 176, game_name: "PEREN", display_name: "Perennial", vehicle_type: VehicleType::Automobile, wheel_model_id: 326, wheel_scale: 0.66, wheel_scale_rear: 0.66, txd_id: 172, handling_address: 0x4c57e0 },
+    VehicleCatalogEntry { id: 177, game_name: "BLISTA", display_name: "Blista Compact", vehicle_type: VehicleType::Automobile, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 173, handling_address: 0x4c58c0 },
+    VehicleCatalogEntry { id: 178, game_name: "BMX", display_name: "BMX", vehicle_type: VehicleType::Bicycle, wheel_model_id: 65535, wheel_scale: 0.60, wheel_scale_rear: 0.60, txd_id: 174, handling_address: 0x4c4990 },
+    VehicleCatalogEntry { id: 179, game_name: "BMXG", display_name: "BMX (Gold)", vehicle_type: VehicleType::Bicycle, wheel_model_id: 65535, wheel_scale: 0.60, wheel_scale_rear: 0.90, txd_id: 175, handling_address: 0x4c4a70 },
+    VehicleCatalogEntry { id: 180, game_name: "BOBCAT", display_name: "Bobcat", vehicle_type: VehicleType::Automobile, wheel_model_id: 327, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 176, handling_address: 0x4c4b50 },
+    VehicleCatalogEntry { id: 181, game_name: "BULLDOZ", display_name: "Bulldozer", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 1.40, wheel_scale_rear: 1.40, txd_id: 177, handling_address: 0x4c4c30 },
+    VehicleCatalogEntry { id: 182, game_name: "BURRITO", display_name: "Burrito", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 178, handling_address: 0x4c4d10 },
+    VehicleCatalogEntry { id: 183, game_name: "CABBIE", display_name: "Cabbie", vehicle_type: VehicleType::Automobile, wheel_model_id: 326, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 179, handling_address: 0x4c4df0 },
+    VehicleCatalogEntry { id: 184, game_name: "CADDY", display_name: "Caddy", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.50, wheel_scale_rear: 0.50, txd_id: 180, handling_address: 0x4c4ed0 },
+    VehicleCatalogEntry { id: 185, game_name: "SPEEDER2", display_name: "Speeder II", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 181, handling_address: 0x4c4fb0 },
+    VehicleCatalogEntry { id: 186, game_name: "PIMP", display_name: "Polaroid Pimp Wagon", vehicle_type: VehicleType::Automobile, wheel_model_id: 323, wheel_scale: 0.80, wheel_scale_rear: 0.85, txd_id: 182, handling_address: 0x4c5090 },
+    VehicleCatalogEntry { id: 187, game_name: "DELUXO", display_name: "Deluxo", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 183, handling_address: 0x4c41b0 },
+    VehicleCatalogEntry { id: 188, game_name: "HUEY", display_name: "Armadillo / Huey", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.64, txd_id: 184, handling_address: 0x4c4290 },
+    VehicleCatalogEntry { id: 189, game_name: "AIRAMB", display_name: "Air Ambulance", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.64, txd_id: 185, handling_address: 0x4c4370 },
+    VehicleCatalogEntry { id: 190, game_name: "ELECTRA", display_name: "WinterGreen / Electra", vehicle_type: VehicleType::Motorcycle, wheel_model_id: 65535, wheel_scale: 0.65, wheel_scale_rear: 0.65, txd_id: 186, handling_address: 0x4c4450 },
+    VehicleCatalogEntry { id: 191, game_name: "ELECTRP", display_name: "Police WinterGreen", vehicle_type: VehicleType::Motorcycle, wheel_model_id: 65535, wheel_scale: 0.65, wheel_scale_rear: 0.65, txd_id: 187, handling_address: 0x4c4530 },
+    VehicleCatalogEntry { id: 192, game_name: "ESPERAN", display_name: "Esperanto", vehicle_type: VehicleType::Automobile, wheel_model_id: 326, wheel_scale: 0.64, wheel_scale_rear: 0.64, txd_id: 188, handling_address: 0x4c4610 },
+    VehicleCatalogEntry { id: 193, game_name: "FBICAR", display_name: "FBI Washington", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 189, handling_address: 0x4c46f0 },
+    VehicleCatalogEntry { id: 194, game_name: "FIRETRK", display_name: "Fire Truck", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 1.00, wheel_scale_rear: 1.00, txd_id: 190, handling_address: 0x4c47d0 },
+    VehicleCatalogEntry { id: 195, game_name: "GLENDAL", display_name: "Glendale", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 191, handling_address: 0x4c48b0 },
+    VehicleCatalogEntry { id: 196, game_name: "GREENWO", display_name: "Greenwood", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 192, handling_address: 0x4c39d0 },
+    VehicleCatalogEntry { id: 197, game_name: "HERMES", display_name: "Hermes", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 193, handling_address: 0x4c3ab0 },
+    VehicleCatalogEntry { id: 198, game_name: "HOVER", display_name: "Bovver '64 Hovercraft", vehicle_type: VehicleType::PlaneOrHover, wheel_model_id: 329, wheel_scale: 1.00, wheel_scale_rear: 1.00, txd_id: 194, handling_address: 0x4c3b90 },
+    VehicleCatalogEntry { id: 199, game_name: "IDAHO", display_name: "Idaho", vehicle_type: VehicleType::Automobile, wheel_model_id: 326, wheel_scale: 0.64, wheel_scale_rear: 0.64, txd_id: 195, handling_address: 0x4c3c70 },
+    VehicleCatalogEntry { id: 200, game_name: "LANDSTK", display_name: "Landstalker", vehicle_type: VehicleType::Automobile, wheel_model_id: 327, wheel_scale: 0.82, wheel_scale_rear: 0.95, txd_id: 196, handling_address: 0x4c3d50 },
+    VehicleCatalogEntry { id: 201, game_name: "MANANA", display_name: "Manana", vehicle_type: VehicleType::Automobile, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 197, handling_address: 0x4c3e30 },
+    VehicleCatalogEntry { id: 202, game_name: "MOPED", display_name: "Faggio Moped", vehicle_type: VehicleType::Motorcycle, wheel_model_id: 65535, wheel_scale: 0.46, wheel_scale_rear: 0.46, txd_id: 198, handling_address: 0x4c3f10 },
+    VehicleCatalogEntry { id: 203, game_name: "OCEANIC", display_name: "Oceanic", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 199, handling_address: 0x4c3ff0 },
+    VehicleCatalogEntry { id: 204, game_name: "VICECHE", display_name: "Vice Cheetah", vehicle_type: VehicleType::Automobile, wheel_model_id: 323, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 200, handling_address: 0x4c40d0 },
+    VehicleCatalogEntry { id: 205, game_name: "SANCHEZ", display_name: "Sanchez Dirt Bike", vehicle_type: VehicleType::Motorcycle, wheel_model_id: 65535, wheel_scale: 0.66, wheel_scale_rear: 0.66, txd_id: 201, handling_address: 0x4c31f0 },
+    VehicleCatalogEntry { id: 206, game_name: "STALION", display_name: "Stallion", vehicle_type: VehicleType::Automobile, wheel_model_id: 326, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 202, handling_address: 0x4c32d0 },
+    VehicleCatalogEntry { id: 207, game_name: "POLICEM", display_name: "VCPD Police Cruiser", vehicle_type: VehicleType::Automobile, wheel_model_id: 326, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 203, handling_address: 0x4c33b0 },
+    VehicleCatalogEntry { id: 208, game_name: "BOBO", display_name: "Bobo Delivery Truck", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.30, wheel_scale_rear: 0.30, txd_id: 204, handling_address: 0x4c3490 },
+    VehicleCatalogEntry { id: 209, game_name: "PATRIOT", display_name: "Patriot", vehicle_type: VehicleType::Automobile, wheel_model_id: 329, wheel_scale: 0.90, wheel_scale_rear: 0.90, txd_id: 205, handling_address: 0x4c3570 },
+    VehicleCatalogEntry { id: 210, game_name: "PONY", display_name: "Pony", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 206, handling_address: 0x4c3650 },
+    VehicleCatalogEntry { id: 211, game_name: "SENTINL", display_name: "Sentinel", vehicle_type: VehicleType::Automobile, wheel_model_id: 327, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 207, handling_address: 0x4c3730 },
+    VehicleCatalogEntry { id: 212, game_name: "PCJ600", display_name: "PCJ-600", vehicle_type: VehicleType::Motorcycle, wheel_model_id: 65535, wheel_scale: 0.67, wheel_scale_rear: 0.67, txd_id: 208, handling_address: 0x4c3810 },
+    VehicleCatalogEntry { id: 213, game_name: "MAVERIC", display_name: "Maverick", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 209, handling_address: 0x4c38f0 },
+    VehicleCatalogEntry { id: 214, game_name: "REEFER", display_name: "Reefer Trawler", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 210, handling_address: 0x4c2a10 },
+    VehicleCatalogEntry { id: 215, game_name: "SPEEDER", display_name: "Speeder", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 211, handling_address: 0x4c2af0 },
+    VehicleCatalogEntry { id: 216, game_name: "LINERUN", display_name: "Line Runner", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 1.10, wheel_scale_rear: 1.10, txd_id: 212, handling_address: 0x4c2bd0 },
+    VehicleCatalogEntry { id: 217, game_name: "WALTON", display_name: "Walton", vehicle_type: VehicleType::Automobile, wheel_model_id: 327, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 213, handling_address: 0x4c2cb0 },
+    VehicleCatalogEntry { id: 218, game_name: "BARRCKS", display_name: "Barracks OL", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 1.20, wheel_scale_rear: 1.20, txd_id: 214, handling_address: 0x4c2d90 },
+    VehicleCatalogEntry { id: 219, game_name: "PREDATR", display_name: "Predator Police Boat", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 215, handling_address: 0x4c2e70 },
+    VehicleCatalogEntry { id: 220, game_name: "FLATBED", display_name: "Flatbed", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 1.20, wheel_scale_rear: 1.20, txd_id: 216, handling_address: 0x4c2f50 },
+    VehicleCatalogEntry { id: 221, game_name: "BARRACK", display_name: "Barracks OL Flat", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 1.20, wheel_scale_rear: 1.20, txd_id: 217, handling_address: 0x4c3030 },
+    VehicleCatalogEntry { id: 222, game_name: "BIPLANE", display_name: "Biplane", vehicle_type: VehicleType::PlaneOrHover, wheel_model_id: 325, wheel_scale: 1.00, wheel_scale_rear: 1.00, txd_id: 218, handling_address: 0x4c3110 },
+    VehicleCatalogEntry { id: 223, game_name: "MOONBM", display_name: "Moonbeam", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 219, handling_address: 0x4c1aa0 },
+    VehicleCatalogEntry { id: 224, game_name: "RUMPO", display_name: "Rumpo", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 220, handling_address: 0x4c1b80 },
+    VehicleCatalogEntry { id: 225, game_name: "YOLA", display_name: "Yola Dinghy", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 221, handling_address: 0x4c1c60 },
+    VehicleCatalogEntry { id: 226, game_name: "TAXI", display_name: "Taxi", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 222, handling_address: 0x4c1d40 },
+    VehicleCatalogEntry { id: 227, game_name: "AMBULAN", display_name: "Ambulance", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.90, wheel_scale_rear: 0.90, txd_id: 223, handling_address: 0x4c1e20 },
+    VehicleCatalogEntry { id: 228, game_name: "STRETCH", display_name: "Stretch Limousine", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.75, wheel_scale_rear: 0.75, txd_id: 224, handling_address: 0x4c1f00 },
+    VehicleCatalogEntry { id: 229, game_name: "FAGGIO", display_name: "Faggio", vehicle_type: VehicleType::Motorcycle, wheel_model_id: 65535, wheel_scale: 0.46, wheel_scale_rear: 0.46, txd_id: 225, handling_address: 0x4c1fe0 },
+    VehicleCatalogEntry { id: 230, game_name: "QUADBIK", display_name: "Quad Bike", vehicle_type: VehicleType::QuadBike, wheel_model_id: 327, wheel_scale: 0.76, wheel_scale_rear: 0.76, txd_id: 226, handling_address: 0x4c20c0 },
+    VehicleCatalogEntry { id: 231, game_name: "ANGEL", display_name: "Angel Chopper", vehicle_type: VehicleType::Motorcycle, wheel_model_id: 65535, wheel_scale: 0.65, wheel_scale_rear: 0.65, txd_id: 227, handling_address: 0x4c21a0 },
+    VehicleCatalogEntry { id: 232, game_name: "FREEWAY", display_name: "Freeway", vehicle_type: VehicleType::Motorcycle, wheel_model_id: 65535, wheel_scale: 0.65, wheel_scale_rear: 0.65, txd_id: 228, handling_address: 0x4c12c0 },
+    VehicleCatalogEntry { id: 233, game_name: "JETSKI", display_name: "Jetski", vehicle_type: VehicleType::Jetski, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 229, handling_address: 0x4c13a0 },
+    VehicleCatalogEntry { id: 234, game_name: "ENFORCE", display_name: "Enforcer SWAT Truck", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.90, wheel_scale_rear: 0.90, txd_id: 230, handling_address: 0x4c1480 },
+    VehicleCatalogEntry { id: 235, game_name: "BOXVIL", display_name: "Boxville", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.90, wheel_scale_rear: 0.90, txd_id: 231, handling_address: 0x4c1560 },
+    VehicleCatalogEntry { id: 236, game_name: "BENSON", display_name: "Benson", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.90, wheel_scale_rear: 0.90, txd_id: 232, handling_address: 0x4c1640 },
+    VehicleCatalogEntry { id: 237, game_name: "COACH", display_name: "Coach Bus", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 1.00, wheel_scale_rear: 1.00, txd_id: 233, handling_address: 0x4c1720 },
+    VehicleCatalogEntry { id: 238, game_name: "MULE", display_name: "Mule", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 0.76, wheel_scale_rear: 0.76, txd_id: 234, handling_address: 0x4c1800 },
+    VehicleCatalogEntry { id: 239, game_name: "VOODOO", display_name: "Voodoo Lowrider", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 235, handling_address: 0x4c18e0 },
+    VehicleCatalogEntry { id: 240, game_name: "SECURI", display_name: "Securicar", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 0.85, wheel_scale_rear: 0.85, txd_id: 236, handling_address: 0x4c19c0 },
+    VehicleCatalogEntry { id: 241, game_name: "TRASHM", display_name: "Trashmaster", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 1.06, wheel_scale_rear: 1.06, txd_id: 237, handling_address: 0x4c0ae0 },
+    VehicleCatalogEntry { id: 242, game_name: "TOPFUN", display_name: "Top Fun Van", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 238, handling_address: 0x4c0bc0 },
+    VehicleCatalogEntry { id: 243, game_name: "YANKEE", display_name: "Yankee", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 0.84, wheel_scale_rear: 0.84, txd_id: 239, handling_address: 0x4c0ca0 },
+    VehicleCatalogEntry { id: 244, game_name: "WHOOPEE", display_name: "Mr. Whoopee Ice Cream Van", vehicle_type: VehicleType::Automobile, wheel_model_id: 325, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 240, handling_address: 0x4c0d80 },
+    VehicleCatalogEntry { id: 245, game_name: "SANDKIN", display_name: "Sandking", vehicle_type: VehicleType::Automobile, wheel_model_id: 329, wheel_scale: 0.92, wheel_scale_rear: 0.92, txd_id: 241, handling_address: 0x4c0e60 },
+    VehicleCatalogEntry { id: 246, game_name: "RHINO", display_name: "Rhino Tank", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 1.50, wheel_scale_rear: 1.50, txd_id: 242, handling_address: 0x4c0f40 },
+    VehicleCatalogEntry { id: 247, game_name: "DINGHY", display_name: "Dinghy", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 243, handling_address: 0x4c1020 },
+    VehicleCatalogEntry { id: 248, game_name: "MARQUIS", display_name: "Marquis Sailing Yacht", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 244, handling_address: 0x4c1100 },
+    VehicleCatalogEntry { id: 249, game_name: "RIO", display_name: "Rio Yacht", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 245, handling_address: 0x4c11e0 },
+    VehicleCatalogEntry { id: 250, game_name: "TROPIC", display_name: "Tropic Cruiser", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 246, handling_address: 0x4c0300 },
+    VehicleCatalogEntry { id: 251, game_name: "FORKLIF", display_name: "Forklift", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.50, wheel_scale_rear: 0.50, txd_id: 247, handling_address: 0x4c03e0 },
+    VehicleCatalogEntry { id: 252, game_name: "STREETF", display_name: "Streetfighter", vehicle_type: VehicleType::Motorcycle, wheel_model_id: 65535, wheel_scale: 0.66, wheel_scale_rear: 0.66, txd_id: 248, handling_address: 0x4c04c0 },
+    VehicleCatalogEntry { id: 253, game_name: "VIRGO", display_name: "Virgo", vehicle_type: VehicleType::Automobile, wheel_model_id: 326, wheel_scale: 0.66, wheel_scale_rear: 0.66, txd_id: 249, handling_address: 0x4c05a0 },
+    VehicleCatalogEntry { id: 254, game_name: "STINGER", display_name: "Stinger", vehicle_type: VehicleType::Automobile, wheel_model_id: 323, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 250, handling_address: 0x4c0680 },
+    VehicleCatalogEntry { id: 255, game_name: "BFINJC", display_name: "BF Injection", vehicle_type: VehicleType::Automobile, wheel_model_id: 327, wheel_scale: 0.90, wheel_scale_rear: 0.90, txd_id: 251, handling_address: 0x4c0760 },
+    VehicleCatalogEntry { id: 256, game_name: "PHEONIX", display_name: "Phoenix", vehicle_type: VehicleType::Automobile, wheel_model_id: 323, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 252, handling_address: 0x4c0840 },
+    VehicleCatalogEntry { id: 257, game_name: "SQUALO", display_name: "Squalo Speedboat", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 253, handling_address: 0x4c0920 },
+    VehicleCatalogEntry { id: 258, game_name: "JETMAX", display_name: "Jetmax Racing Boat", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 254, handling_address: 0x4c0a00 },
+    VehicleCatalogEntry { id: 259, game_name: "MESA", display_name: "Mesa Grande", vehicle_type: VehicleType::Automobile, wheel_model_id: 328, wheel_scale: 0.90, wheel_scale_rear: 0.90, txd_id: 255, handling_address: 0x4bfb20 },
+    VehicleCatalogEntry { id: 260, game_name: "VCNMAV", display_name: "VCN News Maverick", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.64, txd_id: 256, handling_address: 0x4bfc00 },
+    VehicleCatalogEntry { id: 261, game_name: "POLMAV", display_name: "VCPD Police Maverick", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 257, handling_address: 0x4bfce0 },
+    VehicleCatalogEntry { id: 262, game_name: "SPARROW", display_name: "Sparrow", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.64, txd_id: 258, handling_address: 0x4bfdc0 },
+    VehicleCatalogEntry { id: 263, game_name: "SEASPAR", display_name: "Sea Sparrow", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.64, txd_id: 259, handling_address: 0x4bfea0 },
+    VehicleCatalogEntry { id: 264, game_name: "SCARAB", display_name: "Scarab Offshore Boat", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 260, handling_address: 0x4bff80 },
+    VehicleCatalogEntry { id: 265, game_name: "CHOLO", display_name: "Cholo Sabre", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 261, handling_address: 0x4c0060 },
+    VehicleCatalogEntry { id: 266, game_name: "COMET", display_name: "Comet", vehicle_type: VehicleType::Automobile, wheel_model_id: 323, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 262, handling_address: 0x4c0140 },
+    VehicleCatalogEntry { id: 267, game_name: "CUBAN", display_name: "Cuban Hermes", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 263, handling_address: 0x4c0220 },
+    VehicleCatalogEntry { id: 268, game_name: "FBIRAN", display_name: "FBI Rancher", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 1.10, wheel_scale_rear: 1.10, txd_id: 264, handling_address: 0x4bf340 },
+    VehicleCatalogEntry { id: 269, game_name: "GANGBUR", display_name: "Gang Burrito", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 1.09, wheel_scale_rear: 1.09, txd_id: 265, handling_address: 0x4bf420 },
+    VehicleCatalogEntry { id: 270, game_name: "INFERNS", display_name: "Infernus", vehicle_type: VehicleType::Automobile, wheel_model_id: 323, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 266, handling_address: 0x4bf500 },
+    VehicleCatalogEntry { id: 271, game_name: "REGINA", display_name: "Regina Station Wagon", vehicle_type: VehicleType::Automobile, wheel_model_id: 326, wheel_scale: 0.66, wheel_scale_rear: 0.66, txd_id: 267, handling_address: 0x4bf5e0 },
+    VehicleCatalogEntry { id: 272, game_name: "SABRE", display_name: "Sabre", vehicle_type: VehicleType::Automobile, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 268, handling_address: 0x4bf6c0 },
+    VehicleCatalogEntry { id: 273, game_name: "SABRETB", display_name: "Sabre Turbo", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 269, handling_address: 0x4bf7a0 },
+    VehicleCatalogEntry { id: 274, game_name: "SENTXS", display_name: "Sentinel XS", vehicle_type: VehicleType::Automobile, wheel_model_id: 327, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 270, handling_address: 0x4bf880 },
+    VehicleCatalogEntry { id: 275, game_name: "HUNTER", display_name: "Hunter Attack Helicopter", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.64, wheel_scale_rear: 0.64, txd_id: 271, handling_address: 0x4bf960 },
+    VehicleCatalogEntry { id: 276, game_name: "WASHIN", display_name: "Washington", vehicle_type: VehicleType::Automobile, wheel_model_id: 324, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 272, handling_address: 0x4bfa40 },
+    VehicleCatalogEntry { id: 277, game_name: "COASTG", display_name: "Coast Guard Launch", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 273, handling_address: 0x4bed20 },
+    VehicleCatalogEntry { id: 278, game_name: "SKIMMER", display_name: "Skimmer Seaplane", vehicle_type: VehicleType::Boat, wheel_model_id: 0, wheel_scale: 0.00, wheel_scale_rear: 0.00, txd_id: 274, handling_address: 0x4bee00 },
+    VehicleCatalogEntry { id: 279, game_name: "CHOPPER", display_name: "Police Chopper", vehicle_type: VehicleType::Helicopter, wheel_model_id: 329, wheel_scale: 0.70, wheel_scale_rear: 0.70, txd_id: 275, handling_address: 0x4beee0 },
+    VehicleCatalogEntry { id: 280, game_name: "AEROPL", display_name: "Aeroplane (Twin Engine)", vehicle_type: VehicleType::PlaneOrHover, wheel_model_id: 319, wheel_scale: 1.00, wheel_scale_rear: 1.00, txd_id: 276, handling_address: 0x4befc0 },
+];
+
 impl VehicleModel {
+    #[allow(dead_code)]
     pub fn load_banshee(disc: &mut Disc, game: &[u8]) -> Result<Self> {
+        Self::load(disc, game, 175)
+    }
+
+    /// Decodes any vehicle model (170..=280) from GTA3PS2.IMG and GAME.DTZ.
+    pub fn load(disc: &mut Disc, game: &[u8], model_id: u16) -> Result<Self> {
+        let entry = VehicleCatalog::get(model_id)
+            .ok_or_else(|| format!("Vehicle ID {model_id} not found in catalog"))?;
         let streaming = u32le(game, 0x7c)? as usize;
         let table = u32le(game, streaming + 0xc8)? as usize;
         let ranges = [
@@ -442,13 +687,11 @@ impl VehicleModel {
             u32le(game, streaming + 20)? as usize,
         ];
 
-        let model_id: u16 = 175;
-        let txd_slot: u16 = 171;
-        let wheel_model_id: u16 = 323;
-        let wheel_scale: f32 = 0.7;
-        let paint_color = banshee_paint_color(game)?;
-        // Banshee's native handling record, found from the model's GAME.DTZ entry.
-        let handling_address = 0x4c5700usize;
+        let txd_slot: u16 = entry.txd_id;
+        let wheel_model_id: u16 = entry.wheel_model_id;
+        let wheel_scale: f32 = entry.wheel_scale;
+        let paint_color = vehicle_paint_color(game, model_id)?;
+        let handling_address = entry.handling_address;
 
         // 1. Read vehicle model data from ISO
         let model_row = table + model_id as usize * 24;
@@ -618,8 +861,8 @@ impl VehicleModel {
         // 6. Decode shared wheel model from GAME.DTZ
         let mut wheel_triangles_count = 0;
         let mut wheels = Vec::new();
-        let wheel_element = 0x4c5188usize; // Model 323 shared atomic element
-        if wheel_element + 0x20 <= game.len() {
+        let wheel_element = 0x4c5188usize;
+        if wheel_model_id != 0 && wheel_model_id != 65535 && wheel_element + 0x20 <= game.len() {
             let wheel_atomic = u32le(game, wheel_element)? as usize;
             let wheel_geom = u32le(game, wheel_atomic + 0x14)? as usize;
             let wheel_frame = u32le(game, wheel_atomic + 4)? as usize;
@@ -877,4 +1120,65 @@ mod tests {
         let bad_data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
         assert!(unpack(&bad_data, 0, 0x79000000).is_err());
     }
+
+    #[test]
+    fn vehicle_catalog_indexes_all_111_models_without_duplicates() {
+        let all = VehicleCatalog::all();
+        assert_eq!(all.len(), 111, "Must contain all 111 Vice City Stories vehicle entries");
+
+        let mut ids = std::collections::HashSet::new();
+        for v in all {
+            assert!(v.id >= 170 && v.id <= 280, "Vehicle ID {} out of valid 170..=280 range", v.id);
+            assert!(ids.insert(v.id), "Duplicate vehicle ID {}", v.id);
+            assert!(!v.game_name.is_empty(), "Vehicle ID {} missing game name", v.id);
+            assert!(!v.display_name.is_empty(), "Vehicle ID {} missing display name", v.id);
+        }
+    }
+
+    #[test]
+    fn vehicle_catalog_filters_watercraft_correctly() {
+        let watercraft = VehicleCatalog::watercraft();
+        assert_eq!(watercraft.len(), 17, "Expected 17 water-capable craft (boats, jetski, hovercraft, seaplane)");
+        
+        let names: Vec<&str> = watercraft.iter().map(|w| w.game_name).collect();
+        assert!(names.contains(&"SQUALO"), "Must contain Squalo");
+        assert!(names.contains(&"JETMAX"), "Must contain Jetmax");
+        assert!(names.contains(&"DINGHY"), "Must contain Dinghy");
+        assert!(names.contains(&"JETSKI"), "Must contain Jetski");
+        assert!(names.contains(&"HOVER"), "Must contain Bovver '64 Hovercraft");
+        assert!(names.contains(&"TROPIC"), "Must contain Tropic");
+        assert!(names.contains(&"MARQUIS"), "Must contain Marquis");
+        assert!(names.contains(&"PREDATR"), "Must contain Predator police boat");
+    }
+
+    #[test]
+    fn vehicle_catalog_find_by_name_is_case_insensitive() {
+        let banshee = VehicleCatalog::find("banshee").expect("Should find banshee");
+        assert_eq!(banshee.id, 175);
+        assert_eq!(banshee.game_name, "BANSHEE");
+
+        let squalo = VehicleCatalog::find("SQUALO").expect("Should find SQUALO");
+        assert_eq!(squalo.id, 257);
+        assert_eq!(squalo.vehicle_type, VehicleType::Boat);
+
+        let jetski = VehicleCatalog::find("Jetski").expect("Should find Jetski");
+        assert_eq!(jetski.id, 233);
+        assert_eq!(jetski.vehicle_type, VehicleType::Jetski);
+
+        let infernus = VehicleCatalog::find("Infernus").expect("Should find Infernus");
+        assert_eq!(infernus.id, 270);
+    }
+
+    #[test]
+    fn vehicle_catalog_automobiles_and_motorcycles() {
+        let autos = VehicleCatalog::automobiles();
+        assert_eq!(autos.len(), 71, "Expected 71 automobiles");
+
+        let bikes = VehicleCatalog::motorcycles();
+        assert_eq!(bikes.len(), 11, "Expected 11 two-wheelers (9 motorbikes + 2 BMX)");
+        let sanchez = VehicleCatalog::find("SANCHEZ").unwrap();
+        assert!(sanchez.is_two_wheeler());
+        assert!(!sanchez.is_watercraft());
+    }
+
 }
