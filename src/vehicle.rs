@@ -972,7 +972,7 @@ impl VehicleModel {
                 .map(|f| (f.name.clone(), [f.world[12], f.world[13], f.world[14]]))
                 .collect(),
             collision_primitives: collision.primitive_counts(),
-            name: "BANSHEE".to_string(),
+            name: entry.game_name.to_string(),
             model_id,
             txd_id: txd_slot,
             wheel_model_id,
@@ -1079,6 +1079,16 @@ impl VehicleModel {
             }
         }
     }
+
+    #[allow(dead_code)]
+    pub fn is_watercraft(&self) -> bool {
+        VehicleCatalog::get(self.stats.model_id).map_or(false, |e| e.is_watercraft())
+    }
+
+    #[allow(dead_code)]
+    pub fn is_two_wheeler(&self) -> bool {
+        VehicleCatalog::get(self.stats.model_id).map_or(false, |e| e.is_two_wheeler())
+    }
 }
 
 #[cfg(test)]
@@ -1181,4 +1191,19 @@ mod tests {
         assert!(!sanchez.is_watercraft());
     }
 
+
+    #[test]
+    #[ignore = "Requires the user's local ISO"]
+    fn multi_vehicle_models_load_cleanly() {
+        let mut disc = crate::iso::Disc::open(std::path::Path::new(crate::DEFAULT_ISO)).unwrap();
+        let game = crate::leeds::inflate(&disc.read("PS2/GAME.DTZ").unwrap()).unwrap();
+        let test_ids = [175, 270, 257, 233, 205, 198, 264, 199];
+        for id in test_ids {
+            let model = VehicleModel::load(&mut disc, &game, id);
+            assert!(model.is_ok(), "Failed to load vehicle ID {}: {:?}", id, model.err());
+            let m = model.unwrap();
+            assert!(!m.triangles.is_empty(), "Vehicle ID {} has no triangles", id);
+            println!("Loaded vehicle ID {}: {} ({} triangles, {} textures)", id, m.stats.name, m.triangles.len(), m.textures.len());
+        }
+    }
 }

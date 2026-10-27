@@ -310,7 +310,26 @@ fn run() -> Result<()> {
     if vehicle_entry.is_watercraft() {
         println!("Aquatic mechanics active: hydrodynamic buoyancy, planing, spray and wake simulation enabled.");
     }
-    let vehicle = vehicle::VehicleModel::load(&mut disc, &game, selected_vehicle_id)?;
+    let mut roster_ids = vec![selected_vehicle_id];
+    for id in [175, 270, 257, 233, 205, 198, 264, 199, 228] {
+        if !roster_ids.contains(&id) {
+            roster_ids.push(id);
+        }
+    }
+    let mut vehicles = Vec::new();
+    for &id in &roster_ids {
+        match vehicle::VehicleModel::load(&mut disc, &game, id) {
+            Ok(v) => {
+                println!("Loaded vehicle fleet ID {}: {} ({} tris)", id, v.stats.name, v.triangles.len());
+                vehicles.push(v);
+            }
+            Err(e) => eprintln!("Notice: model {id} could not be loaded: {e}"),
+        }
+    }
+    if vehicles.is_empty() {
+        return Err("No vehicle model could be loaded".into());
+    }
+    let vehicle = &vehicles[0];
     println!("{}", serde_json::to_string_pretty(&vehicle.stats)?);
     std::fs::write(
         out.join("vehicle-validation.json"),
@@ -634,7 +653,7 @@ fn run() -> Result<()> {
             &water_grid,
             &game_hud,
             &character,
-            &vehicle,
+            &vehicles,
             &npc_models,
             &paths,
             render::ViewerOptions {

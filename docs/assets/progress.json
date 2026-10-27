@@ -1,9 +1,9 @@
 {
-  "build": "PlayStation 2 PAL SLES-54622 (775 Rust functions)",
+  "build": "PlayStation 2 PAL SLES-54622 (781 Rust functions)",
   "bytes": 6819707,
-  "portedBytes": 331179,
+  "portedBytes": 331907,
   "routines": 26735,
-  "portedRoutines": 746,
+  "portedRoutines": 752,
   "subsystems": [
     {
       "name": "Missions",
@@ -4020,9 +4020,9 @@
     {
       "name": "Vehicles",
       "bytes": 456646,
-      "portedBytes": 60710,
+      "portedBytes": 61122,
       "routines": 1738,
-      "portedRoutines": 133,
+      "portedRoutines": 136,
       "classes": [
         {
           "name": "CVehicleModel",
@@ -4112,8 +4112,8 @@
           "name": "Vehicle",
           "bytes": 9860,
           "routines": 95,
-          "portedBytes": 2480,
-          "portedRoutines": 18
+          "portedBytes": 2892,
+          "portedRoutines": 21
         },
         {
           "name": "VehicleType",
@@ -6522,9 +6522,9 @@
     {
       "name": "World and engine",
       "bytes": 534835,
-      "portedBytes": 138909,
+      "portedBytes": 139225,
       "routines": 2197,
-      "portedRoutines": 334,
+      "portedRoutines": 337,
       "classes": [
         {
           "name": "CDATDiskReader",
@@ -7034,8 +7034,8 @@
           "name": "cGlInterface",
           "bytes": 14348,
           "routines": 102,
-          "portedBytes": 3360,
-          "portedRoutines": 20
+          "portedBytes": 3676,
+          "portedRoutines": 23
         },
         {
           "name": "cGlMesh",

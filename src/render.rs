@@ -750,6 +750,103 @@ pub struct ViewerOptions {
     pub show_options: bool,
     pub capture_view: Option<[f32; 2]>,
 }
+fn distance(a: [f32; 3], b: [f32; 3]) -> f32 {
+    (a[0] - b[0]).hypot(a[1] - b[1])
+}
+
+fn vehicle_type_label(model_id: u16) -> &'static str {
+    match crate::vehicle::VehicleCatalog::get(model_id).map(|e| e.vehicle_type) {
+        Some(crate::vehicle::VehicleType::Automobile) => "Voiture",
+        Some(crate::vehicle::VehicleType::Motorcycle) => "Moto",
+        Some(crate::vehicle::VehicleType::Boat) => "Bateau rapide",
+        Some(crate::vehicle::VehicleType::Jetski) => "Jetski",
+        Some(crate::vehicle::VehicleType::Helicopter) => "Helicoptere",
+        Some(crate::vehicle::VehicleType::PlaneOrHover) => "Avion / Aeroglisseur",
+        Some(crate::vehicle::VehicleType::Bicycle) => "Velo",
+        _ => "Vehicule",
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct ParkedWorldVehicle {
+    pub car: crate::driving::Car,
+    pub model_index: usize,
+    pub is_water: bool,
+}
+
+fn spawn_showcase_vehicles(
+    zone_index: usize,
+    vehicles: &[crate::vehicle::VehicleModel],
+    collisions: &crate::collision::CollisionWorld,
+    water: &crate::water::WaterGrid,
+) -> Vec<ParkedWorldVehicle> {
+    let mut list = Vec::new();
+    let find_idx = |names: &[&str]| -> Option<usize> {
+        vehicles.iter().position(|v| names.iter().any(|&n| v.stats.name.eq_ignore_ascii_case(n)))
+    };
+    let infernus_idx = find_idx(&["INFERNS", "INFERNUS"]);
+    let sanchez_idx = find_idx(&["SANCHEZ"]);
+    let cheetah_idx = find_idx(&["CHEETAH"]);
+    let squalo_idx = find_idx(&["SQUALO"]);
+    let jetski_idx = find_idx(&["JETSKI"]);
+    let hover_idx = find_idx(&["HOVER"]);
+
+    match zone_index {
+        0 => {
+            // BEACH
+            if let Some(idx) = infernus_idx {
+                let mut car = crate::driving::Car::new([518.0, -496.0, 10.5], -1.1);
+                car.settle_on_ground(collisions, true, 0.0);
+                list.push(ParkedWorldVehicle { car, model_index: idx, is_water: false });
+            }
+            if let Some(idx) = sanchez_idx {
+                let mut car = crate::driving::Car::new([498.0, -488.0, 10.5], 0.6);
+                car.settle_on_ground(collisions, true, 0.0);
+                list.push(ParkedWorldVehicle { car, model_index: idx, is_water: false });
+            }
+            if let Some(idx) = cheetah_idx {
+                let mut car = crate::driving::Car::new([485.0, -508.0, 10.5], -1.1);
+                car.settle_on_ground(collisions, true, 0.0);
+                list.push(ParkedWorldVehicle { car, model_index: idx, is_water: false });
+            }
+            if let Some(idx) = squalo_idx {
+                let wz = water.height([280.0, -480.0, 10.0]).unwrap_or(6.0);
+                let car = crate::driving::Car::new([280.0, -480.0, wz - 0.2], 1.57);
+                list.push(ParkedWorldVehicle { car, model_index: idx, is_water: true });
+            }
+            if let Some(idx) = jetski_idx {
+                let wz = water.height([285.0, -495.0, 10.0]).unwrap_or(6.0);
+                let car = crate::driving::Car::new([285.0, -495.0, wz - 0.2], 1.57);
+                list.push(ParkedWorldVehicle { car, model_index: idx, is_water: true });
+            }
+            if let Some(idx) = hover_idx {
+                let wz = water.height([290.0, -510.0, 10.0]).unwrap_or(6.0);
+                let car = crate::driving::Car::new([290.0, -510.0, wz - 0.2], 1.57);
+                list.push(ParkedWorldVehicle { car, model_index: idx, is_water: true });
+            }
+        }
+        1 => {
+            // MAINLAND
+            if let Some(idx) = infernus_idx {
+                let mut car = crate::driving::Car::new([-1015.0, -495.0, 11.0], -1.1);
+                car.settle_on_ground(collisions, true, 0.0);
+                list.push(ParkedWorldVehicle { car, model_index: idx, is_water: false });
+            }
+            if let Some(idx) = sanchez_idx {
+                let mut car = crate::driving::Car::new([-1000.0, -488.0, 11.0], 0.6);
+                car.settle_on_ground(collisions, true, 0.0);
+                list.push(ParkedWorldVehicle { car, model_index: idx, is_water: false });
+            }
+            if let Some(idx) = squalo_idx {
+                let wz = water.height([-900.0, -480.0, 10.0]).unwrap_or(6.0);
+                let car = crate::driving::Car::new([-900.0, -480.0, wz - 0.2], 1.57);
+                list.push(ParkedWorldVehicle { car, model_index: idx, is_water: true });
+            }
+        }
+        _ => {}
+    }
+    list
+}
 pub fn viewer(
     levels: &mut [Level],
     collisions: &mut crate::collision::CollisionWorld,
@@ -757,11 +854,16 @@ pub fn viewer(
     water: &crate::water::WaterGrid,
     hud: &crate::hud::GameHud,
     character: &crate::character::Character,
-    vehicle: &crate::vehicle::VehicleModel,
+    vehicles: &[crate::vehicle::VehicleModel],
     npc_models: &[crate::character::Character],
     paths: &crate::paths::PathNetwork,
     options: ViewerOptions,
 ) -> Result<serde_json::Value> {
+    if vehicles.is_empty() {
+        return Err("Viewer requires at least one vehicle model".into());
+    }
+    let mut active_vehicle_index = 0usize;
+    let vehicle = &vehicles[0];
     let ViewerOptions {
         live_report,
         smoke,
@@ -821,10 +923,14 @@ pub fn viewer(
     for model in npc_models {
         actor_textures.extend(model.textures.clone());
     }
+    let mut all_vehicle_textures = std::collections::HashMap::new();
+    for v in vehicles {
+        all_vehicle_textures.extend(v.textures.clone());
+    }
     if let Some(gpu) = &mut gpu {
         gpu.offscreen = headless;
         gpu.set_character_textures(&actor_textures)?;
-        gpu.set_vehicle_textures(&vehicle.textures)?;
+        gpu.set_vehicle_textures(&all_vehicle_textures)?;
     }
     crate::scene::select_collisions(collisions, initial);
     let mut camera = initial_camera.unwrap_or_else(|| {
@@ -853,8 +959,12 @@ pub fn viewer(
     let mut chase_camera = VehicleCamera::new(car.heading);
     let mut population = crate::population::Population::new();
     let mut traffic = crate::traffic::Traffic::new();
+    let mut parked_showcase_vehicles = spawn_showcase_vehicles(initial, vehicles, collisions, water);
     let focus = walker.as_ref().map_or(car.position, |w| w.feet);
-    let instances = [vehicle.collision.at(car.position, car.heading)];
+    let mut instances = vec![vehicle.collision.at(car.position, car.heading)];
+    for pv in &parked_showcase_vehicles {
+        instances.push(vehicles[pv.model_index].collision.at(pv.car.position, pv.car.heading));
+    }
     let initial_scene = crate::collision::CollisionScene {
         world: collisions,
         instances: &instances,
@@ -1185,6 +1295,23 @@ pub fn viewer(
             now.duration_since(previous).as_secs_f32().min(0.1)
         };
         previous = now;
+        let vehicle = &vehicles[active_vehicle_index];
+        for pv in &mut parked_showcase_vehicles {
+            if pv.is_water {
+                let wz = water.height(pv.car.position).unwrap_or(6.0);
+                pv.car.position[2] = wz - 0.2 + (clock_accumulator * 1.8 + pv.car.position[0] * 0.05).sin() * 0.08;
+            }
+        }
+        if in_vehicle {
+            let is_boat = vehicles[active_vehicle_index].is_watercraft();
+            if let Some(wz) = water.height(car.position) {
+                if is_boat || car.position[2] <= wz + 0.6 {
+                    let bob = (clock_accumulator * 2.2).sin() * 0.05;
+                    car.position[2] = wz - 0.22 + bob;
+                    car.grounded = true;
+                }
+            }
+        }
         if controls && window.is_key_pressed(Key::T, minifb::KeyRepeat::No) {
             textures = !textures;
         }
@@ -1193,6 +1320,79 @@ pub fn viewer(
         }
         if controls && window.is_key_pressed(Key::F2, minifb::KeyRepeat::No) {
             third_person = !third_person;
+        }
+        if controls && window.is_key_pressed(Key::N, minifb::KeyRepeat::No) {
+            active_vehicle_index = (active_vehicle_index + 1) % vehicles.len();
+            let v_model = &vehicles[active_vehicle_index];
+            let v_type = vehicle_type_label(v_model.stats.model_id);
+            if in_vehicle {
+                banner_message = format!("VEHICULE: {} [{}] (ID {}) [N: suivant, P: precedent]", v_model.stats.name, v_type, v_model.stats.model_id);
+                banner_timer = 4.0;
+            } else if let Some(w) = &walker {
+                let (s, c) = camera.yaw.sin_cos();
+                car.position = [w.feet[0] + s * 4.5, w.feet[1] + c * 4.5, w.feet[2] + 0.5];
+                car.heading = camera.yaw;
+                car.speed = 0.0;
+                car.health = 1000.0;
+                car.burning = false;
+                car.exploded = false;
+                car.settle_on_ground(collisions, true, 0.0);
+                banner_message = format!("VEHICULE APPARU: {} [{}] (ID {}) [E: monter, N: changer]", v_model.stats.name, v_type, v_model.stats.model_id);
+                banner_timer = 4.0;
+            }
+        }
+        if controls && window.is_key_pressed(Key::P, minifb::KeyRepeat::No) {
+            active_vehicle_index = if active_vehicle_index == 0 { vehicles.len() - 1 } else { active_vehicle_index - 1 };
+            let v_model = &vehicles[active_vehicle_index];
+            let v_type = vehicle_type_label(v_model.stats.model_id);
+            if in_vehicle {
+                banner_message = format!("VEHICULE: {} [{}] (ID {}) [N: suivant, P: precedent]", v_model.stats.name, v_type, v_model.stats.model_id);
+                banner_timer = 4.0;
+            } else if let Some(w) = &walker {
+                let (s, c) = camera.yaw.sin_cos();
+                car.position = [w.feet[0] + s * 4.5, w.feet[1] + c * 4.5, w.feet[2] + 0.5];
+                car.heading = camera.yaw;
+                car.speed = 0.0;
+                car.health = 1000.0;
+                car.burning = false;
+                car.exploded = false;
+                car.settle_on_ground(collisions, true, 0.0);
+                banner_message = format!("VEHICULE APPARU: {} [{}] (ID {}) [E: monter, N: changer]", v_model.stats.name, v_type, v_model.stats.model_id);
+                banner_timer = 4.0;
+            }
+        }
+        if controls && window.is_key_pressed(Key::J, minifb::KeyRepeat::No) {
+            if index != 0 {
+                index = 0;
+                destination = 0;
+                crate::scene::select_collisions(collisions, 0);
+                parked_showcase_vehicles = spawn_showcase_vehicles(0, vehicles, collisions, water);
+            }
+            if in_vehicle {
+                in_vehicle = false;
+            }
+            camera.pos = [305.0, -485.0, 11.0];
+            camera.yaw = -2.2;
+            camera.pitch = -0.15;
+            walker = crate::player::Walker::from_camera_with_water(
+                collisions,
+                &camera,
+                Some(water),
+            );
+            if let Some(w) = &walker {
+                camera.pos = w.eye();
+            }
+            if let Some(squalo_i) = vehicles.iter().position(|v| v.stats.name == "SQUALO" || v.stats.name == "JETSKI") {
+                active_vehicle_index = squalo_i;
+                car.position = [285.0, -485.0, 5.8];
+                car.heading = 1.57;
+                car.speed = 0.0;
+                car.health = 1000.0;
+                car.burning = false;
+                car.exploded = false;
+            }
+            banner_message = "MARINA: Squalo & Jetski a quai [E: monter, Z/S/Q/D: naviguer, N: autre bateau]".into();
+            banner_timer = 5.0;
         }
         for (target, key) in [Key::Key1, Key::Key2, Key::Key3, Key::Key4]
             .iter()
@@ -1207,6 +1407,7 @@ pub fn viewer(
                 population.reset();
                 traffic.reset();
                 index = if target == 3 { 1 } else { target };
+                parked_showcase_vehicles = spawn_showcase_vehicles(index, vehicles, collisions, water);
                 car = crate::driving::Car::new(parked_vehicle(index), -1.1);
                 crate::scene::select_collisions(collisions, index);
                 car.settle_on_ground(collisions, true, 0.0);
@@ -1287,6 +1488,7 @@ pub fn viewer(
             population.reset();
             traffic.reset();
             in_vehicle = false;
+            parked_showcase_vehicles = spawn_showcase_vehicles(index, vehicles, collisions, water);
             car = crate::driving::Car::new(parked_vehicle(index), -1.1);
             car.settle_on_ground(collisions, true, 0.0);
             camera = if destination == 3 {
@@ -1339,20 +1541,12 @@ pub fn viewer(
                 crouch.wanted = !crouch.wanted;
             }
             if window.is_key_pressed(Key::E, minifb::KeyRepeat::No) && !crouch.active() {
-                if in_vehicle
-                    || walker
-                        .as_ref()
-                        .is_some_and(|w| w.grounded && !locomotion.swimming())
-                        && traffic.enter_nearest(
-                            collisions,
-                            &vehicle.collision,
-                            &population.colliders(npc_models),
-                            walker.as_ref().unwrap().feet,
-                            &mut car,
-                        )
-                {
+                if in_vehicle {
                     let mut solid = traffic.colliders(&vehicle.collision);
                     solid.extend(population.colliders(npc_models));
+                    for pv in &parked_showcase_vehicles {
+                        solid.push(vehicles[pv.model_index].collision.at(pv.car.position, pv.car.heading));
+                    }
                     let scene = crate::collision::CollisionScene {
                         world: collisions,
                         instances: &solid,
@@ -1361,13 +1555,103 @@ pub fn viewer(
                         &scene,
                         &car,
                         vehicle,
-                        if in_vehicle { None } else { walker.as_ref() },
+                        None,
                     );
                     if access.is_some() {
                         car.speed = 0.;
                         fighter.cancel();
                         physics_time = 0.;
                         pending_jump = false;
+                    } else {
+                        in_vehicle = false;
+                        let mut exit_pos = car.position;
+                        exit_pos[1] += 1.8;
+                        walker = crate::player::Walker::from_camera_with_water(
+                            collisions,
+                            &Camera { pos: [exit_pos[0], exit_pos[1], exit_pos[2] + 1.0], yaw: car.heading, pitch: 0.0 },
+                            Some(water),
+                        );
+                        if let Some(w) = &walker {
+                            camera.pos = w.eye();
+                        }
+                    }
+                } else if let Some(w) = &walker {
+                    if w.grounded || locomotion.swimming() {
+                        let mut nearest_sc = None;
+                        let mut min_sc_dist = 6.5f32;
+                        for (sc_i, pv) in parked_showcase_vehicles.iter().enumerate() {
+                            let d = distance(w.feet, pv.car.position);
+                            if d < min_sc_dist {
+                                min_sc_dist = d;
+                                nearest_sc = Some(sc_i);
+                            }
+                        }
+                        let car_dist = distance(w.feet, car.position);
+                        if let Some(sc_i) = nearest_sc {
+                            if min_sc_dist < car_dist {
+                                let old_car = car;
+                                let old_model = active_vehicle_index;
+                                let pv = &mut parked_showcase_vehicles[sc_i];
+                                car = pv.car;
+                                active_vehicle_index = pv.model_index;
+                                pv.car = old_car;
+                                pv.model_index = old_model;
+                                pv.is_water = vehicles[old_model].is_watercraft();
+                            }
+                        }
+                        let mut solid = traffic.colliders(&vehicles[active_vehicle_index].collision);
+                        solid.extend(population.colliders(npc_models));
+                        for pv in &parked_showcase_vehicles {
+                            solid.push(vehicles[pv.model_index].collision.at(pv.car.position, pv.car.heading));
+                        }
+                        let candidate_dist = distance(w.feet, car.position);
+                        if candidate_dist < 6.5 {
+                            let scene = crate::collision::CollisionScene {
+                                world: collisions,
+                                instances: &solid,
+                            };
+                            access = crate::access::Access::begin(
+                                &scene,
+                                &car,
+                                &vehicles[active_vehicle_index],
+                                Some(w),
+                            );
+                            if access.is_some() {
+                                car.speed = 0.;
+                                fighter.cancel();
+                                physics_time = 0.;
+                                pending_jump = false;
+                            } else {
+                                in_vehicle = true;
+                                walker = None;
+                                chase_camera = VehicleCamera::new(car.heading);
+                                banner_message = format!("A BORD : {} [E: descendre, Z/S/Q/D: piloter]", vehicles[active_vehicle_index].stats.name);
+                                banner_timer = 4.0;
+                            }
+                        } else if traffic.enter_nearest(
+                            collisions,
+                            &vehicles[active_vehicle_index].collision,
+                            &population.colliders(npc_models),
+                            w.feet,
+                            &mut car,
+                        ) {
+                            let scene = crate::collision::CollisionScene {
+                                world: collisions,
+                                instances: &solid,
+                            };
+                            access = crate::access::Access::begin(
+                                &scene,
+                                &car,
+                                &vehicles[active_vehicle_index],
+                                Some(w),
+                            );
+                            if access.is_some() {
+                                car.speed = 0.;
+                                fighter.cancel();
+                                physics_time = 0.;
+                                pending_jump = false;
+                            }
+                        }
                     }
                 }
             }
@@ -1888,20 +2172,48 @@ pub fn viewer(
             });
         }
         last_render_camera = render_camera;
-        let cars: Vec<_> = std::iter::once(&car)
-            .chain(traffic.cars.iter().map(|v| &v.car))
-            .collect();
-        let mut vehicle_triangles: Vec<_> = cars
+        let auto_indices: Vec<usize> = vehicles
             .iter()
-            .map(|v| vehicle.animated_triangles_with_suspension(v.wheel_angle, v.steering_angle, v.suspension_displacements()))
+            .enumerate()
+            .filter(|(_, v)| !v.is_watercraft())
+            .map(|(i, _)| i)
             .collect();
-        if let Some(a) = &access {
-            vehicle.animate_door(&mut vehicle_triangles[0], a.side, a.opening(character));
+        let fallback_auto_idx = if auto_indices.is_empty() { 0 } else { auto_indices[0] };
+
+        let mut car_render_list: Vec<(&crate::driving::Car, usize, bool)> = Vec::new();
+        car_render_list.push((&car, active_vehicle_index, true));
+        for pv in &parked_showcase_vehicles {
+            car_render_list.push((&pv.car, pv.model_index, false));
         }
-        let vehicle_frames: Vec<_> = cars
+        for (i, tc) in traffic.cars.iter().enumerate() {
+            let m_idx = if !auto_indices.is_empty() {
+                auto_indices[i % auto_indices.len()]
+            } else {
+                fallback_auto_idx
+            };
+            car_render_list.push((&tc.car, m_idx, false));
+        }
+
+        let mut vehicle_triangles: Vec<Vec<crate::leeds::Triangle>> = Vec::new();
+        for &(v, m_idx, is_player) in &car_render_list {
+            let model = &vehicles[m_idx % vehicles.len()];
+            let mut tris = model.animated_triangles_with_suspension(
+                v.wheel_angle,
+                v.steering_angle,
+                v.suspension_displacements(),
+            );
+            if is_player {
+                if let Some(a) = &access {
+                    model.animate_door(&mut tris, a.side, a.opening(character));
+                }
+            }
+            vehicle_triangles.push(tris);
+        }
+
+        let vehicle_frames: Vec<_> = car_render_list
             .iter()
             .zip(&vehicle_triangles)
-            .map(|(v, triangles)| crate::gpu::VehicleFrame {
+            .map(|(&(v, _, _), triangles)| crate::gpu::VehicleFrame {
                 triangles,
                 position: v.position,
                 heading: v.heading,
@@ -1970,7 +2282,7 @@ pub fn viewer(
                 &actor_refs,
                 &vehicle_frames
                     .iter()
-                    .map(|v| (v, &vehicle.textures))
+                    .map(|v| (v, &all_vehicle_textures))
                     .collect::<Vec<_>>(),
             );
             for layer in &hud_layers {
@@ -2004,8 +2316,12 @@ pub fn viewer(
             player_status.hour,
             player_status.minute,
             if in_vehicle {
+                let v_name = &vehicles[active_vehicle_index].stats.name;
+                let v_type = vehicle_type_label(vehicles[active_vehicle_index].stats.model_id);
                 &format!(
-                    "Banshee | {:.0} km/h (Santé {:.0}%) | {} | B: radio{}{}",
+                    "{} [{}] | {:.0} km/h (Sante {:.0}%) | {} | N: changer{}{}",
+                    v_name,
+                    v_type,
                     car.speed.abs() * 3.6,
                     (car.health / 10.0).max(0.0),
                     audio.current_station.name(),
@@ -2016,7 +2332,7 @@ pub fn viewer(
                 if locomotion.swimming() {
                     "Nage | MAJ: nager plus vite"
                 } else {
-                    "A pied | ESPACE: sauter"
+                    "A pied | N: faire apparaitre un vehicule | ESPACE: sauter"
                 }
             } else {
                 "Camera libre"

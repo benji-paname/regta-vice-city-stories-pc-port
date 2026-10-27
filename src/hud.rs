@@ -525,7 +525,7 @@ pub fn guide(pixels: &mut [u32], zone: &str, walking: bool, driving: bool, show_
             pixels,
             20,
             HEIGHT - 77,
-            "F3: ORIGINAL PS2 / MODERNE | C: ACCROUPIR (MODERNE)",
+            "N: CHANGER VEHICULE | J: MARINA BATEAU | F3: PS2/MODERNE | C: ACCROUPIR",
             0xbceaff,
         );
         text(

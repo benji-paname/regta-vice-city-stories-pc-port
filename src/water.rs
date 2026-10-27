@@ -229,4 +229,5 @@ mod tests {
         b.truncate(0x200);
         assert!(WaterGrid::load(&b).is_err());
     }
+
 }

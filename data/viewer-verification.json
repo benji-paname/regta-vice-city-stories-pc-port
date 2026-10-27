@@ -1,21 +1,176 @@
 {
   "animation": "idle",
-  "animation_time": 0.5,
-  "average_draw_ms": 15.617400000000002,
+  "animation_time": 0.0,
+  "average_draw_ms": 10.670012499999999,
   "camera": [
-    503.563232421875,
-    -501.8135681152344,
-    11.108226776123047
+    305.0,
+    -485.0,
+    11.5
   ],
+  "combat": {
+    "action": "Free",
+    "armor": 0,
+    "health": 100,
+    "hits": 0,
+    "hits_taken": 0,
+    "time": 0.0
+  },
+  "crouch": 0.0,
   "draw_distance": 5000.0,
-  "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 617.14",
-  "feet": [
-    500.0,
-    -500.0,
-    9.88824462890625
-  ],
+  "driver": "NVIDIA Corporation | NVIDIA GeForce RTX 5070 Ti/PCIe/SSE2 | OpenGL 4.6.0 NVIDIA 621.01",
+  "driving": false,
+  "feet": null,
   "frames": 8,
-  "grounded": true,
+  "gameplay": "OriginalPs2",
+  "grounded": null,
+  "hud": {
+    "armor": 0,
+    "health": 100,
+    "hour": 12,
+    "minute": 0,
+    "mission_blip": [
+      -1250.0,
+      -180.0,
+      10.5
+    ],
+    "money": 0,
+    "wanted_flashing": false,
+    "wanted_level": 0
+  },
+  "objects": {
+    "available": 1029,
+    "impacts": 0,
+    "moved": [],
+    "recycled": 0
+  },
+  "pedestrians": [
+    {
+      "animation": "idle",
+      "animation_time": 0.9099999666213989,
+      "combat": {
+        "action": "Free",
+        "armor": 0,
+        "health": 100,
+        "hits": 0,
+        "hits_taken": 0,
+        "time": 0.0
+      },
+      "grounded": true,
+      "heading": -3.082836866378784,
+      "model_id": 14,
+      "path_target": 6353,
+      "position": [
+        509.125,
+        -502.5,
+        10.04449462890625
+      ]
+    },
+    {
+      "animation": "idle",
+      "animation_time": 1.1699999570846558,
+      "combat": {
+        "action": "Free",
+        "armor": 0,
+        "health": 100,
+        "hits": 0,
+        "hits_taken": 0,
+        "time": 0.0
+      },
+      "grounded": true,
+      "heading": -3.1252007484436035,
+      "model_id": 22,
+      "path_target": 6355,
+      "position": [
+        509.5,
+        -485.125,
+        10.04449462890625
+      ]
+    },
+    {
+      "animation": "idle",
+      "animation_time": 0.7799999713897705,
+      "combat": {
+        "action": "Free",
+        "armor": 0,
+        "health": 100,
+        "hits": 0,
+        "hits_taken": 0,
+        "time": 0.0
+      },
+      "grounded": true,
+      "heading": -2.948381185531616,
+      "model_id": 22,
+      "path_target": 6352,
+      "position": [
+        508.5,
+        -513.125,
+        10.04449462890625
+      ]
+    },
+    {
+      "animation": "idle",
+      "animation_time": 0.7799999713897705,
+      "combat": {
+        "action": "Free",
+        "armor": 0,
+        "health": 100,
+        "hits": 0,
+        "hits_taken": 0,
+        "time": 0.0
+      },
+      "grounded": true,
+      "heading": 0.04336901381611824,
+      "model_id": 14,
+      "path_target": 5366,
+      "position": [
+        486.125,
+        -494.875,
+        10.051619529724121
+      ]
+    },
+    {
+      "animation": "idle",
+      "animation_time": 1.2999999523162842,
+      "combat": {
+        "action": "Free",
+        "armor": 0,
+        "health": 100,
+        "hits": 0,
+        "hits_taken": 0,
+        "time": 0.0
+      },
+      "grounded": true,
+      "heading": -0.06656816601753235,
+      "model_id": 14,
+      "path_target": 6351,
+      "position": [
+        509.5,
+        -474.875,
+        10.04449462890625
+      ]
+    },
+    {
+      "animation": "idle",
+      "animation_time": 0.9099999666213989,
+      "combat": {
+        "action": "Free",
+        "armor": 0,
+        "health": 100,
+        "hits": 0,
+        "hits_taken": 0,
+        "time": 0.0
+      },
+      "grounded": true,
+      "heading": 0.1106572225689888,
+      "model_id": 19,
+      "path_target": 5649,
+      "position": [
+        484.625,
+        -508.375,
+        10.136347770690918
+      ]
+    }
+  ],
   "renderer": "OpenGL",
   "scene": "VICE CITY",
   "scene_levels": [
@@ -23,8 +178,82 @@
     1
   ],
   "simulation_seconds": 0.0,
-  "submitted_triangles": 691224,
+  "simulation_wall_ms": 0.002,
+  "submitted_triangles": 595600,
+  "swimming": false,
   "third_person": true,
-  "walking": true,
+  "traffic": [
+    {
+      "grounded": true,
+      "heading": 0.06912048161029816,
+      "model_id": 175,
+      "parked": false,
+      "path_from": 1671,
+      "path_to": 1670,
+      "position": [
+        500.17071533203125,
+        -467.12432861328125,
+        9.880463600158691
+      ],
+      "serial": 0,
+      "speed": 0.0
+    },
+    {
+      "grounded": true,
+      "heading": -2.787689447402954,
+      "model_id": 175,
+      "parked": false,
+      "path_from": 1577,
+      "path_to": 1501,
+      "position": [
+        487.8115539550781,
+        -539.8761596679688,
+        9.918334007263184
+      ],
+      "serial": 1,
+      "speed": 0.0
+    },
+    {
+      "grounded": true,
+      "heading": 1.9688106775283813,
+      "model_id": 175,
+      "parked": false,
+      "path_from": 1581,
+      "path_to": 1521,
+      "position": [
+        454.1773376464844,
+        -529.6593017578125,
+        9.739729881286621
+      ],
+      "serial": 2,
+      "speed": 0.0
+    },
+    {
+      "grounded": true,
+      "heading": 0.06693894416093826,
+      "model_id": 175,
+      "parked": false,
+      "path_from": 1670,
+      "path_to": 594,
+      "position": [
+        502.42095947265625,
+        -434.6203918457031,
+        9.87768268585205
+      ],
+      "serial": 3,
+      "speed": 0.0
+    }
+  ],
+  "vault": null,
+  "vehicle_access": null,
+  "vehicle_grounded": true,
+  "vehicle_heading": -1.100000023841858,
+  "vehicle_position": [
+    504.0,
+    -496.0,
+    9.883244514465332
+  ],
+  "vehicle_speed": 0.0,
+  "walking": false,
   "zone": "BEACH"
 }
